@@ -1,0 +1,75 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" text=""></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="tb-auth-wrap">
+    <h1 class="tb-heading-xl">Iniciar sesión</h1>
+    <p class="tb-subtitle">Conecta talento, crea oportunidades.</p>
+
+    <div class="tb-alert error tb-alert-in" *ngIf="tipoError() === 'suspendida'">
+      <ion-icon name="ban-outline"></ion-icon>
+      <span>
+        <strong>Cuenta suspendida.</strong> Tu cuenta ha sido suspendida por el equipo de moderación.
+      </span>
+    </div>
+
+    <div class="tb-alert error tb-alert-in" *ngIf="tipoError() === 'credenciales'">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <span>Credenciales incorrectas. Verifica tu correo y contraseña.</span>
+    </div>
+
+    <form [formGroup]="form" (ngSubmit)="iniciarSesion()" [class.tb-shake]="formShake()">
+      <label class="tb-label">Correo electrónico</label>
+      <div class="tb-input-wrap" [class.error]="form.get('email')?.touched && form.get('email')?.invalid">
+        <ion-icon name="mail-outline"></ion-icon>
+        <input
+          formControlName="email"
+          type="email"
+          inputmode="email"
+          autocomplete="email"
+          placeholder="tu@universidad.edu"
+        />
+      </div>
+      <p class="tb-error-text" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+        El correo es obligatorio.
+      </p>
+      <p class="tb-error-text" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+        El correo no tiene un formato válido.
+      </p>
+
+      <label class="tb-label">Contraseña</label>
+      <div class="tb-input-wrap" [class.error]="form.get('password')?.touched && form.get('password')?.invalid">
+        <ion-icon name="lock-closed-outline"></ion-icon>
+        <input
+          formControlName="password"
+          [type]="mostrarPassword() ? 'text' : 'password'"
+          autocomplete="current-password"
+          placeholder="••••••••"
+        />
+        <ion-icon
+          [name]="mostrarPassword() ? 'eye-outline' : 'eye-off-outline'"
+          (click)="mostrarPassword.set(!mostrarPassword())"
+        ></ion-icon>
+      </div>
+      <p class="tb-error-text" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+        La contraseña es obligatoria.
+      </p>
+
+      <a routerLink="/recuperar-password" class="tb-link-secundario">¿Olvidaste tu contraseña?</a>
+
+      <button type="submit" class="tb-btn-primary" [disabled]="enviando()">
+        <ion-spinner *ngIf="enviando()" name="crescent" class="tb-btn-spinner"></ion-spinner>
+        <span>{{ enviando() ? 'Iniciando sesión...' : 'Iniciar sesión' }}</span>
+      </button>
+    </form>
+
+    <p class="tb-footer-link">
+      ¿No tienes cuenta? <a routerLink="/auth/registro">Crear cuenta</a>
+    </p>
+  </div>
+</ion-content>

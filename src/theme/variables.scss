@@ -1,0 +1,38 @@
+// For information on how to create your own theme, please refer to:
+// https://ionicframework.com/docs/theming/
+:root {
+  // ── Colores ──
+  --tb-naranja-oscuro: #C2650B;
+  --tb-naranja: #F9943B;
+  --tb-naranja-acento: #FB7F1B;
+  --tb-superficie: #ffffff;
+  --tb-primer-plano: #14181C;
+  --tb-borde: #E4E4E7;
+  --tb-error: #EF4444;
+  --tb-exito: #22C55E;
+
+  // ── Espaciado (grid de 8px) ──
+  --tb-space-1: 8px;
+  --tb-space-2: 16px;
+  --tb-space-3: 24px;
+  --tb-space-4: 32px;
+  --tb-space-5: 48px;
+
+  // ── Radios ──
+  --tb-radius-sm: 4px;
+  --tb-radius-md: 8px;
+  --tb-radius-lg: 12px;
+  --tb-radius-xl: 16px;
+  --tb-radius-full: 9999px;
+
+  // ── Tipografía ──
+  --tb-font-heading: 'Outfit', sans-serif;
+  --tb-font-body: 'Inter', sans-serif;
+
+  // ── Colores base de Ionic, alineados a tu paleta ──
+  --ion-color-primary: var(--tb-naranja);
+  --ion-color-primary-shade: var(--tb-naranja-oscuro);
+  --ion-color-primary-tint: var(--tb-naranja-acento);
+  --ion-background-color: var(--tb-superficie);
+  --ion-text-color: var(--tb-primer-plano);
+}

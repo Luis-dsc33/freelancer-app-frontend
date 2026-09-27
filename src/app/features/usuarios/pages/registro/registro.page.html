@@ -1,0 +1,125 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" text=""></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+ <div class="tb-auth-wrap">
+  <h1 class="tb-heading-xl">Crea tu cuenta</h1>
+  <p class="tb-subtitle">Conecta talento, crea oportunidades.</p>
+
+  <!-- ERJ: AHORA SE LEE COMO FUNCION POR USAR SIGNALS [class.tb-shake]="formShake" -->
+  <form [formGroup]="form" (ngSubmit)="registrar()" [class.tb-shake]="formShake()">
+
+    <label class="tb-label">Tipo de cuenta</label>
+    <div class="tb-rol-selector">
+      <button type="button" class="tb-rol-card" [class.selected]="form.value.rol === 'Estudiante'" (click)="seleccionarRol('Estudiante')">
+        <span class="tb-rol-icon-wrap"><ion-icon name="school-outline" class="tb-rol-icon"></ion-icon></span>
+        <strong>Estudiante</strong>
+        <span class="tb-rol-desc">Ofrece tus habilidades</span>
+        <ion-icon *ngIf="form.value.rol === 'Estudiante'" name="checkmark-circle" class="tb-check"></ion-icon>
+      </button>
+      <button type="button" class="tb-rol-card" [class.selected]="form.value.rol === 'Cliente'" (click)="seleccionarRol('Cliente')">
+        <span class="tb-rol-icon-wrap"><ion-icon name="briefcase-outline" class="tb-rol-icon"></ion-icon></span>
+        <strong>Cliente</strong>
+        <span class="tb-rol-desc">Publica proyectos</span>
+        <ion-icon *ngIf="form.value.rol === 'Cliente'" name="checkmark-circle" class="tb-check"></ion-icon>
+      </button>
+    </div>
+
+    <label class="tb-label">Nombre completo</label>
+    <div class="tb-input-wrap" [class.error]="form.get('nombre')?.touched && form.get('nombre')?.invalid" [class.valid]="form.get('nombre')?.touched && form.get('nombre')?.valid">
+      <ion-icon name="person-outline"></ion-icon>
+      <input formControlName="nombre" type="text" placeholder="Ana García López" />
+      <ion-icon *ngIf="form.get('nombre')?.touched && form.get('nombre')?.valid" name="checkmark-circle" class="tb-valid-icon"></ion-icon>
+    </div>
+    <p class="tb-error-text" *ngIf="form.get('nombre')?.touched && form.get('nombre')?.hasError('required')">
+      El nombre es obligatorio.
+    </p>
+
+    <label class="tb-label">Correo electrónico</label>
+    <div class="tb-input-wrap" [class.error]="form.get('email')?.touched && form.get('email')?.invalid" [class.valid]="form.get('email')?.touched && form.get('email')?.valid">
+      <ion-icon name="mail-outline"></ion-icon>
+      <input formControlName="email" type="email" placeholder="tu@universidad.edu" />
+      <ion-icon *ngIf="form.get('email')?.touched && form.get('email')?.valid" name="checkmark-circle" class="tb-valid-icon"></ion-icon>
+    </div>
+    <p class="tb-error-text" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('email')">
+      El correo no tiene un formato válido.
+    </p>
+    <p class="tb-error-text" *ngIf="form.get('email')?.touched && form.get('email')?.hasError('required')">
+      El correo es obligatorio.
+    </p>
+    <label class="tb-label">Contraseña</label>
+    <div class="tb-input-wrap" [class.error]="form.get('password')?.touched && form.get('password')?.invalid">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+<input formControlName="password" [type]="mostrarPassword() ? 'text' : 'password'" placeholder="Mín. 8 caracteres" />
+      <!-- <ion-icon [name]="mostrarPassword ? 'eye-outline' : 'eye-off-outline'" (click)="mostrarPassword = !mostrarPassword"></ion-icon> -->
+      <ion-icon [name]="mostrarPassword() ? 'eye-outline' : 'eye-off-outline'" (click)="mostrarPassword.set(!mostrarPassword())"></ion-icon>
+    </div>
+    <p class="tb-error-text" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('required')">
+      La contraseña es obligatoria.
+    </p>
+    <p class="tb-error-text" *ngIf="form.get('password')?.touched && form.get('password')?.hasError('minlength')">
+      Debe tener al menos 8 caracteres.
+    </p>
+
+    <div class="tb-strength-bar" *ngIf="form.get('password')?.value as pass">
+      <span class="tb-strength-segment" [class.filled]="fuerzaPassword !== 'debil'"></span>
+      <span class="tb-strength-segment" [class.filled]="fuerzaPassword === 'media' || fuerzaPassword === 'segura'"></span>
+      <span class="tb-strength-segment" [class.filled]="fuerzaPassword === 'segura'"></span>
+      <span class="tb-strength-label" [class]="fuerzaPassword">{{ fuerzaPassword === 'segura' ? 'Segura' : fuerzaPassword === 'media' ? 'Media' : 'Débil' }}</span>
+    </div>
+
+    <label class="tb-label">Confirmar contraseña</label>
+    <div class="tb-input-wrap" [class.error]="form.hasError('noCoinciden') && form.get('confirmarPassword')?.touched">
+      <ion-icon name="lock-closed-outline"></ion-icon>
+      <input formControlName="confirmarPassword" [type]="mostrarConfirmar() ? 'text' : 'password'" placeholder="Repite tu contraseña" />
+      <!-- ERJ: <ion-icon [name]="mostrarConfirmar ? 'eye-outline' : 'eye-off-outline'" (click)="mostrarConfirmar = !mostrarConfirmar"></ion-icon> -->
+      <ion-icon [name]="mostrarConfirmar() ? 'eye-outline' : 'eye-off-outline'" (click)="mostrarConfirmar.set(!mostrarConfirmar())"></ion-icon>
+    </div>
+    <p class="tb-error-text" *ngIf="form.get('confirmarPassword')?.touched && form.get('confirmarPassword')?.hasError('required')">
+      Confirma tu contraseña.
+    </p>
+    <p class="tb-error-text" *ngIf="form.hasError('noCoinciden') && form.get('confirmarPassword')?.touched">
+      Las contraseñas no coinciden.
+    </p>
+
+    <!-- ERJ: AHORA SE LEE COMO FUNCION POR USAR SIGNALS *ngIf="errorServidor" ... {{ errorServidor }} -->
+    <div class="tb-alert error tb-alert-in" *ngIf="errorServidor()">
+      <ion-icon name="alert-circle-outline"></ion-icon>
+      <span>{{ errorServidor() }}</span>
+    </div>
+
+    <!-- ERJ: AHORA SE LEE COMO FUNCION POR USAR SIGNALS [disabled]="enviando" -->
+    <button type="submit" class="tb-btn-primary" [disabled]="enviando()">
+      <ion-spinner *ngIf="enviando()" name="crescent" class="tb-btn-spinner"></ion-spinner>
+      <span>{{ enviando() ? 'Creando cuenta...' : 'Registrarse' }}</span>
+    </button>
+
+    <p class="tb-footer-link">
+      ¿Ya tienes una cuenta? <a routerLink="/auth/login">Inicia sesión</a>
+    </p>
+  </form>
+  <ion-modal [isOpen]="mostrarExito()" (didDismiss)="mostrarExito.set(false)" class="tb-modal-exito">
+    <ng-template>
+      <div class="tb-modal-content">
+        <button type="button" class="tb-modal-close" (click)="mostrarExito.set(false)" aria-label="Cerrar">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+
+        <div class="tb-modal-icon-wrap">
+          <ion-icon name="checkmark-circle" class="tb-modal-icon"></ion-icon>
+        </div>
+
+        <h2 class="tb-modal-title">¡Registro exitoso!</h2>
+        <p class="tb-modal-text">Tu cuenta se creó correctamente. Ya puedes iniciar sesión.</p>
+
+        <button type="button" class="tb-btn-primary" (click)="irALogin()">Iniciar sesión</button>
+      </div>
+    </ng-template>
+  </ion-modal>
+ </div>
+</ion-content>

@@ -1,0 +1,54 @@
+<ion-content class="portfolio-page">
+  <main class="portfolio-shell">
+    <header class="portfolio-header">
+      <div class="brand"><span class="brand-mark">TB</span> TalentBridge</div>
+      <a routerLink="/auth/login" class="text-link">Cambiar cuenta</a>
+    </header>
+    <div class="title-row"><span class="section-icon"><ion-icon name="briefcase-outline" aria-hidden="true" /></span>
+      <div><p class="eyebrow">TU TALENTO, EN ACCIÓN</p><h1>Mi portafolio</h1></div>
+    </div>
+    <p class="intro">Muestra lo que sabes hacer. Agrega proyectos que cuenten tu experiencia.</p>
+    @if (portafolio.mensaje()) {
+      <div class="notice success" role="status"><ion-icon name="checkmark-circle-outline" aria-hidden="true" /> {{ portafolio.mensaje() }}</div>
+    }
+    @if (portafolio.error()) {
+      <div class="notice error" role="alert">{{ portafolio.error() }}</div>
+      <div class="error-actions"><button class="secondary" (click)="cargar()" [disabled]="portafolio.cargando()">Reintentar</button>
+        <a routerLink="/auth/login" class="text-link">Iniciar sesión</a></div>
+    } @else if (portafolio.cargando()) {
+      <div class="empty" role="status"><ion-spinner name="crescent" /><p>Cargando tus trabajos…</p></div>
+    } @else {
+      <div class="list-heading"><h2>Tus trabajos</h2><span class="count">{{ portafolio.trabajos().length }} {{ portafolio.trabajos().length === 1 ? 'trabajo' : 'trabajos' }}</span></div>
+      @if (portafolio.trabajos().length === 0) {
+        <section class="empty"><span class="empty-icon"><ion-icon name="briefcase-outline" aria-hidden="true" /></span>
+          <h2>Tu próximo proyecto empieza aquí</h2><p>Aún no tienes trabajos. Agrega tu primera evidencia y dale vida a tu portafolio.</p></section>
+      }
+      <div class="work-list">
+        @for (trabajo of portafolio.trabajos(); track trabajo.id) {
+          <article class="work-card">
+            <div class="card-heading"><h3>{{ trabajo.titulo }}</h3>
+              <div class="card-actions"><a [routerLink]="['/portafolio', trabajo.id, 'editar']" [attr.aria-label]="'Editar ' + trabajo.titulo"><ion-icon name="create-outline" aria-hidden="true" /></a>
+                <button (click)="seleccionado.set(trabajo)" [disabled]="portafolio.guardando()" [attr.aria-label]="'Eliminar ' + trabajo.titulo"><ion-icon name="trash-outline" aria-hidden="true" /></button></div>
+            </div>
+            <p class="description">{{ trabajo.descripcion }}</p>
+            @if (enlaceSeguro(trabajo.enlace); as enlace) {
+              <a class="project-link" [href]="enlace" target="_blank" rel="noopener noreferrer"><ion-icon name="link-outline" aria-hidden="true" />{{ nombreEnlace(enlace) }} <span aria-hidden="true">↗</span></a>
+            }
+          </article>
+        }
+      </div>
+      <a routerLink="/portafolio/agregar" class="primary add-work"><ion-icon name="add-outline" aria-hidden="true" /> Agregar trabajo</a>
+      <p class="footnote">Cada proyecto cuenta. Puedes agregar tantos trabajos como necesites.</p>
+    }
+  </main>
+</ion-content>
+<ion-modal [isOpen]="seleccionado() !== null" [canDismiss]="cerrarModal" (didDismiss)="seleccionado.set(null)" class="delete-modal portfolio-page" aria-labelledby="delete-title">
+  <ng-template>
+    <section class="delete-dialog"><span class="delete-icon"><ion-icon name="trash-outline" aria-hidden="true" /></span>
+      <h2 id="delete-title">¿Eliminar este trabajo?</h2>
+      <p>Se eliminará <strong>{{ seleccionado()?.titulo }}</strong> de tu portafolio. Esta acción no se puede deshacer.</p>
+      <button class="danger-button" (click)="confirmarEliminar()" [disabled]="portafolio.guardando()">@if (portafolio.guardando()) { <ion-spinner name="crescent" /> } {{ portafolio.guardando() ? 'Eliminando…' : 'Eliminar' }}</button>
+      <button class="secondary" (click)="cancelarEliminar()" [disabled]="portafolio.guardando()">Cancelar</button>
+    </section>
+  </ng-template>
+</ion-modal>

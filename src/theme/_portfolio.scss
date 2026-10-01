@@ -1,0 +1,36 @@
+.portfolio-page {
+  --background: #000; --ion-background-color: #000; --ion-text-color: #fff; color: #fff;
+
+.portfolio-shell { max-width: 540px; margin: 0 auto; padding: 24px 24px calc(40px + env(safe-area-inset-bottom)); font-family: var(--tb-font-body); }
+h1,h2,h3,.brand,button,.primary,.secondary { font-family: var(--tb-font-heading); }
+h1 { margin: 4px 0 0; font-size: 28px; font-weight: 800; letter-spacing: -.6px; }
+h2 { font-size: 17px; margin: 0; }
+h3 { font-size: 17px; margin: 0; line-height: 1.4; }
+.eyebrow { font-size: 10px; font-weight: 700; letter-spacing: 1.8px; color: #fb7f1b; margin: 0; }
+.intro { color: #999; font-size: 14px; line-height: 1.7; margin: 18px 0 28px; }
+a { text-decoration: none; }
+button,a { -webkit-tap-highlight-color: transparent; }
+button { cursor: pointer; }
+button:disabled { opacity: .5; cursor: default; }
+button:focus-visible,a:focus-visible { outline: 2px solid #fb7f1b; outline-offset: 4px; }
+.primary,.secondary { display: flex; justify-content: center; align-items: center; gap: 8px; min-height: 50px; border-radius: 15px; font-size: 15px; font-weight: 700; text-align: center; padding: 12px 16px; }
+.primary { background: linear-gradient(110deg,#e95514,#fb7f1b); color: #170900; border: 0; width: 100%; }
+.secondary { background: transparent; color: #ddd; border: 1px solid #2b2b2b; }
+.text-link,.cancel-link { color: #aaa; font-size: 12px; }
+.notice { border-radius: 12px; padding: 14px; font-size: 13px; line-height: 1.5; margin: 16px 0; display: flex; gap: 8px; }
+.success { color: #86efac; background: #112018; border: 1px solid #204830; }
+.error { color: #fca5a5; background: #231010; border: 1px solid #482020; }
+.empty { text-align: center; padding: 42px 16px; color: #999; font-size: 14px; line-height: 1.7; }
+.empty h2 { color: #eee; margin: 16px 0 10px; }
+ion-spinner { width: 20px; height: 20px; }
+@media (min-width: 768px) { .portfolio-shell { padding-top: 40px; } }
+
+.delete-dialog { padding: 30px 24px; text-align: center; border: 1px solid #292929; border-radius: 20px; background: #171717; color: #fff; }
+.delete-icon { display: grid; place-items: center; margin: 0 auto 20px; width: 56px; height: 56px; border: 1px solid #642727; background: #301919; border-radius: 50%; color: #ef4444; font-size: 24px; }
+.delete-dialog h2 { font-size: 18px; }
+.delete-dialog p { color: #999; font-size: 13px; line-height: 1.6; margin: 14px 0 24px; }
+.delete-dialog strong { color: #eee; overflow-wrap: anywhere; }
+.delete-dialog button { width: 100%; }
+.danger-button { display: flex; gap: 8px; justify-content: center; align-items: center; background: #2b1111; color: #f87171; border: 1px solid #462020; padding: 15px; border-radius: 14px; margin-bottom: 10px; font-weight: 700; }
+
+}

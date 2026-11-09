@@ -1,0 +1,62 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/" text=""></ion-back-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="tb-auth-wrap">
+    <h1 class="tb-heading-xl">Completa tu Perfil</h1>
+    <p class="tb-subtitle">Cuéntanos más sobre ti para destacar tu talento.</p>
+
+    <form [formGroup]="form" (ngSubmit)="guardar()" [class.tb-shake]="formShake()">
+
+      <label class="tb-label">Carrera o Especialidad</label>
+      <div class="tb-input-wrap" [class.error]="form.get('carrera')?.touched && form.get('carrera')?.invalid" [class.valid]="form.get('carrera')?.touched && form.get('carrera')?.valid">
+        <ion-icon name="school-outline"></ion-icon>
+        <input formControlName="carrera" type="text" placeholder="Ej. Ingeniería de Sistemas" />
+        <ion-icon *ngIf="form.get('carrera')?.touched && form.get('carrera')?.valid" name="checkmark-circle" class="tb-valid-icon"></ion-icon>
+      </div>
+      <p class="tb-error-text" *ngIf="form.get('carrera')?.touched && form.get('carrera')?.hasError('required')">
+        La carrera es obligatoria.
+      </p>
+
+      <label class="tb-label">Habilidades</label>
+      <div class="tb-input-wrap" style="padding-right: 0;">
+        <ion-icon name="star-outline"></ion-icon>
+        <input type="text" [value]="habilidadInput()" (input)="setHabilidadInput($event)" (keyup.enter)="agregarHabilidad(); $event.preventDefault()" placeholder="Ej. React, C#, SQL" />
+        <ion-button fill="clear" (click)="agregarHabilidad()" class="ion-no-margin">
+          <ion-icon slot="icon-only" name="add-outline"></ion-icon>
+        </ion-button>
+      </div>
+      <div class="tb-tags-container" *ngIf="habilidades().length > 0">
+        <ion-chip *ngFor="let hab of habilidades()" color="primary" class="tb-chip">
+          <ion-label>{{ hab }}</ion-label>
+          <ion-icon name="close-circle-outline" (click)="eliminarHabilidad(hab)"></ion-icon>
+        </ion-chip>
+      </div>
+
+      <label class="tb-label">Descripción</label>
+      <div class="tb-input-wrap" [class.error]="form.get('descripcion')?.touched && form.get('descripcion')?.invalid" [class.valid]="form.get('descripcion')?.touched && form.get('descripcion')?.valid" style="align-items: flex-start; height: auto;">
+        <ion-icon name="document-text-outline" style="margin-top: 14px;"></ion-icon>
+        <textarea formControlName="descripcion" rows="4" placeholder="Desarrollador fullstack con experiencia en..."></textarea>
+      </div>
+      <p class="tb-error-text" *ngIf="form.get('descripcion')?.touched && form.get('descripcion')?.hasError('required')">
+        La descripción es obligatoria.
+      </p>
+
+      <div class="tb-alert error tb-alert-in" *ngIf="errorServidor()">
+        <ion-icon name="alert-circle-outline"></ion-icon>
+        <span>{{ errorServidor() }}</span>
+      </div>
+
+      <button type="submit" class="tb-btn-primary" [disabled]="enviando()" style="margin-top: 24px;">
+        <ion-spinner *ngIf="enviando()" name="crescent" class="tb-btn-spinner"></ion-spinner>
+        <span>{{ enviando() ? 'Guardando...' : 'Guardar Perfil' }}</span>
+      </button>
+
+    </form>
+  </div>
+</ion-content>

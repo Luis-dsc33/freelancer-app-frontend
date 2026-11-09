@@ -2,8 +2,9 @@ import { Component, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
 import { IonHeader, IonToolbar, IonButtons, IonBackButton, IonIcon, IonSpinner, IonContent } from '@ionic/angular';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { AuthService } from '../../services/auth.service';
+import { PerfilService } from '../../services/perfil.service';
 import { addIcons } from 'ionicons';
 import { mailOutline, lockClosedOutline, eyeOutline, eyeOffOutline, alertCircleOutline, banOutline } from 'ionicons/icons';
 
@@ -37,7 +38,7 @@ export class LoginPage {
   formShake = signal(false);
   mostrarPassword = signal(false);
 
-  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router) {
+  constructor(private fb: FormBuilder, private authService: AuthService, private router: Router, private route: ActivatedRoute, private perfilService: PerfilService) {
     this.form = this.fb.group({
       email: ['', [Validators.required, Validators.email]],
       password: ['', Validators.required],
@@ -62,9 +63,32 @@ export class LoginPage {
     const { email, password } = this.form.value;
 
     this.authService.login({ email, password }).subscribe({
-      next: () => {
-        this.enviando.set(false);
-        this.router.navigate(['/marketplace']); // ajusta a tu ruta post-login real
+      next: (respuesta) => {
+        const destino = this.route.snapshot.queryParamMap.get('returnUrl');
+        const portafolio = destino && /^\/portafolio(?:\/|$)/.test(destino);
+
+        if (respuesta.rol === 'Estudiante') {
+          this.perfilService.getMiPerfil().subscribe({
+            next: (perfil) => {
+              this.enviando.set(false);
+              if (perfil && perfil.esPerfilCompleto === false) {
+                void this.router.navigate(['/auth/perfil']);
+              } else {
+                if (portafolio) void this.router.navigateByUrl(destino);
+                else void this.router.navigate(['/portafolio']);
+              }
+            },
+            error: (err) => {
+              this.enviando.set(false);
+              console.error('Error al obtener perfil', err);
+              void this.router.navigate(['/auth/perfil']);
+            }
+          });
+        } else {
+          this.enviando.set(false);
+          if (portafolio) void this.router.navigateByUrl(destino);
+          else void this.router.navigate(['/marketplace']);
+        }
       },
       error: (err) => {
         this.enviando.set(false);

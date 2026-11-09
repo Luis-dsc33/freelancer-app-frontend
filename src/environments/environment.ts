@@ -1,10 +1,11 @@
+import {Environment} from './environment.model';
 // This file can be replaced during build by using the `fileReplacements` array.
 // `ng build` replaces `environment.ts` with `environment.prod.ts`.
 // The list of file replacements can be found in `angular.json`.
 
 // environment.ts — ERJ: LA QUE CAE DE DEFAULT
 // NO COLOQUEN LA DE PRODUCCION SINO TODO EN LOCAL, SE PRUEBA EN PRODUCCION CUANDO ESTE EN LA RAMA DE QA 
-export const environment = {
+export const environment : Environment = {
   production: false,
   gatewayUrl: 'http://localhost:9080'
 };

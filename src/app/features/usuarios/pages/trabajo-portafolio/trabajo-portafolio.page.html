@@ -1,0 +1,28 @@
+<ion-content class="portfolio-page">
+  <main class="portfolio-shell editor-shell">
+    <header class="editor-header"><a routerLink="/portafolio" class="back-button" aria-label="Volver a mi portafolio"><ion-icon name="arrow-back-outline" aria-hidden="true" /></a><span>Mi portafolio</span></header>
+    <p class="eyebrow">{{ id ? 'DALE FORMA A TU EXPERIENCIA' : 'COMPARTE LO QUE HAS CREADO' }}</p>
+    <h1>{{ id ? 'Editar trabajo' : 'Agregar trabajo' }}</h1>
+    <p class="intro">{{ id ? 'Actualiza los detalles de tu proyecto.' : 'Cuéntanos de tu proyecto y lo que lograste.' }}</p>
+    @if (portafolio.error()) { <div class="notice error" role="alert">{{ portafolio.error() }}</div> }
+    @if (portafolio.cargando()) { <div class="empty" role="status"><ion-spinner name="crescent" /><p>Cargando…</p></div> }
+    @else if (listo()) {
+      <form [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+        <fieldset [disabled]="portafolio.guardando()">
+          <label [attr.for]="'titulo-' + formularioId">Título <span aria-hidden="true">*</span></label>
+          <input [id]="'titulo-' + formularioId" formControlName="titulo" placeholder="Ej. App de Delivery" maxlength="150" required [class.invalid]="errorCampo('titulo')" [attr.aria-invalid]="!!errorCampo('titulo')" [attr.aria-describedby]="'titulo-error-' + formularioId" />
+          <p [id]="'titulo-error-' + formularioId" class="field-error">{{ errorCampo('titulo') }}</p>
+          <label [attr.for]="'descripcion-' + formularioId">Descripción <span aria-hidden="true">*</span></label>
+          <textarea [id]="'descripcion-' + formularioId" formControlName="descripcion" placeholder="¿Qué hiciste? ¿Cuál fue tu aportación?" maxlength="2000" required rows="5" [class.invalid]="errorCampo('descripcion')" [attr.aria-invalid]="!!errorCampo('descripcion')" [attr.aria-describedby]="'descripcion-error-' + formularioId" ></textarea>
+          <div class="field-meta"><p [id]="'descripcion-error-' + formularioId" class="field-error">{{ errorCampo('descripcion') }}</p><span>{{ form.controls.descripcion.value.length }}/2000</span></div>
+          <label [attr.for]="'enlace-' + formularioId">Enlace <span class="optional">(opcional)</span></label>
+          <input [id]="'enlace-' + formularioId" formControlName="enlace" placeholder="https://github.com/usuario/proyecto" maxlength="2048" inputmode="url" autocapitalize="off" spellcheck="false" [class.invalid]="errorCampo('enlace')" [attr.aria-invalid]="!!errorCampo('enlace')" [attr.aria-describedby]="'enlace-error-' + formularioId + ' enlace-help-' + formularioId" />
+          <p [id]="'enlace-error-' + formularioId" class="field-error">{{ errorCampo('enlace') }}</p>
+          <p [id]="'enlace-help-' + formularioId" class="field-help">Comparte tu repositorio, sitio o evidencia del proyecto.</p>
+        </fieldset>
+        <button type="submit" class="primary save-work" [disabled]="portafolio.guardando()">@if (portafolio.guardando()) { <ion-spinner name="crescent" /> } {{ portafolio.guardando() ? 'Guardando…' : id ? 'Guardar cambios' : 'Agregar trabajo' }}</button>
+        <a routerLink="/portafolio" class="cancel-link">Cancelar</a>
+      </form>
+    } @else { <a routerLink="/portafolio" class="secondary">Volver a mi portafolio</a> }
+  </main>
+</ion-content>

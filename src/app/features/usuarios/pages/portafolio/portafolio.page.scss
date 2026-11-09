@@ -1,0 +1,22 @@
+.portfolio-header,.brand,.title-row,.list-heading,.card-heading,.card-actions { display: flex; align-items: center; }
+.portfolio-header { justify-content: space-between; margin-bottom: 40px; gap: 12px; }
+.brand { gap: 9px; font-weight: 700; font-size: 15px; }
+.brand-mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: #fb7f1b; color: #160900; font-size: 12px; }
+.title-row { gap: 14px; }
+.section-icon,.empty-icon { background: #25160d; color: #fb7f1b; border: 1px solid #3a2417; border-radius: 16px; width: 52px; height: 52px; display: grid; place-items: center; font-size: 26px; }
+.empty-icon { margin: auto; width: 64px; height: 64px; }
+.list-heading { justify-content: space-between; margin: 30px 0 16px; }
+.count { color: #999; font-size: 12px; border: 1px solid #262626; padding: 6px 10px; border-radius: 999px; }
+.work-list { display: grid; gap: 16px; }
+.work-card { border: 1px solid #262626; background: #141414; border-radius: 18px; padding: 20px; }
+.card-heading { justify-content: space-between; align-items: flex-start; gap: 8px; }
+.card-heading h3 { overflow-wrap: anywhere; }
+.card-actions { flex-shrink: 0; gap: 2px; margin: -9px -9px 0 0; }
+.card-actions a,.card-actions button { display: grid; place-items: center; min-width: 44px; min-height: 44px; background: transparent; border: 0; font-size: 18px; color: #999; border-radius: 10px; }
+.card-actions button { color: #ef6262; }
+.description { font-size: 13px; color: #aaa; line-height: 1.7; margin: 14px 0; white-space: pre-wrap; overflow-wrap: anywhere; }
+.project-link { display: inline-flex; align-items: center; gap: 6px; color: #fb923c; font-size: 12px; min-height: 32px; overflow-wrap: anywhere; }
+.add-work { margin-top: 24px; }
+.footnote { text-align: center; font-size: 11px; color: #777; line-height: 1.7; padding: 0 20px; }
+.error-actions { display: flex; align-items: center; gap: 20px; }
+.delete-modal { --width: 320px; --height: auto; --border-radius: 20px; --background: #171717; }

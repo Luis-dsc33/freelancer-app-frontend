@@ -1,6 +1,7 @@
 import { Component, OnInit, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormBuilder, FormGroup, ReactiveFormsModule, Validators } from '@angular/forms';
+import { HttpErrorResponse } from '@angular/common/http';
 import { IonicModule } from '@ionic/angular/lazy';
 import { Router } from '@angular/router';
 import { PerfilService } from '../../services/perfil.service';
@@ -14,6 +15,15 @@ import {
   addOutline,
   closeCircleOutline 
 } from 'ionicons/icons';
+
+interface ErrorRespuestaPerfil {
+  error?: string;
+  message?: string;
+  title?: string;
+  detail?: string;
+  errores?: { campo: string; mensaje: string }[];
+  errors?: Record<string, string[]>;
+}
 
 addIcons({
   'school-outline': schoolOutline,
@@ -117,14 +127,40 @@ export class PerfilPage implements OnInit {
     this.perfilService.guardarPerfil(payload).subscribe({
       next: () => {
         this.enviando.set(false);
-        // Redirigir al inicio o dashboard luego de guardar el perfil
-        this.router.navigate(['/']); 
+        void this.router.navigate(['/portafolio']);
       },
-      error: (err) => {
+      error: (err: HttpErrorResponse) => {
         this.enviando.set(false);
-        this.errorServidor.set(err.error?.error ?? err.message ?? 'Ocurrió un error inesperado al guardar el perfil.');
+        this.errorServidor.set(this.mensajeError(err));
         this.dispararShake();
       }
     });
+  }
+
+  private mensajeError(err: HttpErrorResponse): string {
+    if (err.status === 0) {
+      return 'No se pudo conectar con el servidor. Revisa tu conexión e inténtalo de nuevo.';
+    }
+    if (err.status === 401) {
+      return 'Tu sesión venció. Inicia sesión nuevamente.';
+    }
+    if (err.status === 403) {
+      return 'No tienes permiso para completar este perfil.';
+    }
+
+    const body = err.error && typeof err.error === 'object'
+      ? err.error as ErrorRespuestaPerfil
+      : null;
+    const validaciones = body?.errores?.map(error => error.mensaje).join(' ')
+      || Object.values(body?.errors ?? {}).flat().join(' ');
+    const mensajeServidor = typeof err.error === 'string'
+      ? err.error
+      : body?.error || body?.detail || body?.message || body?.title;
+
+    if (validaciones) return validaciones;
+    if (mensajeServidor && !/ocurrió un error inesperado|unexpected error/i.test(mensajeServidor)) {
+      return `${mensajeServidor} (HTTP ${err.status})`;
+    }
+    return `El servidor devolvió un error al guardar el perfil. (HTTP ${err.status})`;
   }
 }

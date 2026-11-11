@@ -35,7 +35,7 @@ describe('PerfilPage', () => {
 
   afterEach(() => http.verify());
 
-  it('guarda el perfil y lleva al estudiante a su portafolio', () => {
+  it('guarda el perfil y lleva al estudiante al marketplace', () => {
     page.guardar();
 
     const request = http.expectOne(perfilUrl);
@@ -47,7 +47,7 @@ describe('PerfilPage', () => {
     });
     request.flush(null);
 
-    expect(router.navigate).toHaveBeenCalledWith(['/portafolio']);
+    expect(router.navigate).toHaveBeenCalledWith(['/marketplace']);
     expect(page.enviando()).toBe(false);
   });
 

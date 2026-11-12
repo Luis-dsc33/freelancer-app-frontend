@@ -1,0 +1,66 @@
+// Piezas visuales compartidas por las páginas del rol Administrador.
+// Uso en el .scss de cada página: @use '../../../../../theme/admin';
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--tb-radius-md);
+  border: 1px solid var(--tb-borde);
+  background: var(--tb-superficie);
+  color: var(--tb-primer-plano);
+  font: 600 0.85rem var(--tb-font-body);
+  cursor: pointer;
+  ion-spinner { width: 16px; height: 16px; }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+  &--primario { background: var(--tb-naranja); border-color: var(--tb-naranja); color: var(--tb-primer-plano); }
+}
+
+.insignia {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--tb-radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  &--demo { background: #fff4e5; color: #8a4b08; border: 1px solid #f6d2a6; }
+  &--hu { background: #eef4fd; color: #1d4f91; border: 1px solid #c9dcf5; }
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px var(--tb-space-2);
+  border-radius: var(--tb-radius-md);
+  margin-bottom: var(--tb-space-2);
+  font-size: 0.88rem;
+  ion-icon { font-size: 1.15rem; flex-shrink: 0; }
+  &--error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+  &--info { background: #eef4fd; color: #1d4f91; border: 1px solid #c9dcf5; }
+}
+
+.tarjeta {
+  background: var(--tb-superficie);
+  border: 1px solid var(--tb-borde);
+  border-radius: var(--tb-radius-lg);
+  padding: var(--tb-space-3);
+  min-width: 0;
+  h2 { font-family: var(--tb-font-heading); font-size: 1.05rem; margin: 0; }
+}
+.tarjeta__sub { margin: 4px 0 var(--tb-space-2); font-size: 0.82rem; color: #52514e; }
+
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 160px;
+  color: #898781;
+  font-size: 0.9rem;
+  text-align: center;
+  ion-icon { font-size: 1.6rem; }
+}

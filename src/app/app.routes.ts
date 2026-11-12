@@ -21,6 +21,10 @@ export const routes: Routes = [
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
   },
   {
+    path: 'marketplace',
+    loadChildren: () => import('./features/marketplace/marketplace.routes').then(m => m.MARKETPLACE_ROUTES)
+  },
+  {
     path: '**',
     redirectTo: 'auth/login'
   }

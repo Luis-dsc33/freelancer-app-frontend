@@ -1,0 +1,107 @@
+<ion-content class="marketplace-page">
+  <main class="marketplace-shell">
+    <header class="marketplace-header">
+      <div class="brand"><span class="brand-mark">TB</span> TalentBridge</div>
+      <nav class="header-links">
+        <a routerLink="/portafolio" class="text-link">Mi portafolio</a>
+        <a routerLink="/auth/login" class="text-link">Cambiar cuenta</a>
+      </nav>
+    </header>
+
+    <div class="title-row">
+      <span class="section-icon"><ion-icon name="storefront-outline" aria-hidden="true" /></span>
+      <div>
+        <p class="eyebrow">OPORTUNIDADES ABIERTAS</p>
+        <h1>Marketplace</h1>
+      </div>
+    </div>
+    <p class="intro">Explora proyectos publicados por clientes y encuentra el siguiente reto para tu talento.</p>
+
+    @if (vm.error()) {
+      <div class="notice error" role="alert">
+        <ion-icon name="alert-circle-outline" aria-hidden="true" />
+        {{ vm.error() }}
+      </div>
+      <div class="error-actions">
+        <button class="secondary" type="button" (click)="vm.cargar()" [disabled]="vm.cargando()">
+          <ion-icon name="refresh-outline" aria-hidden="true" />
+          Reintentar
+        </button>
+        <a routerLink="/auth/login" class="text-link">Iniciar sesión</a>
+      </div>
+    } @else if (vm.cargando()) {
+      <div class="empty" role="status">
+        <ion-spinner name="crescent" />
+        <p>Cargando oportunidades…</p>
+      </div>
+    } @else {
+      <div class="list-heading">
+        <h2>Proyectos disponibles</h2>
+        <span class="count">{{ vm.total() }} {{ vm.total() === 1 ? 'oportunidad' : 'oportunidades' }}</span>
+      </div>
+
+      @if (vm.total() === 0) {
+        <section class="empty">
+          <span class="empty-icon"><ion-icon name="briefcase-outline" aria-hidden="true" /></span>
+          <h2>Aún no hay proyectos publicados</h2>
+          <p>Cuando un cliente publique una oportunidad, aparecerá aquí para que puedas postularte.</p>
+        </section>
+      } @else {
+        <div class="opportunity-list">
+          @for (oportunidad of vm.oportunidades(); track oportunidad.id) {
+            <article class="opportunity-card">
+              <div class="card-heading">
+                <h3>{{ oportunidad.titulo }}</h3>
+                @if (oportunidad.esUrgente) {
+                  <span class="badge urgent">
+                    <ion-icon name="flash-outline" aria-hidden="true" />
+                    Urgente
+                  </span>
+                }
+              </div>
+
+              <p class="description">{{ oportunidad.descripcion }}</p>
+
+              @if (oportunidad.habilidadesRequeridas.length > 0) {
+                <ul class="skills" aria-label="Habilidades requeridas">
+                  @for (habilidad of oportunidad.habilidadesRequeridas; track habilidad) {
+                    <li>{{ habilidad }}</li>
+                  }
+                </ul>
+              }
+
+              <div class="meta">
+                <span>
+                  <ion-icon name="people-outline" aria-hidden="true" />
+                  {{ oportunidad.nombreCliente }}
+                </span>
+                <span>{{ oportunidad.creadoEn | date: 'dd MMM yyyy' }}</span>
+              </div>
+
+              <div class="payout">
+                <div>
+                  <p class="label">Presupuesto</p>
+                  <p class="value">{{ oportunidad.presupuesto | currency: 'MXN':'symbol-narrow':'1.0-0' }}</p>
+                </div>
+                @if (oportunidad.pagoEstimadoEstudiante !== null) {
+                  <div>
+                    <p class="label">Pago estimado</p>
+                    <p class="value accent">{{ oportunidad.pagoEstimadoEstudiante | currency: 'MXN':'symbol-narrow':'1.0-0' }}</p>
+                  </div>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+
+      <p class="footnote">
+        @if (vm.urgentes() > 0) {
+          Hay {{ vm.urgentes() }} {{ vm.urgentes() === 1 ? 'proyecto urgente' : 'proyectos urgentes' }} con recargo.
+        } @else {
+          Completa tu portafolio para destacar frente a los clientes.
+        }
+      </p>
+    }
+  </main>
+</ion-content>

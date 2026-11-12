@@ -84,6 +84,10 @@ export class LoginPage {
               void this.router.navigate(['/auth/perfil']);
             }
           });
+        } else if (respuesta.rol === 'Administrador') {
+          // Mismo login para todos los roles; el admin solo cambia de destino
+          this.enviando.set(false);
+          void this.router.navigate(['/admin']);
         } else {
           this.enviando.set(false);
           if (portafolio) void this.router.navigateByUrl(destino);

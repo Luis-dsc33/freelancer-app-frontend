@@ -127,7 +127,7 @@ export class PerfilPage implements OnInit {
     this.perfilService.guardarPerfil(payload).subscribe({
       next: () => {
         this.enviando.set(false);
-        void this.router.navigate(['/portafolio']);
+        void this.router.navigate(['/marketplace']);
       },
       error: (err: HttpErrorResponse) => {
         this.enviando.set(false);

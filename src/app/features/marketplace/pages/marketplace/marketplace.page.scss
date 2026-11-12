@@ -1,0 +1,194 @@
+.marketplace-header,
+.brand,
+.title-row,
+.list-heading,
+.card-heading,
+.header-links,
+.meta,
+.payout,
+.error-actions,
+.badge {
+  display: flex;
+  align-items: center;
+}
+
+.marketplace-header {
+  justify-content: space-between;
+  margin-bottom: 40px;
+  gap: 12px;
+}
+
+.brand {
+  gap: 9px;
+  font-weight: 700;
+  font-size: 15px;
+}
+
+.brand-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: #fb7f1b;
+  color: #160900;
+  font-size: 12px;
+}
+
+.header-links {
+  gap: 14px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+}
+
+.title-row {
+  gap: 14px;
+}
+
+.section-icon,
+.empty-icon {
+  background: #25160d;
+  color: #fb7f1b;
+  border: 1px solid #3a2417;
+  border-radius: 16px;
+  width: 52px;
+  height: 52px;
+  display: grid;
+  place-items: center;
+  font-size: 26px;
+}
+
+.empty-icon {
+  margin: auto;
+  width: 64px;
+  height: 64px;
+}
+
+.list-heading {
+  justify-content: space-between;
+  margin: 30px 0 16px;
+  gap: 12px;
+}
+
+.count {
+  color: #999;
+  font-size: 12px;
+  border: 1px solid #262626;
+  padding: 6px 10px;
+  border-radius: 999px;
+  white-space: nowrap;
+}
+
+.opportunity-list {
+  display: grid;
+  gap: 16px;
+}
+
+.opportunity-card {
+  border: 1px solid #262626;
+  background: #141414;
+  border-radius: 18px;
+  padding: 20px;
+}
+
+.card-heading {
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 10px;
+}
+
+.card-heading h3 {
+  overflow-wrap: anywhere;
+  margin: 0;
+}
+
+.badge {
+  gap: 4px;
+  flex-shrink: 0;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 6px 10px;
+  border-radius: 999px;
+}
+
+.badge.urgent {
+  color: #fdba74;
+  background: #2a1608;
+  border: 1px solid #4a2a12;
+}
+
+.description {
+  font-size: 13px;
+  color: #aaa;
+  line-height: 1.7;
+  margin: 14px 0;
+  white-space: pre-wrap;
+  overflow-wrap: anywhere;
+}
+
+.skills {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 8px;
+  list-style: none;
+  padding: 0;
+  margin: 0 0 16px;
+}
+
+.skills li {
+  font-size: 11px;
+  color: #ddd;
+  border: 1px solid #2b2b2b;
+  border-radius: 999px;
+  padding: 5px 10px;
+}
+
+.meta {
+  justify-content: space-between;
+  gap: 12px;
+  flex-wrap: wrap;
+  color: #888;
+  font-size: 12px;
+  margin-bottom: 16px;
+}
+
+.meta span {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.payout {
+  justify-content: space-between;
+  gap: 16px;
+  border-top: 1px solid #222;
+  padding-top: 14px;
+}
+
+.payout .label {
+  margin: 0;
+  font-size: 11px;
+  color: #777;
+}
+
+.payout .value {
+  margin: 4px 0 0;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.payout .value.accent {
+  color: #fb923c;
+}
+
+.footnote {
+  text-align: center;
+  font-size: 11px;
+  color: #777;
+  line-height: 1.7;
+  padding: 24px 20px 0;
+}
+
+.error-actions {
+  gap: 20px;
+}

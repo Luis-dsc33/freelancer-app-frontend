@@ -1,0 +1,23 @@
+// ADMIN Marcos
+@use '../../../../../theme/admin';
+
+.fondo {
+  position: fixed; inset: 0; z-index: 1000; background: rgba(20, 24, 28, 0.45);
+  display: flex; align-items: center; justify-content: center; padding: var(--tb-space-2);
+}
+.dialogo {
+  width: min(480px, 100%); background: var(--tb-superficie); border-radius: var(--tb-radius-lg);
+  padding: var(--tb-space-3); box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2); font-family: var(--tb-font-body);
+  color: var(--tb-primer-plano);
+  h2 { font-family: var(--tb-font-heading); font-size: 1.2rem; margin: 0 0 6px; }
+}
+.descripcion { margin: 0 0 var(--tb-space-2); color: #52514e; font-size: 0.88rem; }
+label { font-size: 0.8rem; font-weight: 600; span { color: #b42318; } }
+textarea {
+  width: 100%; margin-top: 6px; border: 1px solid var(--tb-borde); border-radius: var(--tb-radius-md);
+  padding: 10px 12px; font: 0.9rem var(--tb-font-body); resize: vertical; color: var(--tb-primer-plano); background: #fff;
+  &:focus { outline: 2px solid rgba(249, 148, 59, 0.45); border-color: var(--tb-naranja); }
+}
+.pie-campo { display: flex; justify-content: space-between; font-size: 0.75rem; color: #898781; margin: 4px 0 var(--tb-space-2); }
+.error { color: #b42318; }
+.botones { display: flex; justify-content: flex-end; gap: var(--tb-space-1); }

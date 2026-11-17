@@ -1,0 +1,26 @@
+// ADMIN Marcos
+@use '../../../../../theme/admin';
+
+.contenido { display: grid; grid-template-columns: minmax(0, 1fr); gap: var(--tb-space-2); align-items: start; }
+.contenido--con-detalle { grid-template-columns: minmax(0, 1fr) 340px; }
+
+tr.seleccionada td { background: #fff7ef; }
+.sr { font-size: 0; }
+
+.detalle {
+  position: sticky; top: var(--tb-space-2);
+  h3 { font-size: 0.9rem; margin: var(--tb-space-2) 0 var(--tb-space-1); }
+}
+.detalle__cabecera { display: flex; justify-content: space-between; gap: 8px; }
+.linea-tiempo {
+  list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 12px;
+  li { border-left: 2px solid var(--tb-borde); padding-left: 12px; display: flex; flex-direction: column; gap: 4px; }
+  p { margin: 0; font-size: 0.85rem; }
+  .secundario { color: #6b6a66; font-size: 0.78rem; }
+  .chip { align-self: flex-start; }
+}
+
+@media (max-width: 1100px) {
+  .contenido--con-detalle { grid-template-columns: minmax(0, 1fr); }
+  .detalle { position: static; }
+}

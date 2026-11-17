@@ -1,0 +1,66 @@
+@if (estados().length) {
+  <section class="estados">
+    @for (estado of estados(); track estado) {
+      <article class="estado">
+        <span class="estado__etiqueta">{{ estado }}</span>
+        <strong class="estado__valor">—</strong>
+      </article>
+    }
+  </section>
+}
+
+<section class="tarjeta">
+  @if (pestanas().length) {
+    <div class="pestanas" role="tablist">
+      @for (p of pestanas(); track p; let i = $index) {
+        <button role="tab" class="pestana" [class.pestana--activa]="pestanaActiva() === i"
+                [attr.aria-selected]="pestanaActiva() === i" (click)="pestanaActiva.set(i)">{{ p }}</button>
+      }
+    </div>
+  }
+
+  @if (filtros().length) {
+    <div class="filtros">
+      @for (f of filtros(); track f.etiqueta) {
+        <label class="filtro" [class.filtro--ancho]="f.tipo === 'texto'">
+          <span>{{ f.etiqueta }}</span>
+          @switch (f.tipo) {
+            @case ('texto') {
+              <div class="filtro__busqueda">
+                <ion-icon name="search-outline"></ion-icon>
+                <input type="search" [placeholder]="f.etiqueta + '…'" disabled />
+              </div>
+            }
+            @case ('opciones') {
+              <select disabled>
+                <option>Todos</option>
+                @for (o of f.opciones ?? []; track o) { <option>{{ o }}</option> }
+              </select>
+            }
+            @case ('fecha') { <input type="date" disabled /> }
+          }
+        </label>
+      }
+    </div>
+  }
+
+  <div class="tabla">
+    <table>
+      <thead>
+        <tr>@for (c of columnas(); track c) { <th scope="col">{{ c }}</th> }</tr>
+      </thead>
+      <tbody>
+        @for (fila of [1, 2, 3]; track fila) {
+          <tr class="fila-esqueleto">
+            @for (c of columnas(); track c) { <td><span class="esqueleto"></span></td> }
+          </tr>
+        }
+      </tbody>
+    </table>
+  </div>
+
+  <div class="vacio">
+    <ion-icon name="file-tray-outline"></ion-icon>
+    {{ mensajeVacio() }}
+  </div>
+</section>

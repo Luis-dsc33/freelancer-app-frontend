@@ -1,0 +1,104 @@
+<!-- ADMIN Marcos: HU-21 Moderar usuarios y contenido / HU-26 Revertir medidas -->
+<app-admin-layout titulo="Moderación" subtitulo="Medidas vigentes sobre cuentas y ofertas publicadas">
+  <div acciones>
+    <button class="boton" (click)="cargar()" [disabled]="cargando()">
+      @if (cargando()) { <ion-spinner name="crescent"></ion-spinner> } @else { <ion-icon name="refresh-outline"></ion-icon> }
+      Actualizar
+    </button>
+  </div>
+
+  @if (exito()) {
+    <div class="aviso aviso--info"><ion-icon name="checkmark-circle-outline"></ion-icon>{{ exito() }}</div>
+  }
+
+  <article class="tarjeta">
+    <div class="pestanas" role="tablist">
+      <button role="tab" class="pestana" [class.pestana--activa]="pestana() === 'cuentas'" [attr.aria-selected]="pestana() === 'cuentas'"
+              (click)="pestana.set('cuentas')">
+        Cuentas suspendidas @if (datos()?.cuentasSuspendidas; as c) { ({{ c.length }}) }
+      </button>
+      <button role="tab" class="pestana" [class.pestana--activa]="pestana() === 'ofertas'" [attr.aria-selected]="pestana() === 'ofertas'"
+              (click)="pestana.set('ofertas')">
+        Ofertas @if (ocultas()) { ({{ ocultas() }} ocultas) }
+      </button>
+    </div>
+
+    @if (error()) {
+      <div class="aviso aviso--error">{{ error() }}</div>
+    } @else if (cargando() && !datos()) {
+      <div class="cargando-fila"><ion-spinner name="crescent"></ion-spinner>Cargando…</div>
+    } @else if (datos(); as d) {
+
+      @if (pestana() === 'cuentas') {
+        @if (d.cuentasSuspendidas === null) {
+          <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>El servicio de Usuarios no está disponible.</div>
+        } @else if (d.cuentasSuspendidas.length === 0) {
+          <div class="vacio"><ion-icon name="file-tray-outline"></ion-icon>No hay cuentas suspendidas. Puedes suspender una desde la sección Usuarios.</div>
+        } @else {
+          <div class="tabla">
+            <table>
+              <thead><tr><th>Usuario</th><th>Rol</th><th>Motivo</th><th>Aplicada por</th><th>Fecha</th><th></th></tr></thead>
+              <tbody>
+                @for (c of d.cuentasSuspendidas; track c.usuario.id) {
+                  <tr>
+                    <td>{{ c.usuario.nombre }}<br><span class="secundario">{{ c.usuario.email }}</span></td>
+                    <td><span class="chip chip--rol">{{ c.usuario.rol }}</span></td>
+                    <td class="motivo">{{ c.medida?.motivo ?? 'Sin registro en bitácora' }}</td>
+                    <td class="secundario">{{ c.medida?.adminNombre ?? '—' }}</td>
+                    <td class="secundario">{{ c.medida ? (c.medida.fecha | date: 'dd/MM/yyyy HH:mm') : '—' }}</td>
+                    <td><div class="acciones">
+                      <button class="boton boton--pequeno boton--exito" (click)="abrir('Reactivar', c.usuario.id, c.usuario.nombre)">Reactivar</button>
+                    </div></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
+
+      @if (pestana() === 'ofertas') {
+        @if (d.ofertas === null) {
+          <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>El servicio de Marketplace no está disponible.</div>
+        } @else if (d.ofertas.length === 0) {
+          <div class="vacio"><ion-icon name="file-tray-outline"></ion-icon>No hay ofertas publicadas.</div>
+        } @else {
+          <div class="tabla">
+            <table>
+              <thead><tr><th>Oferta</th><th>Cliente</th><th>Presupuesto</th><th>Estado</th><th>Motivo</th><th></th></tr></thead>
+              <tbody>
+                @for (o of d.ofertas; track o.oferta.id) {
+                  <tr>
+                    <td>{{ o.oferta.titulo }}<br><span class="secundario">{{ o.oferta.disciplina }}</span></td>
+                    <td class="secundario">{{ o.oferta.nombreCliente }}</td>
+                    <td class="secundario">{{ o.oferta.presupuesto | currency: 'MXN' : 'symbol-narrow' : '1.0-0' }}</td>
+                    <td><span class="chip" [class]="'chip chip--' + o.oferta.estado">{{ o.oferta.estado }}</span></td>
+                    <td class="motivo">{{ o.medida?.motivo ?? '—' }}</td>
+                    <td><div class="acciones">
+                      @if (o.oferta.estado === 'Oculta') {
+                        <button class="boton boton--pequeno boton--exito" (click)="abrir('Restaurar', o.oferta.id, o.oferta.titulo)">Restaurar</button>
+                      } @else {
+                        <button class="boton boton--pequeno boton--peligro" (click)="abrir('Ocultar', o.oferta.id, o.oferta.titulo)">Ocultar</button>
+                      }
+                    </div></td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        }
+      }
+    }
+  </article>
+
+  <app-motivo-dialog
+    [abierto]="!!medida()"
+    [titulo]="medida() ? textos[medida()!.tipo].titulo : ''"
+    [descripcion]="medida() ? ('«' + medida()!.nombre + '» ' + textos[medida()!.tipo].descripcion) : ''"
+    [textoConfirmar]="medida() ? textos[medida()!.tipo].boton : ''"
+    [peligro]="medida()?.tipo === 'Suspender' || medida()?.tipo === 'Ocultar'"
+    [enviando]="enviando()"
+    [error]="errorMedida()"
+    (confirmar)="confirmar($event)"
+    (cancelar)="medida.set(null)" />
+</app-admin-layout>

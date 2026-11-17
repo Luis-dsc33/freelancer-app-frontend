@@ -1,0 +1,28 @@
+<ion-content>
+  <div class="admin">
+    <aside class="admin__nav">
+      <div class="admin__marca">CodeBridge <span>Admin</span></div>
+      <nav>
+        @for (item of menu; track item.ruta) {
+          <a class="nav__item" [routerLink]="item.ruta" routerLinkActive="nav__item--activo">
+            <ion-icon [name]="item.icono"></ion-icon>{{ item.etiqueta }}
+          </a>
+        }
+      </nav>
+      <a class="nav__item nav__salir" routerLink="/auth/login" (click)="cerrarSesion()">
+        <ion-icon name="log-out-outline"></ion-icon>Cerrar sesión
+      </a>
+    </aside>
+
+    <main class="admin__main">
+      <header class="encabezado">
+        <div>
+          <h1>{{ titulo() }}</h1>
+          @if (subtitulo()) { <p class="encabezado__sub">{{ subtitulo() }}</p> }
+        </div>
+        <div class="encabezado__acciones"><ng-content select="[acciones]" /></div>
+      </header>
+      <ng-content />
+    </main>
+  </div>
+</ion-content>

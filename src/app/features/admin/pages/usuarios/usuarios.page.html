@@ -1,0 +1,131 @@
+<!-- ADMIN Marcos: HU-25 Consultar usuarios + HU-21 / HU-26 -->
+<app-admin-layout titulo="Usuarios" subtitulo="Busca cuentas, consulta su historial y aplica medidas de moderación">
+
+  @if (exito()) {
+    <div class="aviso aviso--info"><ion-icon name="checkmark-circle-outline"></ion-icon>{{ exito() }}</div>
+  }
+
+  <section class="contenido" [class.contenido--con-detalle]="seleccionado()">
+    <article class="tarjeta">
+      <form class="filtros" (ngSubmit)="buscar(1)">
+        <label class="filtro filtro--ancho">
+          <span>Buscar por correo o nombre</span>
+          <input type="search" name="busqueda" [(ngModel)]="busqueda" placeholder="Ej. ana@universidad.edu" />
+        </label>
+        <label class="filtro">
+          <span>Rol</span>
+          <select name="rol" [(ngModel)]="rol" (change)="buscar(1)">
+            <option value="">Todos</option>
+            <option value="Estudiante">Estudiante</option>
+            <option value="Cliente">Cliente</option>
+            <option value="Administrador">Administrador</option>
+          </select>
+        </label>
+        <label class="filtro">
+          <span>Estado</span>
+          <select name="estado" [(ngModel)]="estado" (change)="buscar(1)">
+            <option value="">Todos</option>
+            <option value="Activo">Activo</option>
+            <option value="Suspendido">Suspendido</option>
+          </select>
+        </label>
+        <button type="submit" class="boton boton--primario"><ion-icon name="search-outline"></ion-icon>Buscar</button>
+      </form>
+
+      @if (error()) {
+        <div class="aviso aviso--error">{{ error() }}</div>
+      } @else if (cargando() && !resultado()) {
+        <div class="cargando-fila"><ion-spinner name="crescent"></ion-spinner>Cargando usuarios…</div>
+      } @else if (resultado(); as r) {
+        @if (r.items.length === 0) {
+          <!-- HU-25-03 -->
+          <div class="vacio">
+            <ion-icon name="file-tray-outline"></ion-icon>
+            No hay usuarios que coincidan con la búsqueda.
+            @if (hayFiltros()) { <button class="boton boton--pequeno" (click)="limpiarFiltros()">Quitar filtros</button> }
+          </div>
+        } @else {
+          <div class="tabla">
+            <table>
+              <thead>
+                <tr><th>Nombre</th><th>Correo</th><th>Rol</th><th>Estado</th><th>Registro</th><th class="sr">Acciones</th></tr>
+              </thead>
+              <tbody>
+                @for (u of r.items; track u.id) {
+                  <tr [class.seleccionada]="seleccionado()?.id === u.id">
+                    <td>{{ u.nombre }}</td>
+                    <td class="secundario">{{ u.email }}</td>
+                    <td><span class="chip chip--rol">{{ u.rol }}</span></td>
+                    <td><span class="chip" [class.chip--activo]="u.estado === 'Activo'" [class.chip--suspendido]="u.estado === 'Suspendido'">{{ u.estado }}</span></td>
+                    <td class="secundario">{{ u.fechaRegistro | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                      <div class="acciones">
+                        <button class="boton boton--pequeno" (click)="verHistorial(u)"><ion-icon name="time-outline"></ion-icon>Historial</button>
+                        @if (u.rol !== 'Administrador') {
+                          @if (u.estado === 'Suspendido') {
+                            <button class="boton boton--pequeno boton--exito" (click)="abrirMedida(u)">Reactivar</button>
+                          } @else {
+                            <button class="boton boton--pequeno boton--peligro" (click)="abrirMedida(u)">Suspender</button>
+                          }
+                        }
+                      </div>
+                    </td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+          <div class="paginacion">
+            <span>{{ r.total }} {{ r.total === 1 ? 'usuario' : 'usuarios' }} · Página {{ r.pagina }} de {{ totalPaginas() }}</span>
+            <div class="paginacion__botones">
+              <button class="boton boton--pequeno" [disabled]="r.pagina <= 1 || cargando()" (click)="buscar(r.pagina - 1)">Anterior</button>
+              <button class="boton boton--pequeno" [disabled]="r.pagina >= totalPaginas() || cargando()" (click)="buscar(r.pagina + 1)">Siguiente</button>
+            </div>
+          </div>
+        }
+      }
+    </article>
+
+    <!-- HU-25-02 Detalle e historial de medidas -->
+    @if (seleccionado(); as s) {
+      <aside class="tarjeta detalle">
+        <div class="detalle__cabecera">
+          <div>
+            <h2>{{ s.nombre }}</h2>
+            <p class="tarjeta__sub">{{ s.email }} · {{ s.rol }} · {{ s.estado }}</p>
+          </div>
+          <button class="boton boton--pequeno" aria-label="Cerrar historial" (click)="seleccionado.set(null)"><ion-icon name="close-outline"></ion-icon></button>
+        </div>
+        <h3>Historial de medidas</h3>
+        @if (cargandoHistorial()) {
+          <div class="cargando-fila"><ion-spinner name="crescent"></ion-spinner></div>
+        } @else if (historial().length === 0) {
+          <p class="tarjeta__sub">Esta cuenta no tiene medidas registradas.</p>
+        } @else {
+          <ul class="linea-tiempo">
+            @for (a of historial(); track a.id) {
+              <li>
+                <span class="chip" [class]="'chip chip--' + a.tipoAccion">{{ a.tipoAccion }}</span>
+                <span class="secundario">{{ a.fecha | date: 'dd/MM/yyyy HH:mm' }} · {{ a.adminNombre }}</span>
+                <p>{{ a.motivo }}</p>
+              </li>
+            }
+          </ul>
+        }
+      </aside>
+    }
+  </section>
+
+  <app-motivo-dialog
+    [abierto]="!!medida()"
+    [titulo]="medida()?.tipo === 'Suspender' ? 'Suspender cuenta' : 'Reactivar cuenta'"
+    [descripcion]="medida()?.tipo === 'Suspender'
+      ? (medida()?.usuario?.nombre + ' no podrá iniciar sesión mientras la cuenta esté suspendida.')
+      : (medida()?.usuario?.nombre + ' podrá volver a iniciar sesión.')"
+    [textoConfirmar]="medida()?.tipo === 'Suspender' ? 'Suspender' : 'Reactivar'"
+    [peligro]="medida()?.tipo === 'Suspender'"
+    [enviando]="enviando()"
+    [error]="errorMedida()"
+    (confirmar)="confirmarMedida($event)"
+    (cancelar)="medida.set(null)" />
+</app-admin-layout>

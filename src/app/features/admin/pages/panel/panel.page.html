@@ -1,0 +1,131 @@
+<app-admin-layout titulo="Panel de métricas" [subtitulo]="corte()">
+      <div acciones>
+        <button class="boton" (click)="cargar()" [disabled]="servicio.cargando()">
+          @if (servicio.cargando()) { <ion-spinner name="crescent"></ion-spinner> }
+          @else { <ion-icon name="refresh-outline"></ion-icon> }
+          Actualizar
+        </button>
+      </div>
+
+      @if (servicio.error(); as error) {
+        <div class="aviso aviso--error"><ion-icon name="alert-circle-outline"></ion-icon>{{ error }}</div>
+      }
+
+      @if (m(); as datos) {
+        <!-- KPIs -->
+        <section class="kpis">
+          <article class="kpi">
+            <span class="kpi__etiqueta">Estudiantes</span>
+            @if (datos.usuarios; as u) { <strong class="kpi__valor">{{ u.totalEstudiantes }}</strong> }
+            @else { <span class="kpi__nd">No disponible</span> }
+          </article>
+          <article class="kpi">
+            <span class="kpi__etiqueta">Clientes</span>
+            @if (datos.usuarios; as u) { <strong class="kpi__valor">{{ u.totalClientes }}</strong> }
+            @else { <span class="kpi__nd">No disponible</span> }
+          </article>
+          <article class="kpi">
+            <span class="kpi__etiqueta">Ofertas disponibles</span>
+            @if (datos.marketplace; as mk) { <strong class="kpi__valor">{{ mk.ofertasDisponibles }}</strong> }
+            @else { <span class="kpi__nd">No disponible</span> }
+          </article>
+          <article class="kpi">
+            <span class="kpi__etiqueta">Casos abiertos</span>
+            @if (casosAbiertos() !== null) { <strong class="kpi__valor">{{ casosAbiertos() }}</strong> }
+            @else { <span class="kpi__nd">No disponible</span> }
+          </article>
+          <article class="kpi">
+            <span class="kpi__etiqueta">Cuentas suspendidas</span>
+            @if (datos.usuarios; as u) { <strong class="kpi__valor">{{ u.cuentasSuspendidas }}</strong> }
+            @else { <span class="kpi__nd">No disponible</span> }
+          </article>
+          <article class="kpi">
+            <span class="kpi__etiqueta">Calificación promedio</span>
+            @if (datos.resenas; as r) {
+              @if (r.promedioGeneral !== null) {
+                <strong class="kpi__valor">{{ r.promedioGeneral | number: '1.1-1' }} <small>★ · {{ r.totalCalificaciones }}</small></strong>
+              } @else { <span class="kpi__nd">Sin calificaciones</span> }
+            } @else { <span class="kpi__nd">No disponible</span> }
+          </article>
+        </section>
+
+        <section class="rejilla">
+          <!-- Actividad semanal -->
+          <article class="tarjeta tarjeta--ancha">
+            <h2>Actividad por semana</h2>
+            <p class="tarjeta__sub">Registros de usuarios y ofertas publicadas en las últimas semanas</p>
+            @if (graficaSemanal(); as cfg) {
+              <app-grafica [config]="cfg" [alto]="280" descripcion="Gráfica de líneas de registros y ofertas por semana" />
+            } @else if (!datos.usuarios && !datos.marketplace) {
+              <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>No disponible</div>
+            } @else { <div class="vacio">Sin datos</div> }
+          </article>
+
+          <!-- Embudo de postulaciones -->
+          <article class="tarjeta">
+            <h2>Embudo de postulaciones</h2>
+            <p class="tarjeta__sub">Porcentaje respecto a las postulaciones recibidas</p>
+            @if (!datos.marketplace) {
+              <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>No disponible</div>
+            } @else if (embudo()[0].total === 0) {
+              <div class="vacio">Sin datos</div>
+            } @else {
+              <ul class="barras">
+                @for (e of embudo(); track e.etiqueta) {
+                  <li>
+                    <div class="barras__fila"><span>{{ e.etiqueta }}</span><span>{{ e.total }} · {{ e.porcentaje }}%</span></div>
+                    <div class="barras__pista"><div class="barras__relleno" [style.width.%]="e.porcentaje"></div></div>
+                  </li>
+                }
+              </ul>
+            }
+          </article>
+
+          <!-- Ofertas por disciplina -->
+          <article class="tarjeta">
+            <h2>Ofertas por disciplina</h2>
+            <p class="tarjeta__sub">Ofertas disponibles en el tablero</p>
+            @if (graficaDisciplinas(); as cfg) {
+              <app-grafica [config]="cfg" descripcion="Gráfica de barras de ofertas por disciplina" />
+            } @else if (!datos.marketplace) {
+              <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>No disponible</div>
+            } @else { <div class="vacio">Sin datos</div> }
+          </article>
+
+          <!-- Distribución de estrellas -->
+          <article class="tarjeta">
+            <h2>Distribución de calificaciones</h2>
+            <p class="tarjeta__sub">Calificaciones publicadas de 1 a 5 estrellas</p>
+            @if (graficaEstrellas(); as cfg) {
+              <app-grafica [config]="cfg" descripcion="Gráfica de barras de calificaciones por número de estrellas" />
+            } @else if (!datos.resenas) {
+              <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>No disponible</div>
+            } @else { <div class="vacio">Sin datos</div> }
+          </article>
+
+          <!-- Casos por estado -->
+          <article class="tarjeta">
+            <h2>Disputas por estado</h2>
+            @if (datos.casos; as c) {
+              <p class="tarjeta__sub">
+                Tiempo promedio de cierre:
+                <strong>{{ c.diasPromedioCierre !== null ? (c.diasPromedioCierre | number: '1.1-1') + ' días' : 'Sin casos cerrados' }}</strong>
+              </p>
+              <ul class="barras">
+                @for (e of casosPorEstado(); track e.etiqueta) {
+                  <li>
+                    <div class="barras__fila"><span>{{ e.etiqueta }}</span><span>{{ e.total }}</span></div>
+                    <div class="barras__pista"><div class="barras__relleno barras__relleno--azul" [style.width.%]="e.porcentaje"></div></div>
+                  </li>
+                }
+              </ul>
+            } @else {
+              <p class="tarjeta__sub">Casos de conflicto (HU-23 / HU-24)</p>
+              <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>No disponible</div>
+            }
+          </article>
+        </section>
+      } @else if (servicio.cargando()) {
+        <div class="cargando"><ion-spinner name="crescent"></ion-spinner>Cargando métricas…</div>
+      }
+</app-admin-layout>

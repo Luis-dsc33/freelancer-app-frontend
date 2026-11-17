@@ -1,0 +1,63 @@
+<!-- ADMIN Marcos: HU-27 Consultar la bitácora administrativa -->
+<app-admin-layout titulo="Bitácora" subtitulo="Historial de acciones administrativas · solo lectura">
+  <article class="tarjeta">
+    <form class="filtros" (ngSubmit)="buscar(1)">
+      <label class="filtro">
+        <span>Administrador</span>
+        <select name="adminId" [(ngModel)]="adminId">
+          <option value="">Todos</option>
+          @for (a of datos()?.administradores ?? []; track a.id) { <option [value]="a.id">{{ a.nombre }}</option> }
+        </select>
+      </label>
+      <label class="filtro">
+        <span>Tipo de acción</span>
+        <select name="tipoAccion" [(ngModel)]="tipoAccion">
+          <option value="">Todas</option>
+          <option value="Suspender">Suspender</option>
+          <option value="Reactivar">Reactivar</option>
+          <option value="Ocultar">Ocultar</option>
+          <option value="Restaurar">Restaurar</option>
+        </select>
+      </label>
+      <label class="filtro"><span>Desde</span><input type="date" name="desde" [(ngModel)]="desde" /></label>
+      <label class="filtro"><span>Hasta</span><input type="date" name="hasta" [(ngModel)]="hasta" /></label>
+      <button type="submit" class="boton boton--primario"><ion-icon name="filter-outline"></ion-icon>Aplicar</button>
+      <button type="button" class="boton" (click)="limpiar()">Limpiar</button>
+      @if (errorRango()) { <span class="filtros__error" role="alert">{{ errorRango() }}</span> }
+    </form>
+
+    @if (error()) {
+      <div class="aviso aviso--error">{{ error() }}</div>
+    } @else if (cargando() && !datos()) {
+      <div class="cargando-fila"><ion-spinner name="crescent"></ion-spinner>Cargando bitácora…</div>
+    } @else if (datos(); as d) {
+      @if (d.items.length === 0) {
+        <div class="vacio"><ion-icon name="file-tray-outline"></ion-icon>No hay acciones registradas con estos filtros.</div>
+      } @else {
+        <div class="tabla">
+          <table>
+            <thead><tr><th>Fecha</th><th>Administrador</th><th>Acción</th><th>Recurso</th><th>Motivo</th></tr></thead>
+            <tbody>
+              @for (a of d.items; track a.id) {
+                <tr>
+                  <td class="secundario">{{ a.fecha | date: 'dd/MM/yyyy HH:mm' }}</td>
+                  <td>{{ a.adminNombre }}</td>
+                  <td><span [class]="'chip chip--' + a.tipoAccion">{{ a.tipoAccion }}</span></td>
+                  <td>{{ a.recursoNombre }}<br><span class="secundario">{{ a.recursoTipo }}</span></td>
+                  <td class="motivo">{{ a.motivo }}</td>
+                </tr>
+              }
+            </tbody>
+          </table>
+        </div>
+        <div class="paginacion">
+          <span>{{ d.total }} {{ d.total === 1 ? 'acción' : 'acciones' }} · Página {{ d.pagina }} de {{ totalPaginas() }}</span>
+          <div class="paginacion__botones">
+            <button class="boton boton--pequeno" [disabled]="d.pagina <= 1 || cargando()" (click)="buscar(d.pagina - 1)">Anterior</button>
+            <button class="boton boton--pequeno" [disabled]="d.pagina >= totalPaginas() || cargando()" (click)="buscar(d.pagina + 1)">Siguiente</button>
+          </div>
+        </div>
+      }
+    }
+  </article>
+</app-admin-layout>

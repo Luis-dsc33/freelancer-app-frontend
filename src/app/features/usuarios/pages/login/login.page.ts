@@ -65,7 +65,6 @@ export class LoginPage {
     this.authService.login({ email, password }).subscribe({
       next: (respuesta) => {
         const destino = this.route.snapshot.queryParamMap.get('returnUrl');
-        const portafolio = destino && /^\/portafolio(?:\/|$)/.test(destino);
 
         if (respuesta.rol === 'Estudiante') {
           this.perfilService.getMiPerfil().subscribe({
@@ -73,9 +72,10 @@ export class LoginPage {
               this.enviando.set(false);
               if (perfil && perfil.esPerfilCompleto === false) {
                 void this.router.navigate(['/auth/perfil']);
+              } else if (destino) {
+                void this.router.navigateByUrl(destino);
               } else {
-                if (portafolio) void this.router.navigateByUrl(destino);
-                else void this.router.navigate(['/portafolio']);
+                void this.router.navigate(['/marketplace']);
               }
             },
             error: (err) => {
@@ -84,9 +84,13 @@ export class LoginPage {
               void this.router.navigate(['/auth/perfil']);
             }
           });
+        } else if (respuesta.rol === 'Administrador') {
+          // Mismo login para todos los roles; el admin solo cambia de destino
+          this.enviando.set(false);
+          void this.router.navigate(['/admin']);
         } else {
           this.enviando.set(false);
-          if (portafolio) void this.router.navigateByUrl(destino);
+          if (destino) void this.router.navigateByUrl(destino);
           else void this.router.navigate(['/marketplace']);
         }
       },

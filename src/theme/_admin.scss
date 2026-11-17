@@ -1,0 +1,114 @@
+// Piezas visuales compartidas por las páginas del rol Administrador.
+// Uso en el .scss de cada página: @use '../../../../../theme/admin';
+
+.boton {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 14px;
+  border-radius: var(--tb-radius-md);
+  border: 1px solid var(--tb-borde);
+  background: var(--tb-superficie);
+  color: var(--tb-primer-plano);
+  font: 600 0.85rem var(--tb-font-body);
+  cursor: pointer;
+  ion-spinner { width: 16px; height: 16px; }
+  &:disabled { opacity: 0.55; cursor: not-allowed; }
+  &--primario { background: var(--tb-naranja); border-color: var(--tb-naranja); color: var(--tb-primer-plano); }
+}
+
+.insignia {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: var(--tb-radius-full);
+  font-size: 0.8rem;
+  font-weight: 600;
+  &--demo { background: #fff4e5; color: #8a4b08; border: 1px solid #f6d2a6; }
+  &--hu { background: #eef4fd; color: #1d4f91; border: 1px solid #c9dcf5; }
+}
+
+.aviso {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 12px var(--tb-space-2);
+  border-radius: var(--tb-radius-md);
+  margin-bottom: var(--tb-space-2);
+  font-size: 0.88rem;
+  ion-icon { font-size: 1.15rem; flex-shrink: 0; }
+  &--error { background: #fef2f2; color: #991b1b; border: 1px solid #fecaca; }
+  &--info { background: #eef4fd; color: #1d4f91; border: 1px solid #c9dcf5; }
+}
+
+.tarjeta {
+  background: var(--tb-superficie);
+  border: 1px solid var(--tb-borde);
+  border-radius: var(--tb-radius-lg);
+  padding: var(--tb-space-3);
+  min-width: 0;
+  h2 { font-family: var(--tb-font-heading); font-size: 1.05rem; margin: 0; }
+}
+.tarjeta__sub { margin: 4px 0 var(--tb-space-2); font-size: 0.82rem; color: #52514e; }
+
+.vacio {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  min-height: 160px;
+  color: #898781;
+  font-size: 0.9rem;
+  text-align: center;
+  ion-icon { font-size: 1.6rem; }
+}
+
+// ── ADMIN Marcos: piezas de las secciones Usuarios, Moderación y Bitácora ──
+.boton--pequeno { padding: 5px 10px; font-size: 0.8rem; }
+.boton--peligro { color: #b42318; border-color: #f3c7c3; &:hover:not(:disabled) { background: #fef3f2; } }
+.boton--exito { color: #146c43; border-color: #bfe3cf; &:hover:not(:disabled) { background: #effaf4; } }
+.boton--primario:hover:not(:disabled) { filter: brightness(0.97); }
+
+.filtros { display: flex; flex-wrap: wrap; align-items: flex-end; gap: var(--tb-space-2); margin-bottom: var(--tb-space-3); }
+.filtro {
+  display: flex; flex-direction: column; gap: 6px; min-width: 160px; font-size: 0.78rem; color: #52514e;
+  &--ancho { flex: 1 1 260px; }
+  input, select {
+    height: 40px; border: 1px solid var(--tb-borde); border-radius: var(--tb-radius-md); background: #fff;
+    padding: 0 12px; font: 0.88rem var(--tb-font-body); color: var(--tb-primer-plano);
+    &:focus { outline: 2px solid rgba(249, 148, 59, 0.45); outline-offset: 1px; border-color: var(--tb-naranja); }
+  }
+}
+.filtros__error { flex-basis: 100%; color: #b42318; font-size: 0.82rem; margin-top: -8px; }
+
+.tabla { overflow-x: auto; }
+.tabla table { width: 100%; border-collapse: collapse; font-size: 0.86rem; }
+.tabla th { text-align: left; font-weight: 600; color: #52514e; padding: 10px 12px; border-bottom: 1px solid var(--tb-borde); white-space: nowrap; }
+.tabla td { padding: 12px; border-bottom: 1px solid #f0efec; vertical-align: middle; }
+.tabla tbody tr:hover td { background: #fafaf9; }
+.tabla .acciones { display: flex; gap: 6px; justify-content: flex-end; white-space: nowrap; }
+.tabla .secundario { color: #6b6a66; font-size: 0.8rem; }
+.tabla .motivo { max-width: 320px; }
+
+.chip {
+  display: inline-block; padding: 2px 10px; border-radius: var(--tb-radius-full); font-size: 0.75rem; font-weight: 600; white-space: nowrap;
+  &--activo, &--Abierto { background: #effaf4; color: #146c43; }
+  &--suspendido, &--Oculta { background: #fef3f2; color: #b42318; }
+  &--rol { background: #f0efec; color: #3f3e3b; }
+  &--Suspender, &--Ocultar { background: #fef3f2; color: #b42318; }
+  &--Reactivar, &--Restaurar { background: #effaf4; color: #146c43; }
+}
+
+.pestanas { display: flex; gap: 4px; border-bottom: 1px solid var(--tb-borde); margin: -8px 0 var(--tb-space-2); }
+.pestana {
+  background: none; border: none; border-bottom: 2px solid transparent; padding: 10px 14px; cursor: pointer;
+  font: 600 0.88rem var(--tb-font-body); color: #52514e;
+  &--activa { color: var(--tb-primer-plano); border-bottom-color: var(--tb-naranja); }
+}
+
+.paginacion { display: flex; justify-content: space-between; align-items: center; gap: var(--tb-space-1); margin-top: var(--tb-space-2); font-size: 0.82rem; color: #52514e; }
+.paginacion__botones { display: flex; gap: 6px; }
+
+.cargando-fila { display: flex; align-items: center; justify-content: center; gap: 8px; min-height: 140px; color: #898781; }

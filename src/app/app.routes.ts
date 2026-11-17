@@ -18,6 +18,9 @@ export const routes: Routes = [
   {
     path: 'marketplace',
     loadChildren: () => import('./features/marketplace/marketplace.routes').then(m => m.MARKETPLACE_ROUTES)
+  },
+  // ADMIN Marcos: se separan las rutas de marketplace y admin (el merge las había dejado en un solo objeto)
+  {
     path: 'admin',
     canActivate: [adminGuard],
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)

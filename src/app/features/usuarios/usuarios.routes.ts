@@ -1,4 +1,5 @@
 import { Routes } from '@angular/router';
+import { estudianteGuard } from '../../core/guards/estudiante-guard';
 
 export const USUARIOS_ROUTES: Routes = [
   {
@@ -19,6 +20,7 @@ export const USUARIOS_ROUTES: Routes = [
   },
   {
     path: 'perfil',
+    canActivate: [estudianteGuard],
     loadComponent: () => import('./pages/perfil/perfil.page').then(m => m.PerfilPage)
   },
   {

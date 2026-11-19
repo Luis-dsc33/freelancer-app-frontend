@@ -1,0 +1,95 @@
+<ion-content class="cliente-content tb-safe-top">
+  <div class="cliente-shell">
+    <aside class="cliente-nav">
+      <a class="cliente-brand" routerLink="/cliente" aria-label="TalentBridge, panel de Cliente">
+        <span class="brand-mark">TB</span>
+        <span>TalentBridge</span>
+      </a>
+
+      <p class="nav-label">ESPACIO CLIENTE</p>
+      <nav aria-label="Navegación de Cliente">
+        <a
+          class="nav-item"
+          routerLink="/cliente"
+          routerLinkActive="nav-item--active"
+          [routerLinkActiveOptions]="{ exact: true }"
+          aria-label="Panel"
+          title="Panel"
+        >
+          <ion-icon name="grid-outline" aria-hidden="true" />
+          <span class="nav-item__label">Panel</span>
+        </a>
+        <a
+          class="nav-item"
+          routerLink="/cliente/publicar-oferta"
+          routerLinkActive="nav-item--active"
+          aria-label="Publicar oferta"
+          title="Publicar oferta"
+        >
+          <ion-icon name="add-circle-outline" aria-hidden="true" />
+          <span class="nav-item__label">Publicar oferta</span>
+        </a>
+        <a
+          class="nav-item"
+          routerLink="/cliente/ofertas"
+          routerLinkActive="nav-item--active"
+          aria-label="Mis ofertas"
+          title="Mis ofertas"
+        >
+          <ion-icon name="people-outline" aria-hidden="true" />
+          <span class="nav-item__label">Mis ofertas</span>
+        </a>
+        <a
+          class="nav-item"
+          routerLink="/cliente/contratos"
+          routerLinkActive="nav-item--active"
+          aria-label="Contratos"
+          title="Contratos"
+        >
+          <ion-icon name="document-text-outline" aria-hidden="true" />
+          <span class="nav-item__label">Contratos</span>
+        </a>
+        <a
+          class="nav-item"
+          routerLink="/cliente/perfil"
+          routerLinkActive="nav-item--active"
+          aria-label="Mi perfil"
+          title="Mi perfil"
+        >
+          <ion-icon name="person-circle-outline" aria-hidden="true" />
+          <span class="nav-item__label">Mi perfil</span>
+        </a>
+      </nav>
+
+      <div class="nav-spacer"></div>
+      <div class="user-summary">
+        <span class="user-avatar">{{ nombreUsuario.charAt(0).toUpperCase() }}</span>
+        <span class="user-name">{{ nombreUsuario }}</span>
+      </div>
+      <button
+        class="nav-item logout"
+        type="button"
+        (click)="cerrarSesion()"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión"
+      >
+        <ion-icon name="log-out-outline" aria-hidden="true" />
+        <span class="nav-item__label">Cerrar sesión</span>
+      </button>
+    </aside>
+
+    <main class="cliente-main">
+      <header class="page-header">
+        <div>
+          <p class="eyebrow">CLIENTE</p>
+          <h1>{{ titulo() }}</h1>
+          @if (subtitulo()) { <p class="page-subtitle">{{ subtitulo() }}</p> }
+        </div>
+        <ng-content select="[acciones]" />
+      </header>
+      <section class="page-content">
+        <ng-content />
+      </section>
+    </main>
+  </div>
+</ion-content>

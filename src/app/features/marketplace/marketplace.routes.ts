@@ -8,4 +8,12 @@ export const MARKETPLACE_ROUTES: Routes = [
     loadComponent: () =>
       import('./pages/marketplace/marketplace.page').then(m => m.MarketplacePage),
   },
+  {
+    path: ':id',
+    canActivate: [marketplaceGuard],
+    loadComponent: () =>
+      import('./pages/detalle-oportunidad/detalle-oportunidad.page').then(
+        m => m.DetalleOportunidadPage,
+      ),
+  },
 ];

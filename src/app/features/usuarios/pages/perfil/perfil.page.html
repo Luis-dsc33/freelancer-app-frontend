@@ -1,62 +1,292 @@
-<ion-header class="ion-no-border">
-  <ion-toolbar>
-    <ion-buttons slot="start">
-      <ion-back-button defaultHref="/" text=""></ion-back-button>
-    </ion-buttons>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="estudiante-page">
+  <main class="estudiante-shell">
+    <app-estudiante-nav />
 
-<ion-content class="ion-padding">
-  <div class="tb-auth-wrap">
-    <h1 class="tb-heading-xl">Completa tu Perfil</h1>
-    <p class="tb-subtitle">Cuéntanos más sobre ti para destacar tu talento.</p>
-
-    <form [formGroup]="form" (ngSubmit)="guardar()" [class.tb-shake]="formShake()">
-
-      <label class="tb-label">Carrera o Especialidad</label>
-      <div class="tb-input-wrap" [class.error]="form.get('carrera')?.touched && form.get('carrera')?.invalid" [class.valid]="form.get('carrera')?.touched && form.get('carrera')?.valid">
-        <ion-icon name="school-outline"></ion-icon>
-        <input formControlName="carrera" type="text" placeholder="Ej. Ingeniería de Sistemas" />
-        <ion-icon *ngIf="form.get('carrera')?.touched && form.get('carrera')?.valid" name="checkmark-circle" class="tb-valid-icon"></ion-icon>
+    <div class="title-row">
+      <span class="section-icon"><ion-icon name="person-outline" aria-hidden="true" /></span>
+      <div>
+        <p class="eyebrow">PERFIL PROFESIONAL DEL ESTUDIANTE</p>
+        <h1>Mi perfil y habilidades</h1>
       </div>
-      <p class="tb-error-text" *ngIf="form.get('carrera')?.touched && form.get('carrera')?.hasError('required')">
-        La carrera es obligatoria.
-      </p>
+    </div>
+    <p class="intro">
+      Vincula tus habilidades al catálogo oficial para obtener matching real en las oportunidades del marketplace.
+    </p>
 
-      <label class="tb-label">Habilidades</label>
-      <div class="tb-input-wrap" style="padding-right: 0;">
-        <ion-icon name="star-outline"></ion-icon>
-        <input type="text" [value]="habilidadInput()" (input)="setHabilidadInput($event)" (keyup.enter)="agregarHabilidad(); $event.preventDefault()" placeholder="Ej. React, C#, SQL" />
-        <ion-button fill="clear" (click)="agregarHabilidad()" class="ion-no-margin">
-          <ion-icon slot="icon-only" name="add-outline"></ion-icon>
-        </ion-button>
+    @if (vm.cargando()) {
+      <div class="empty" role="status">
+        <ion-spinner name="crescent" />
+        <p>Cargando tu perfil…</p>
       </div>
-      <div class="tb-tags-container" *ngIf="habilidades().length > 0">
-        <ion-chip *ngFor="let hab of habilidades()" color="primary" class="tb-chip">
-          <ion-label>{{ hab }}</ion-label>
-          <ion-icon name="close-circle-outline" (click)="eliminarHabilidad(hab)"></ion-icon>
-        </ion-chip>
-      </div>
+    } @else {
+      @if (!vm.esPerfilCompleto()) {
+        <div class="notice warning" role="status">
+          <ion-icon name="sparkles-outline" aria-hidden="true" />
+          <div>
+            <strong>Completa tu perfil para postularte en el marketplace</strong>
+            @if (vm.camposFaltantes().length > 0) {
+              <p class="banner-sub">Campos pendientes: {{ vm.camposFaltantes().join(', ') }}</p>
+            } @else {
+              <p class="banner-sub">Ingresa tu carrera, al menos una habilidad y tu descripción.</p>
+            }
+          </div>
+        </div>
+      } @else {
+        <section class="tb-card summary-card">
+          <div class="summary-top">
+            <div>
+              <span class="badge success">
+                <ion-icon name="checkmark-circle-outline" aria-hidden="true" />
+                Perfil completo
+              </span>
+              <h2 class="summary-title">{{ form.controls.carrera.value || 'Estudiante TalentBridge' }}</h2>
+            </div>
 
-      <label class="tb-label">Descripción</label>
-      <div class="tb-input-wrap" [class.error]="form.get('descripcion')?.touched && form.get('descripcion')?.invalid" [class.valid]="form.get('descripcion')?.touched && form.get('descripcion')?.valid" style="align-items: flex-start; height: auto;">
-        <ion-icon name="document-text-outline" style="margin-top: 14px;"></ion-icon>
-        <textarea formControlName="descripcion" rows="4" placeholder="Desarrollador fullstack con experiencia en..."></textarea>
-      </div>
-      <p class="tb-error-text" *ngIf="form.get('descripcion')?.touched && form.get('descripcion')?.hasError('required')">
-        La descripción es obligatoria.
-      </p>
+            <div class="reputation-pill">
+              <ion-icon name="star" aria-hidden="true" />
+              <span>{{ vm.promedioCalificacion() | number: '1.1-1' }}</span>
+              <small>({{ vm.totalResenas() }} {{ vm.totalResenas() === 1 ? 'reseña' : 'reseñas' }})</small>
+            </div>
+          </div>
 
-      <div class="tb-alert error tb-alert-in" *ngIf="errorServidor()">
-        <ion-icon name="alert-circle-outline"></ion-icon>
-        <span>{{ errorServidor() }}</span>
-      </div>
+          <div class="quick-links">
+            <a routerLink="/marketplace" class="secondary">
+              <ion-icon name="storefront-outline" aria-hidden="true" />
+              Explorar ofertas
+            </a>
+            <a routerLink="/portafolio" class="secondary">
+              <ion-icon name="briefcase-outline" aria-hidden="true" />
+              Mi portafolio
+            </a>
+            <a routerLink="/estudiante/postulaciones" class="secondary">
+              <ion-icon name="paper-plane-outline" aria-hidden="true" />
+              Postulaciones
+            </a>
+            <a routerLink="/estudiante/contratos" class="secondary">
+              <ion-icon name="document-text-outline" aria-hidden="true" />
+              Contratos
+            </a>
+          </div>
+        </section>
+      }
 
-      <button type="submit" class="tb-btn-primary" [disabled]="enviando()" style="margin-top: 24px;">
-        <ion-spinner *ngIf="enviando()" name="crescent" class="tb-btn-spinner"></ion-spinner>
-        <span>{{ enviando() ? 'Guardando...' : 'Guardar Perfil' }}</span>
-      </button>
+      @if (vm.mensajeExito()) {
+        <div class="notice success" role="status">
+          <ion-icon name="checkmark-circle-outline" aria-hidden="true" />
+          <span>{{ vm.mensajeExito() }}</span>
+        </div>
+      }
 
-    </form>
-  </div>
+      @if (vm.error() || errorValidacion()) {
+        <div class="notice error" role="alert">
+          <ion-icon name="alert-circle-outline" aria-hidden="true" />
+          <span>{{ errorValidacion() || vm.error() }}</span>
+        </div>
+      }
+
+      <form class="tb-card" [formGroup]="form" (ngSubmit)="guardar()" novalidate>
+        <label class="field-label" for="carrera-input">
+          <ion-icon name="school-outline" aria-hidden="true" /> Carrera o especialidad *
+        </label>
+        <input
+          id="carrera-input"
+          class="dark-input"
+          formControlName="carrera"
+          type="text"
+          maxlength="150"
+          placeholder="Ej. Ingeniería en Desarrollo de Software"
+          [class.invalid]="form.controls.carrera.touched && form.controls.carrera.invalid"
+        />
+        @if (form.controls.carrera.touched && form.controls.carrera.hasError('required')) {
+          <p class="field-error">La carrera es obligatoria.</p>
+        }
+
+        <div class="skills-header">
+          <label class="field-label">Habilidades del catálogo oficial *</label>
+          <span class="badge">{{ vm.totalHabilidades() }} seleccionadas</span>
+        </div>
+
+        @if (vm.skillsSeleccionadas().length > 0) {
+          <ul class="selected-skills" aria-label="Habilidades vinculadas al catálogo">
+            @for (skill of vm.skillsSeleccionadas(); track skill.skillId) {
+              <li class="selected-skill-row">
+                <div>
+                  <strong>{{ skill.nombreSkill }}</strong>
+                  @if (skill.categoria) {
+                    <span class="skill-cat">{{ skill.categoria }}</span>
+                  }
+                </div>
+                <div class="skill-controls">
+                  <select
+                    class="dark-select level-select"
+                    [value]="skill.nivelDominio"
+                    [attr.aria-label]="'Nivel de dominio para ' + skill.nombreSkill"
+                    (change)="actualizarNivel(skill.skillId, $event)"
+                  >
+                    @for (nivel of nivelesDominio; track nivel) {
+                      <option [value]="nivel">{{ etiquetaNivel(nivel) }}</option>
+                    }
+                  </select>
+                  <button
+                    type="button"
+                    class="remove-skill-btn"
+                    [attr.aria-label]="'Quitar ' + skill.nombreSkill"
+                    (click)="vm.eliminarSkillCatalogo(skill.skillId)"
+                  >
+                    <ion-icon name="close-circle-outline" aria-hidden="true" />
+                  </button>
+                </div>
+              </li>
+            }
+          </ul>
+        }
+
+        @if (vm.habilidadesLibres().length > 0) {
+          <div class="legacy-tags" aria-label="Etiquetas adicionales">
+            @for (hab of vm.habilidadesLibres(); track hab) {
+              <span class="badge">
+                {{ hab }}
+                <button
+                  type="button"
+                  class="chip-remove"
+                  [attr.aria-label]="'Quitar ' + hab"
+                  (click)="vm.eliminarHabilidadLibre(hab)"
+                >
+                  <ion-icon name="close-circle-outline" aria-hidden="true" />
+                </button>
+              </span>
+            }
+          </div>
+        }
+
+        <div class="tb-card-muted catalog-picker">
+          <div class="catalog-filters">
+            <select
+              class="dark-select"
+              aria-label="Filtrar catálogo por categoría"
+              [value]="vm.categoriaSeleccionada()"
+              (change)="vm.seleccionarCategoria($any($event.target).value)"
+            >
+              <option value="">Todas las categorías</option>
+              @for (cat of vm.categorias(); track cat.id) {
+                <option [value]="cat.id">{{ cat.nombre }}</option>
+              }
+            </select>
+
+            <div class="search-box">
+              <ion-icon name="search-outline" aria-hidden="true" />
+              <input
+                type="search"
+                class="dark-input search-input"
+                placeholder="Buscar habilidad en el catálogo…"
+                [value]="vm.busquedaSkill()"
+                (input)="vm.actualizarBusquedaSkill($any($event.target).value)"
+              />
+            </div>
+          </div>
+
+          @if (vm.cargandoCatalogo()) {
+            <p class="catalog-hint">Cargando catálogo oficial…</p>
+          } @else if (vm.errorCatalogo()) {
+            <p class="catalog-hint">{{ vm.errorCatalogo() }}</p>
+            <button type="button" class="secondary" (click)="vm.cargarCatalogo()">
+              <ion-icon name="refresh-outline" aria-hidden="true" />
+              Reintentar catálogo
+            </button>
+          } @else if (vm.skillsDisponiblesFiltradas().length > 0) {
+            <div class="catalog-chips">
+              @for (skill of vm.skillsDisponiblesFiltradas().slice(0, 18); track skill.id) {
+                <button
+                  type="button"
+                  class="catalog-chip"
+                  (click)="vm.agregarSkillCatalogo(skill)"
+                >
+                  <ion-icon name="add-outline" aria-hidden="true" />
+                  <span>{{ skill.nombre }}</span>
+                </button>
+              }
+            </div>
+          } @else {
+            <p class="catalog-hint">No hay más habilidades disponibles con ese filtro.</p>
+          }
+
+          <div class="manual-skill-row">
+            <input
+              type="text"
+              class="dark-input"
+              placeholder="¿No aparece? Agrega una etiqueta adicional (ej. GraphQL)"
+              [value]="habilidadManual()"
+              (input)="habilidadManual.set($any($event.target).value)"
+              (keyup.enter)="agregarHabilidadManual(); $event.preventDefault()"
+            />
+            <button type="button" class="secondary" (click)="agregarHabilidadManual()">
+              <ion-icon name="add-outline" aria-hidden="true" />
+              Añadir
+            </button>
+          </div>
+        </div>
+
+        <label class="field-label" for="descripcion-input">Descripción profesional *</label>
+        <textarea
+          id="descripcion-input"
+          class="dark-textarea"
+          formControlName="descripcion"
+          rows="4"
+          maxlength="2000"
+          placeholder="Cuéntale a los clientes tu experiencia, stack y tipo de proyectos que buscas…"
+          [class.invalid]="form.controls.descripcion.touched && form.controls.descripcion.invalid"
+        ></textarea>
+        <div class="desc-meta">
+          @if (form.controls.descripcion.touched && form.controls.descripcion.hasError('required')) {
+            <p class="field-error">La descripción es obligatoria.</p>
+          } @else {
+            <span></span>
+          }
+          <span class="char-count">{{ form.controls.descripcion.value.length }}/2000</span>
+        </div>
+
+        <button type="submit" class="primary primary-full save-btn" [disabled]="vm.guardando()">
+          @if (vm.guardando()) {
+            <ion-spinner name="crescent" />
+          }
+          <span>{{ vm.guardando() ? 'Guardando perfil…' : 'Guardar perfil' }}</span>
+        </button>
+      </form>
+
+      <section class="tb-card">
+        <div class="skills-header">
+          <div>
+            <p class="eyebrow">REPUTACIÓN</p>
+            <h2>Reseñas recibidas de clientes</h2>
+          </div>
+          <span class="badge urgent">
+            <ion-icon name="star" aria-hidden="true" />
+            {{ vm.promedioCalificacion() | number: '1.1-1' }} / 5.0
+          </span>
+        </div>
+
+        @if ((vm.reputacion()?.resenas?.length ?? 0) === 0) {
+          <p class="catalog-hint">
+            Aún no tienes reseñas registradas. Al finalizar contratos con clientes, sus calificaciones aparecerán aquí.
+          </p>
+        } @else {
+          <div class="review-list">
+            @for (resena of vm.reputacion()!.resenas; track resena.id) {
+              <article class="tb-card-muted review-card">
+                <div class="review-top">
+                  <strong>{{ resena.nombreAutor || 'Cliente TalentBridge' }}</strong>
+                  <span class="badge urgent">
+                    <ion-icon name="star" aria-hidden="true" />
+                    {{ resena.puntuacion }}/5
+                  </span>
+                </div>
+                <p class="review-comment">{{ resena.comentario }}</p>
+                <span class="review-date">{{ resena.creadaEn | date: 'dd MMM yyyy' }}</span>
+              </article>
+            }
+          </div>
+        }
+      </section>
+    }
+  </main>
 </ion-content>

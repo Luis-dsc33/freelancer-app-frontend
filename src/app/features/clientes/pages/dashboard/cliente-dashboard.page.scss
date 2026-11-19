@@ -1,0 +1,242 @@
+.welcome-card {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 24px;
+  overflow: hidden;
+  min-height: 220px;
+  padding: clamp(24px, 5vw, 44px);
+  border: 1px solid #3b2517;
+  border-radius: 22px;
+  background:
+    radial-gradient(ellipse at 85% 50%, rgba(251, 127, 27, .16), transparent 35%),
+    linear-gradient(120deg, #17120f, #111);
+}
+
+.welcome-copy {
+  position: relative;
+  z-index: 1;
+  max-width: 560px;
+
+  h2 {
+    margin: 10px 0;
+    color: #fff;
+    font-family: var(--tb-font-heading);
+    font-size: clamp(26px, 4vw, 38px);
+    font-weight: 800;
+    letter-spacing: -.8px;
+    overflow-wrap: anywhere;
+  }
+
+  > p:last-child {
+    max-width: 520px;
+    margin: 0;
+    color: #aaa;
+    font-size: 14px;
+    line-height: 1.7;
+  }
+}
+
+.welcome-eyebrow {
+  margin: 0;
+  color: #fb7f1b;
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 1.7px;
+}
+
+.primary-action {
+  position: relative;
+  z-index: 1;
+  display: inline-flex;
+  flex: 0 0 auto;
+  align-items: center;
+  justify-content: center;
+  gap: 9px;
+  min-height: 48px;
+  padding: 12px 17px;
+  border-radius: 13px;
+  background: linear-gradient(110deg, #e95514, #fb7f1b);
+  color: #170900;
+  font-size: 13px;
+  font-weight: 700;
+  text-decoration: none;
+  transition: transform .15s ease, filter .15s ease;
+
+  &:hover {
+    filter: brightness(1.08);
+    transform: translateY(-1px);
+  }
+
+  ion-icon {
+    font-size: 17px;
+  }
+}
+
+.action-arrow {
+  margin-left: 4px;
+}
+
+.welcome-decoration {
+  position: absolute;
+  right: 12%;
+  width: 190px;
+  height: 190px;
+  border: 1px solid rgba(251, 127, 27, .12);
+  border-radius: 50%;
+  box-shadow: 0 0 0 28px rgba(251, 127, 27, .025), 0 0 0 58px rgba(251, 127, 27, .018);
+}
+
+.section-heading {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  margin: 34px 0 16px;
+
+  h2 {
+    margin: 6px 0 0;
+    color: #f5f5f5;
+    font-family: var(--tb-font-heading);
+    font-size: 18px;
+  }
+}
+
+.activity-grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 14px;
+}
+
+.activity-card {
+  display: flex;
+  min-height: 238px;
+  flex-direction: column;
+  align-items: flex-start;
+  padding: 20px;
+  border: 1px solid #262626;
+  border-radius: 17px;
+  background: #141414;
+
+  h3 {
+    margin: 20px 0 8px;
+    color: #eee;
+    font-family: var(--tb-font-heading);
+    font-size: 16px;
+  }
+
+  ion-spinner {
+    width: 20px;
+    height: 20px;
+    margin-top: 20px;
+    color: #fb7f1b;
+  }
+
+  > p {
+    margin: 0;
+    color: #999;
+    font-size: 12px;
+    line-height: 1.7;
+  }
+}
+
+.activity-card--available {
+  border-color: #3b2517;
+  background: linear-gradient(145deg, #1a1511, #141414);
+}
+
+.activity-icon {
+  display: grid;
+  width: 42px;
+  height: 42px;
+  place-items: center;
+  border: 1px solid #4a2a12;
+  border-radius: 13px;
+  background: #2a1608;
+  color: #fb7f1b;
+  font-size: 20px;
+}
+
+.activity-icon--muted {
+  border-color: #303030;
+  background: #1d1d1d;
+  color: #777;
+}
+
+.activity-status {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  margin-top: 14px;
+  color: #fb923c;
+  font-size: 10px;
+  font-weight: 700;
+}
+
+.activity-status--pending {
+  color: #888;
+
+  ion-icon {
+    font-size: 12px;
+  }
+}
+
+.card-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  margin-top: auto;
+  padding-top: 18px;
+  color: #fb923c;
+  font-size: 12px;
+  font-weight: 700;
+  text-decoration: none;
+
+  ion-icon {
+    font-size: 15px;
+  }
+}
+
+.card-link--button {
+  border: 0;
+  background: none;
+  cursor: pointer;
+  font-family: var(--tb-font-body);
+}
+
+.activity-count {
+  margin: 12px 0 4px !important;
+  color: #fff !important;
+  font-family: var(--tb-font-heading);
+  font-size: 32px !important;
+  font-weight: 800;
+}
+
+.card-error {
+  color: #fca5a5 !important;
+}
+
+@media (max-width: 1000px) {
+  .activity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+  }
+}
+
+@media (max-width: 640px) {
+  .welcome-card {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+
+  .welcome-decoration {
+    right: -80px;
+  }
+
+  .activity-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .activity-card {
+    min-height: 210px;
+  }
+}

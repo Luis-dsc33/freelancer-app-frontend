@@ -1,6 +1,10 @@
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/
 :root {
+  // Zonas seguras (Capacitor Android inyecta --safe-area-inset-*; en iOS/web se usa env())
+  --tb-safe-top: var(--safe-area-inset-top, env(safe-area-inset-top, 0px));
+  --tb-safe-bottom: var(--safe-area-inset-bottom, env(safe-area-inset-bottom, 0px));
+
   // ── Colores ──
   --tb-naranja-oscuro: #C2650B;
   --tb-naranja: #F9943B;

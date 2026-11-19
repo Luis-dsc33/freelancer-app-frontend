@@ -17,7 +17,7 @@ export class ListarOportunidadesHandler
     private readonly repositorio: IOportunidadProyectoRepository,
   ) {}
 
-  execute(_query: ListarOportunidadesQuery): Observable<OportunidadProyecto[]> {
-    return this.repositorio.listarOportunidades();
+  execute(query: ListarOportunidadesQuery): Observable<OportunidadProyecto[]> {
+    return this.repositorio.listarOportunidades(query.filtros);
   }
 }

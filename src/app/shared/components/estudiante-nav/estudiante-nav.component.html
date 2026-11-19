@@ -1,0 +1,36 @@
+<header class="tb-est-header">
+  <a routerLink="/marketplace" class="tb-est-brand">
+    <span class="tb-est-mark">TB</span>
+    <span>TalentBridge</span>
+  </a>
+
+  <div class="tb-est-account">
+    @if (sesion()?.nombre; as nombre) {
+      <span class="tb-est-user">{{ nombre }}</span>
+    }
+    <a
+      routerLink="/auth/login"
+      class="tb-est-logout"
+      aria-label="Cambiar cuenta"
+      title="Cambiar cuenta"
+      (click)="cerrarSesion()"
+    >
+      <ion-icon name="log-out-outline" aria-hidden="true" />
+    </a>
+  </div>
+</header>
+
+<nav class="tb-est-nav" aria-label="Navegación principal del estudiante">
+  @for (item of items(); track item.ruta) {
+    <a
+      class="tb-est-link"
+      [routerLink]="item.ruta"
+      routerLinkActive="active"
+      [routerLinkActiveOptions]="{ exact: item.exact ?? false }"
+      [attr.aria-label]="item.etiqueta"
+      [attr.title]="item.etiqueta"
+    >
+      <ion-icon [name]="item.icono" aria-hidden="true" />
+    </a>
+  }
+</nav>

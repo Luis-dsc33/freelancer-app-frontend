@@ -6,10 +6,11 @@ import { addIcons } from 'ionicons';
 import { addOutline, briefcaseOutline, createOutline, trashOutline, linkOutline, arrowBackOutline, checkmarkCircleOutline } from 'ionicons/icons';
 import { PortafolioService } from '../../services/portafolio.service';
 import { TrabajoPortafolio } from '../../models/trabajo-portafolio';
+import { EstudianteNavComponent } from '../../../../shared/components/estudiante-nav/estudiante-nav.component';
 
 @Component({
   selector: 'app-portafolio', standalone: true,
-  imports: [RouterLink, IonContent, IonIcon, IonSpinner, IonModal],
+  imports: [RouterLink, IonContent, IonIcon, IonSpinner, IonModal, EstudianteNavComponent],
   templateUrl: './portafolio.page.html', styleUrls: ['./portafolio.page.scss'],
 })
 export class PortafolioPage {

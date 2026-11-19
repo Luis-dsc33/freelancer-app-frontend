@@ -1,0 +1,145 @@
+.chat-heading {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 12px;
+  flex-wrap: wrap;
+}
+
+.empty-actions {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 10px;
+  margin-top: 16px;
+}
+
+.chat-layout {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 16px;
+}
+
+@media (min-width: 720px) {
+  .chat-layout {
+    grid-template-columns: 260px 1fr;
+    align-items: start;
+  }
+}
+
+.pane-head,
+.thread-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 10px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #222;
+}
+
+.icon-refresh {
+  background: transparent;
+  border: 1px solid #2b2b2b;
+  color: #ccc;
+  border-radius: 10px;
+  width: 34px;
+  height: 34px;
+  display: grid;
+  place-items: center;
+}
+
+.conv-list {
+  list-style: none;
+  padding: 0;
+  margin: 12px 0 0;
+  display: grid;
+  gap: 8px;
+}
+
+.conv-item {
+  width: 100%;
+  text-align: left;
+  background: #0d0d0d;
+  border: 1px solid #222;
+  border-radius: 12px;
+  padding: 10px 12px;
+  color: #fff;
+  display: grid;
+  gap: 3px;
+}
+
+.conv-item.active {
+  border-color: #fb7f1b;
+  background: #25160d;
+}
+
+.conv-client,
+.conv-preview,
+.thread-sub {
+  font-size: 12px;
+  color: #888;
+  margin: 0;
+}
+
+.conv-preview {
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+.messages-body {
+  min-height: 240px;
+  max-height: 420px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 16px 0;
+}
+
+.no-messages {
+  color: #777;
+  font-size: 13px;
+  text-align: center;
+  margin: 28px 0;
+}
+
+.msg-bubble {
+  max-width: 82%;
+  padding: 10px 14px;
+  border-radius: 14px;
+  background: #1b1b1b;
+  border: 1px solid #2a2a2a;
+  align-self: flex-start;
+
+  p {
+    margin: 0;
+    font-size: 13px;
+    line-height: 1.5;
+    white-space: pre-wrap;
+  }
+
+  time {
+    display: block;
+    margin-top: 4px;
+    font-size: 10px;
+    color: #888;
+  }
+}
+
+.msg-bubble.mine {
+  align-self: flex-end;
+  background: #25160d;
+  border-color: #fb7f1b;
+}
+
+.composer {
+  display: flex;
+  gap: 8px;
+  border-top: 1px solid #222;
+  padding-top: 12px;
+}
+
+.send-btn {
+  flex-shrink: 0;
+}

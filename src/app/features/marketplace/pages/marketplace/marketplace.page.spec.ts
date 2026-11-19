@@ -9,7 +9,7 @@ import { MarketplacePage } from './marketplace.page';
 describe('MarketplacePage', () => {
   let page: MarketplacePage;
   let http: HttpTestingController;
-  const proyectosUrl = `${environment.gatewayUrl}/api/marketplace/api/Proyectos`;
+  const proyectosUrl = `${environment.gatewayUrl}/api/marketplace/Proyectos`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

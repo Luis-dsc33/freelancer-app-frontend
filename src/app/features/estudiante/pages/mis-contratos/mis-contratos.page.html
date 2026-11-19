@@ -1,0 +1,269 @@
+<ion-content class="estudiante-page">
+  <main class="estudiante-shell">
+    <app-estudiante-nav />
+
+    <div class="title-row">
+      <span class="section-icon"><ion-icon name="document-text-outline" aria-hidden="true" /></span>
+      <div>
+        <p class="eyebrow">EJECUCIÓN Y REPUTACIÓN</p>
+        <h1>Mis contratos</h1>
+      </div>
+    </div>
+    <p class="intro">
+      Administra tus contratos activos, marca proyectos finalizados y califica la experiencia con cada cliente.
+    </p>
+
+    @if (vm.mensajeExito()) {
+      <div class="notice success" role="status">
+        <ion-icon name="checkmark-circle-outline" aria-hidden="true" />
+        <span>{{ vm.mensajeExito() }}</span>
+      </div>
+    }
+
+    @if (vm.error()) {
+      <div class="notice error" role="alert">
+        <ion-icon name="alert-circle-outline" aria-hidden="true" />
+        <span>{{ vm.error() }}</span>
+      </div>
+      <button type="button" class="secondary" (click)="vm.cargar()" [disabled]="vm.cargando()">
+        <ion-icon name="refresh-outline" aria-hidden="true" />
+        Reintentar
+      </button>
+    } @else if (vm.cargando()) {
+      <div class="empty" role="status">
+        <ion-spinner name="crescent" />
+        <p>Cargando tus contratos…</p>
+      </div>
+    } @else {
+      <div class="filter-pills" role="tablist" aria-label="Filtrar contratos por estado">
+        @for (filtro of filtros; track filtro) {
+          <button
+            type="button"
+            class="filter-pill"
+            [class.active]="vm.filtroEstado() === filtro"
+            (click)="vm.seleccionarFiltro(filtro)"
+          >
+            {{ filtro }}
+          </button>
+        }
+      </div>
+
+      @if (vm.contratosFiltrados().length === 0) {
+        <section class="empty">
+          <span class="empty-icon"><ion-icon name="document-text-outline" aria-hidden="true" /></span>
+          <h2>Aún no tienes contratos en esta vista</h2>
+          <p>Cuando un cliente acepte tu postulación y genere un contrato, aparecerá aquí.</p>
+          <a routerLink="/estudiante/postulaciones" class="secondary">Ver mis postulaciones</a>
+        </section>
+      } @else {
+        <div class="cards-stack">
+          @for (contrato of vm.contratosFiltrados(); track contrato.id) {
+            <article class="tb-card">
+              <div class="card-top">
+                <div>
+                  <h3>{{ contrato.tituloProyecto || 'Contrato #' + contrato.id.slice(0, 8) }}</h3>
+                  <p class="meta-line">
+                    {{ contrato.nombreCliente || 'Cliente TalentBridge' }}
+                  </p>
+                </div>
+                <span class="badge" [class]="claseEstado(contrato.estado)">{{ contrato.estado }}</span>
+              </div>
+
+              <div class="contract-grid">
+                <div>
+                  <span class="grid-label">Importe acordado</span>
+                  <strong class="grid-val">{{ contrato.importeAcordado | currency: 'MXN':'symbol-narrow':'1.0-0' }}</strong>
+                </div>
+                @if (contrato.pagoNetoEstimado !== null) {
+                  <div>
+                    <span class="grid-label">Pago neto estimado</span>
+                    <strong class="grid-val accent">{{ contrato.pagoNetoEstimado | currency: 'MXN':'symbol-narrow':'1.0-0' }}</strong>
+                  </div>
+                }
+                <div>
+                  <span class="grid-label">Inicio</span>
+                  <span class="grid-date">{{ contrato.fechaInicio | date: 'dd MMM yyyy' }}</span>
+                </div>
+                <div>
+                  <span class="grid-label">Compromiso</span>
+                  <span class="grid-date">{{ contrato.fechaCompromiso | date: 'dd MMM yyyy' }}</span>
+                </div>
+              </div>
+
+              @if (contrato.cerradoEn) {
+                <p class="closed-note">
+                  <ion-icon name="calendar-outline" aria-hidden="true" />
+                  Cerrado el {{ contrato.cerradoEn | date: 'dd MMM yyyy' }}
+                </p>
+              }
+
+              <div class="card-actions">
+                <a
+                  routerLink="/estudiante/chat"
+                  [queryParams]="{ proyectoId: contrato.proyectoId, contratoId: contrato.id }"
+                  class="secondary"
+                >
+                  <ion-icon name="chatbubble-ellipses-outline" aria-hidden="true" />
+                  Chat con cliente
+                </a>
+
+                @if (contrato.estado === 'Activo') {
+                  <button
+                    type="button"
+                    class="primary"
+                    [disabled]="vm.procesandoId() === contrato.id"
+                    (click)="vm.solicitarAccion(contrato, 'finalizar')"
+                  >
+                    <ion-icon name="checkmark-circle-outline" aria-hidden="true" />
+                    Finalizar contrato
+                  </button>
+                  <button
+                    type="button"
+                    class="danger-outline"
+                    [disabled]="vm.procesandoId() === contrato.id"
+                    (click)="vm.solicitarAccion(contrato, 'cancelar')"
+                  >
+                    <ion-icon name="close-circle-outline" aria-hidden="true" />
+                    Cancelar
+                  </button>
+                }
+
+                @if (contrato.estado === 'Finalizado') {
+                  @if (vm.estaCalificado(contrato.id)) {
+                    <span class="badge success">
+                      <ion-icon name="star" aria-hidden="true" />
+                      Cliente calificado
+                    </span>
+                  } @else {
+                    <button
+                      type="button"
+                      class="primary"
+                      (click)="abrirCalificacion(contrato)"
+                    >
+                      <ion-icon name="star-outline" aria-hidden="true" />
+                      Calificar al cliente
+                    </button>
+                  }
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    }
+  </main>
+</ion-content>
+
+<ion-modal
+  [isOpen]="vm.contratoPendienteAccion() !== null"
+  [canDismiss]="cerrarModalAccion"
+  (didDismiss)="vm.cerrarConfirmacionAccion()"
+  class="tb-dark-modal"
+>
+  <ng-template>
+    <section class="confirm-dialog">
+      <h2>
+        {{ vm.accionPendiente() === 'finalizar' ? '¿Finalizar este contrato?' : '¿Cancelar este contrato?' }}
+      </h2>
+      <p>
+        @if (vm.accionPendiente() === 'finalizar') {
+          El contrato pasará a estado <strong>Finalizado</strong> y podrás emitir una reseña para el cliente.
+        } @else {
+          El contrato pasará a estado <strong>Cancelado</strong>. Esta transición no se puede revertir.
+        }
+      </p>
+      <div class="confirm-actions">
+        <button
+          type="button"
+          [class]="vm.accionPendiente() === 'finalizar' ? 'primary' : 'danger-outline'"
+          [disabled]="vm.procesandoId() !== null"
+          (click)="vm.confirmarAccionContrato()"
+        >
+          @if (vm.procesandoId()) {
+            <ion-spinner name="crescent" />
+          }
+          <span>{{ vm.procesandoId() ? 'Actualizando…' : 'Confirmar' }}</span>
+        </button>
+        <button
+          type="button"
+          class="secondary"
+          [disabled]="vm.procesandoId() !== null"
+          (click)="vm.cerrarConfirmacionAccion()"
+        >
+          Volver
+        </button>
+      </div>
+    </section>
+  </ng-template>
+</ion-modal>
+
+<ion-modal
+  [isOpen]="vm.contratoACalificar() !== null"
+  [canDismiss]="cerrarModalResena"
+  (didDismiss)="vm.cerrarModalResena()"
+  class="tb-dark-modal"
+>
+  <ng-template>
+    <section class="confirm-dialog">
+      <h2>Calificar al cliente</h2>
+      <p>
+        Comparte tu valoración sobre <strong>{{ vm.contratoACalificar()?.nombreCliente || 'el cliente' }}</strong>.
+      </p>
+
+      <div class="stars-row" role="radiogroup" aria-label="Puntuación de 1 a 5 estrellas">
+        @for (valor of estrellas; track valor) {
+          <button
+            type="button"
+            class="star-btn"
+            [class.selected]="puntuacionSeleccionada() >= valor"
+            [attr.aria-label]="valor + ' estrellas'"
+            (click)="puntuacionSeleccionada.set(valor)"
+          >
+            <ion-icon [name]="puntuacionSeleccionada() >= valor ? 'star' : 'star-outline'" aria-hidden="true" />
+          </button>
+        }
+      </div>
+
+      <label class="field-label" for="comentario-resena">Comentario *</label>
+      <textarea
+        id="comentario-resena"
+        class="dark-textarea"
+        rows="4"
+        maxlength="2000"
+        placeholder="¿Cómo fue la comunicación, claridad de requerimientos y cumplimiento de pagos?"
+        [value]="comentarioResena()"
+        (input)="comentarioResena.set($any($event.target).value)"
+      ></textarea>
+      <p class="char-counter">{{ comentarioResena().length }}/2000</p>
+
+      @if (vm.errorResena()) {
+        <div class="notice error" role="alert">
+          <ion-icon name="alert-circle-outline" aria-hidden="true" />
+          <span>{{ vm.errorResena() }}</span>
+        </div>
+      }
+
+      <div class="confirm-actions">
+        <button
+          type="button"
+          class="primary"
+          [disabled]="vm.enviandoResena()"
+          (click)="enviarCalificacion()"
+        >
+          @if (vm.enviandoResena()) {
+            <ion-spinner name="crescent" />
+          }
+          <span>{{ vm.enviandoResena() ? 'Enviando reseña…' : 'Enviar calificación' }}</span>
+        </button>
+        <button
+          type="button"
+          class="secondary"
+          [disabled]="vm.enviandoResena()"
+          (click)="vm.cerrarModalResena()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </section>
+  </ng-template>
+</ion-modal>

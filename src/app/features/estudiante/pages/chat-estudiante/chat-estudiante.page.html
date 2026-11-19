@@ -1,0 +1,146 @@
+<ion-content class="estudiante-page">
+  <main class="estudiante-shell">
+    <app-estudiante-nav />
+
+    <div class="chat-heading">
+      <div class="title-row">
+        <span class="section-icon"><ion-icon name="chatbubble-ellipses-outline" aria-hidden="true" /></span>
+        <div>
+          <p class="eyebrow">COMUNICACIÓN CON CLIENTES</p>
+          <h1>Chat</h1>
+        </div>
+      </div>
+
+      <span class="badge info">
+        <ion-icon name="radio-outline" aria-hidden="true" />
+        {{ etiquetaEstadoConexion(vm.estadoTiempoReal()) }}
+      </span>
+    </div>
+
+    <p class="intro">
+      Conversa con el cliente sobre tus postulaciones o contratos activos.
+    </p>
+
+    @if (vm.error()) {
+      <div class="notice error" role="alert">
+        <ion-icon name="alert-circle-outline" aria-hidden="true" />
+        <span>{{ vm.error() }}</span>
+      </div>
+    }
+
+    @if (vm.cargandoConversaciones()) {
+      <div class="empty" role="status">
+        <ion-spinner name="crescent" />
+        <p>Cargando conversaciones…</p>
+      </div>
+    } @else if (vm.conversaciones().length === 0) {
+      <section class="empty tb-card">
+        <span class="empty-icon"><ion-icon name="chatbubble-ellipses-outline" aria-hidden="true" /></span>
+        <h2>Aún no tienes conversaciones</h2>
+        <p>
+          Puedes abrir un chat directamente desde cualquiera de tus postulaciones o contratos activos.
+        </p>
+        <div class="empty-actions">
+          <a routerLink="/estudiante/postulaciones" class="secondary">Ir a postulaciones</a>
+          <a routerLink="/estudiante/contratos" class="primary">Ir a contratos</a>
+        </div>
+      </section>
+    } @else {
+      <div class="chat-layout">
+        <aside class="tb-card conversations-pane" aria-label="Listado de conversaciones">
+          <div class="pane-head">
+            <h2>Conversaciones</h2>
+            <button type="button" class="icon-refresh" aria-label="Recargar conversaciones" (click)="vm.cargar()">
+              <ion-icon name="refresh-outline" aria-hidden="true" />
+            </button>
+          </div>
+
+          <ul class="conv-list">
+            @for (conv of vm.conversaciones(); track conv.id) {
+              <li>
+                <button
+                  type="button"
+                  class="conv-item"
+                  [class.active]="vm.conversacionActiva()?.id === conv.id"
+                  (click)="vm.seleccionarConversacion(conv)"
+                >
+                  <strong>{{ conv.tituloProyecto || 'Proyecto #' + conv.proyectoId.slice(0, 8) }}</strong>
+                  <span class="conv-client">{{ conv.nombreContraparte || 'Cliente' }}</span>
+                  @if (conv.ultimoMensaje) {
+                    <span class="conv-preview">{{ conv.ultimoMensaje }}</span>
+                  }
+                </button>
+              </li>
+            }
+          </ul>
+        </aside>
+
+        <section class="tb-card thread-pane" aria-label="Mensajes de la conversación">
+          @if (vm.conversacionActiva(); as activa) {
+            <header class="thread-head">
+              <div>
+                <h3>{{ activa.tituloProyecto || 'Conversación de proyecto' }}</h3>
+                <p class="thread-sub">{{ activa.nombreContraparte || 'Cliente TalentBridge' }}</p>
+              </div>
+              <button
+                type="button"
+                class="secondary"
+                [disabled]="vm.cargandoMensajes()"
+                (click)="vm.seleccionarConversacion(activa)"
+              >
+                <ion-icon name="refresh-outline" aria-hidden="true" />
+                Actualizar
+              </button>
+            </header>
+
+            <div class="messages-body">
+              @if (vm.cargandoMensajes()) {
+                <div class="empty" role="status">
+                  <ion-spinner name="crescent" />
+                  <p>Cargando mensajes…</p>
+                </div>
+              } @else if (vm.mensajes().length === 0) {
+                <p class="no-messages">Aún no hay mensajes. Envía el primero para iniciar la coordinación.</p>
+              } @else {
+                @for (msg of vm.mensajes(); track msg.id) {
+                  <div class="msg-bubble" [class.mine]="vm.esMensajePropio(msg)">
+                    <p>{{ msg.contenido }}</p>
+                    <time>{{ msg.enviadoEn | date: 'dd MMM, HH:mm' }}</time>
+                  </div>
+                }
+              }
+            </div>
+
+            <form
+              class="composer"
+              (submit)="vm.enviarMensaje(); $event.preventDefault()"
+            >
+              <input
+                type="text"
+                class="dark-input"
+                maxlength="2000"
+                placeholder="Escribe un mensaje para el cliente…"
+                [value]="vm.mensajeInput()"
+                (input)="vm.mensajeInput.set($any($event.target).value)"
+              />
+              <button
+                type="submit"
+                class="primary send-btn"
+                [disabled]="vm.enviando() || !vm.mensajeInput().trim()"
+              >
+                @if (vm.enviando()) {
+                  <ion-spinner name="crescent" />
+                } @else {
+                  <ion-icon name="paper-plane-outline" aria-hidden="true" />
+                }
+                <span>Enviar</span>
+              </button>
+            </form>
+          } @else {
+            <p class="no-messages">Selecciona una conversación para leer y responder mensajes.</p>
+          }
+        </section>
+      </div>
+    }
+  </main>
+</ion-content>

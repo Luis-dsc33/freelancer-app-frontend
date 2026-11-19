@@ -1,0 +1,297 @@
+<ion-content class="estudiante-page">
+  <main class="estudiante-shell">
+    <app-estudiante-nav />
+
+    <a routerLink="/marketplace" class="back-link">
+      <ion-icon name="arrow-back-outline" aria-hidden="true" />
+      <span>Volver al marketplace</span>
+    </a>
+
+    @if (vm.error()) {
+      <div class="notice error" role="alert">
+        <ion-icon name="alert-circle-outline" aria-hidden="true" />
+        <span>{{ vm.error() }}</span>
+      </div>
+      <a routerLink="/marketplace" class="secondary">Explorar otras oportunidades</a>
+    } @else if (vm.cargando()) {
+      <div class="empty" role="status">
+        <ion-spinner name="crescent" />
+        <p>Cargando detalle de la oportunidad…</p>
+      </div>
+    } @else if (vm.oportunidad(); as o) {
+      <article class="tb-card">
+        <div class="detail-top">
+          <div>
+            @if (o.disciplina) {
+              <p class="eyebrow">{{ o.disciplina }}</p>
+            }
+            <h1>{{ o.titulo }}</h1>
+            <p class="client-meta">
+              <ion-icon name="people-outline" aria-hidden="true" />
+              <span>{{ o.nombreCliente }}</span>
+              <span>· Publicado {{ o.creadoEn | date: 'dd MMM yyyy' }}</span>
+            </p>
+          </div>
+
+          <div class="badges-wrap">
+            @if (o.esUrgente) {
+              <span class="badge urgent">
+                <ion-icon name="flash-outline" aria-hidden="true" />
+                Urgente
+              </span>
+            }
+            <span class="badge info">{{ o.estado }}</span>
+          </div>
+        </div>
+
+        <div class="chips-bar">
+          @if (o.modalidad) {
+            <span class="badge">{{ o.modalidad }}</span>
+          }
+          @if (o.ubicacion) {
+            <span class="badge">
+              <ion-icon name="location-outline" aria-hidden="true" />
+              {{ o.ubicacion }}
+            </span>
+          }
+          @if (o.nivelAcademicoSugerido) {
+            <span class="badge">Nivel: {{ o.nivelAcademicoSugerido }}</span>
+          }
+          @if (o.cantidadVacantes) {
+            <span class="badge">{{ o.cantidadVacantes }} {{ o.cantidadVacantes === 1 ? 'vacante' : 'vacantes' }}</span>
+          }
+        </div>
+
+        <div class="payout-grid">
+          <div>
+            <span class="grid-label">Presupuesto {{ o.tipoPresupuesto ? '(' + o.tipoPresupuesto + ')' : '' }}</span>
+            @if (o.presupuestoMinimo && o.presupuestoMaximo) {
+              <strong class="grid-val">
+                {{ o.presupuestoMinimo | currency: (o.moneda || 'MXN'):'symbol-narrow':'1.0-0' }} –
+                {{ o.presupuestoMaximo | currency: (o.moneda || 'MXN'):'symbol-narrow':'1.0-0' }}
+              </strong>
+            } @else {
+              <strong class="grid-val">
+                {{ o.presupuesto | currency: (o.moneda || 'MXN'):'symbol-narrow':'1.0-0' }}
+              </strong>
+            }
+          </div>
+
+          @if (vm.pagoNetoEstimado() !== null) {
+            <div>
+              <span class="grid-label">Pago neto estimado</span>
+              <strong class="grid-val accent">
+                {{ vm.pagoNetoEstimado() | currency: (o.moneda || 'MXN'):'symbol-narrow':'1.0-0' }}
+              </strong>
+            </div>
+          }
+
+          @if (o.fechaLimite) {
+            <div>
+              <span class="grid-label">Fecha límite postulación</span>
+              <span class="grid-text">
+                <ion-icon name="calendar-outline" aria-hidden="true" />
+                {{ o.fechaLimite | date: 'dd MMM yyyy' }}
+              </span>
+            </div>
+          }
+
+          @if (o.fechaEntregaEstimada) {
+            <div>
+              <span class="grid-label">Entrega estimada</span>
+              <span class="grid-text">
+                <ion-icon name="time-outline" aria-hidden="true" />
+                {{ o.fechaEntregaEstimada | date: 'dd MMM yyyy' }}
+              </span>
+            </div>
+          }
+        </div>
+
+        <section class="detail-section">
+          <h2>Descripción del proyecto</h2>
+          <p class="body-copy">{{ o.descripcion }}</p>
+        </section>
+
+        @if (o.alcance) {
+          <section class="detail-section">
+            <h2>Alcance</h2>
+            <p class="body-copy">{{ o.alcance }}</p>
+          </section>
+        }
+
+        @if (o.entregables && o.entregables.length > 0) {
+          <section class="detail-section">
+            <h2>Entregables esperados</h2>
+            <ul class="bullet-list">
+              @for (ent of o.entregables; track ent) {
+                <li>{{ ent }}</li>
+              }
+            </ul>
+          </section>
+        }
+
+        @if (o.esquemaPago || (o.hitosPago && o.hitosPago.length > 0)) {
+          <section class="detail-section">
+            <h2>Esquema de pago</h2>
+            @if (o.esquemaPago) {
+              <p class="body-copy">{{ o.esquemaPago }}</p>
+            }
+            @if (o.hitosPago && o.hitosPago.length > 0) {
+              <ul class="bullet-list">
+                @for (hito of o.hitosPago; track hito.titulo) {
+                  <li>
+                    <strong>{{ hito.titulo }}</strong> ({{ hito.porcentaje }}%)
+                    @if (hito.descripcion) {
+                      — {{ hito.descripcion }}
+                    }
+                  </li>
+                }
+              </ul>
+            }
+          </section>
+        }
+
+        <section class="detail-section">
+          <h2>Condiciones y disponibilidad</h2>
+          <div class="conditions-grid">
+            @if (o.dedicacionSemanalEstimada) {
+              <span>Dedicación: <strong>{{ o.dedicacionSemanalEstimada }}</strong></span>
+            }
+            @if (o.flexibilidadHorario !== undefined && o.flexibilidadHorario !== null) {
+              <span>Horario: <strong>{{ o.flexibilidadHorario === true ? 'Flexible' : o.flexibilidadHorario === false ? 'Fijo' : o.flexibilidadHorario }}</strong></span>
+            }
+            @if (o.nivelAvance) {
+              <span>Avance actual: <strong>{{ o.nivelAvance }}</strong></span>
+            }
+            @if (o.propiedadIntelectual) {
+              <span>Propiedad intelectual: <strong>{{ o.propiedadIntelectual }}</strong></span>
+            }
+          </div>
+
+          <div class="chips-bar">
+            @if (o.requierePortafolio) {
+              <span class="badge urgent">
+                <ion-icon name="briefcase-outline" aria-hidden="true" />
+                Requiere portafolio
+              </span>
+            }
+            @if (o.requiereConfidencialidad) {
+              <span class="badge">
+                <ion-icon name="shield-checkmark-outline" aria-hidden="true" />
+                Requiere confidencialidad
+              </span>
+            }
+            @if (o.permitePortafolioPublico) {
+              <span class="badge success">Permite mostrar en portafolio público</span>
+            }
+          </div>
+        </section>
+      </article>
+
+      @if (vm.matching(); as match) {
+        <section class="tb-card">
+          <div class="detail-top">
+            <div>
+              <p class="eyebrow">COMPATIBILIDAD DE HABILIDADES</p>
+              <h2>Tu matching con esta oferta</h2>
+            </div>
+            @if (match.tieneDatosMatching) {
+              <span class="badge success">
+                <ion-icon name="sparkles-outline" aria-hidden="true" />
+                {{ match.porcentajeTotal }}% compatible
+              </span>
+            }
+          </div>
+
+          @if (match.tieneDatosMatching) {
+            <p class="match-stats">
+              Requeridas: <strong>{{ match.requeridasCumplidas }}/{{ match.totalRequeridas }}</strong>
+              @if (match.totalDeseables > 0) {
+                · Deseables: <strong>{{ match.deseablesCumplidas }}/{{ match.totalDeseables }}</strong>
+              }
+            </p>
+          } @else {
+            <p class="match-stats">
+              Agrega habilidades del catálogo en <a routerLink="/auth/perfil" class="inline-link">Mi perfil</a> para calcular tu compatibilidad.
+            </p>
+          }
+
+          @if (match.skillsCoincidentes.length > 0) {
+            <p class="sub-label">Coincidencias</p>
+            <div class="chips-bar">
+              @for (sk of match.skillsCoincidentes; track sk) {
+                <span class="badge success">{{ sk }}</span>
+              }
+            </div>
+          }
+
+          @if (match.skillsFaltantesRequeridas.length > 0) {
+            <p class="sub-label">Habilidades requeridas faltantes</p>
+            <div class="chips-bar">
+              @for (sk of match.skillsFaltantesRequeridas; track sk) {
+                <span class="badge urgent">{{ sk }}</span>
+              }
+            </div>
+          }
+
+          @if (match.skillsFaltantesDeseables.length > 0) {
+            <p class="sub-label">Habilidades deseables</p>
+            <div class="chips-bar">
+              @for (sk of match.skillsFaltantesDeseables; track sk) {
+                <span class="badge">{{ sk }}</span>
+              }
+            </div>
+          }
+        </section>
+      }
+
+      @if (vm.esEstudiante()) {
+        <section class="tb-card">
+          <p class="eyebrow">POSTULACIÓN</p>
+          <h2>Enviar propuesta al cliente</h2>
+
+          @if (o.yaPostulado || vm.postulacionExitosa()) {
+            <div class="notice success" role="status">
+              <ion-icon name="checkmark-circle-outline" aria-hidden="true" />
+              <div>
+                <strong>{{ vm.postulacionExitosa() ? '¡Postulación enviada!' : 'Ya te postulaste a esta oportunidad.' }}</strong>
+                <p class="notice-sub">Puedes dar seguimiento al estado o escribirle al cliente desde tus postulaciones.</p>
+              </div>
+            </div>
+            <a routerLink="/estudiante/postulaciones" class="primary primary-full">Ver mis postulaciones</a>
+          } @else {
+            <form (submit)="enviarPostulacion(); $event.preventDefault()">
+              <label class="field-label" for="propuesta-mensaje">Mensaje de postulación *</label>
+              <textarea
+                id="propuesta-mensaje"
+                class="dark-textarea"
+                rows="5"
+                maxlength="2000"
+                placeholder="Explica por qué eres el perfil ideal, qué proyectos similares has construido y tu disponibilidad…"
+                [value]="mensajePropuesta()"
+                (input)="mensajePropuesta.set($any($event.target).value)"
+              ></textarea>
+              <p class="char-meta">{{ mensajePropuesta().length }}/2000</p>
+
+              @if (vm.errorPostulacion()) {
+                <div class="notice error" role="alert">
+                  <ion-icon name="alert-circle-outline" aria-hidden="true" />
+                  <span>{{ vm.errorPostulacion() }}</span>
+                </div>
+              }
+
+              <button type="submit" class="primary primary-full" [disabled]="vm.postulando()">
+                @if (vm.postulando()) {
+                  <ion-spinner name="crescent" />
+                } @else {
+                  <ion-icon name="paper-plane-outline" aria-hidden="true" />
+                }
+                <span>{{ vm.postulando() ? 'Enviando postulación…' : 'Postularme ahora' }}</span>
+              </button>
+            </form>
+          }
+        </section>
+      }
+    }
+  </main>
+</ion-content>

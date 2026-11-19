@@ -1,0 +1,276 @@
+.splash-content {
+  --background: #050505;
+  --color: #fff;
+}
+
+.splash-bg {
+  position: fixed;
+  inset: 0;
+  overflow: hidden;
+  pointer-events: none;
+}
+
+.glow-orb {
+  position: absolute;
+  border-radius: 50%;
+  filter: blur(64px);
+  opacity: 0.36;
+  animation: orbFloat 7s ease-in-out infinite alternate;
+}
+
+.orb-1 {
+  width: 240px;
+  height: 240px;
+  top: -60px;
+  right: -50px;
+  background: #fb7f1b;
+}
+
+.orb-2 {
+  width: 220px;
+  height: 220px;
+  bottom: -50px;
+  left: -60px;
+  background: #c2650b;
+  animation-delay: -3.5s;
+}
+
+.splash-shell {
+  position: relative;
+  z-index: 1;
+  min-height: 100%;
+  max-width: 440px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: 24px;
+  padding: calc(24px + var(--tb-safe-top, 0px)) 24px calc(28px + var(--tb-safe-bottom, 0px));
+}
+
+.splash-hero {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+}
+
+.logo-stage {
+  position: relative;
+  width: 132px;
+  height: 132px;
+  display: grid;
+  place-items: center;
+  margin-bottom: 24px;
+}
+
+.pulse-ring,
+.orbit-ring {
+  position: absolute;
+  border-radius: 50%;
+}
+
+.pulse-ring {
+  inset: 4px;
+  border: 1.5px solid rgba(251, 127, 27, 0.45);
+  animation: ringPulse 2.6s ease-out infinite;
+}
+
+.orbit-ring {
+  inset: -6px;
+  border: 1.5px dashed rgba(249, 148, 59, 0.35);
+  animation: orbitSpin 16s linear infinite;
+}
+
+.logo-card {
+  position: relative;
+  width: 96px;
+  height: 96px;
+  border-radius: 26px;
+  background: #0b0b0b;
+  border: 1px solid rgba(251, 127, 27, 0.45);
+  display: grid;
+  place-items: center;
+  box-shadow: 0 12px 32px rgba(251, 127, 27, 0.25);
+  animation: logoEntrance 0.7s cubic-bezier(0.22, 1, 0.36, 1) both, logoFloat 4s ease-in-out 0.7s infinite;
+}
+
+.logo-img {
+  width: 68px;
+  height: 68px;
+  object-fit: contain;
+  border-radius: 14px;
+}
+
+.brand-pill,
+.splash-title,
+.splash-subtitle,
+.feature-pills,
+.splash-cta {
+  animation: fadeUp 0.55s ease-out both;
+}
+
+.brand-pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 6px 12px;
+  border-radius: 999px;
+  background: rgba(251, 127, 27, 0.14);
+  border: 1px solid rgba(251, 127, 27, 0.35);
+  color: #f9943b;
+  font-family: var(--tb-font-heading);
+  font-size: 11px;
+  font-weight: 700;
+  letter-spacing: 1.4px;
+  margin-bottom: 14px;
+  animation-delay: 0.2s;
+}
+
+.splash-title {
+  font-family: var(--tb-font-heading);
+  font-size: 32px;
+  font-weight: 800;
+  line-height: 1.15;
+  margin: 0 0 12px;
+  color: #fff;
+  animation-delay: 0.35s;
+
+  span {
+    color: #f9943b;
+  }
+}
+
+.splash-subtitle {
+  font-family: var(--tb-font-body);
+  font-size: 15px;
+  line-height: 1.5;
+  color: #a1a1aa;
+  margin: 0 0 22px;
+  max-width: 320px;
+  animation-delay: 0.5s;
+}
+
+.feature-pills {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  animation-delay: 0.65s;
+}
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 8px 12px;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.05);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  color: #e4e4e7;
+  font-size: 12px;
+  font-weight: 600;
+
+  ion-icon {
+    color: #fb7f1b;
+    font-size: 15px;
+  }
+}
+
+.splash-cta {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  animation-delay: 0.8s;
+}
+
+.intro-loader {
+  height: 3px;
+  width: 100%;
+  border-radius: 999px;
+  background: rgba(255, 255, 255, 0.08);
+  overflow: hidden;
+}
+
+.intro-loader-bar {
+  display: block;
+  height: 100%;
+  width: 100%;
+  background: linear-gradient(90deg, #c2650b, #fb7f1b, #f9943b);
+  transform-origin: left;
+  animation: loaderFill 1.1s cubic-bezier(0.22, 1, 0.36, 1) both;
+}
+
+.btn-comencemos {
+  width: 100%;
+  min-height: 52px;
+  border: none;
+  border-radius: 999px;
+  background: linear-gradient(135deg, #fb7f1b, #f9943b);
+  color: #160900;
+  font-family: var(--tb-font-heading);
+  font-size: 16px;
+  font-weight: 800;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 8px;
+  cursor: pointer;
+  touch-action: manipulation;
+  animation: ctaPulse 2.4s ease-in-out 1.2s infinite;
+  transition: transform 0.15s ease;
+
+  &:active {
+    transform: scale(0.97);
+  }
+
+  ion-icon {
+    font-size: 20px;
+    transition: transform 0.2s ease;
+  }
+
+  &:hover ion-icon {
+    transform: translateX(3px);
+  }
+}
+
+@keyframes orbFloat {
+  from { transform: translate(0, 0) scale(1); }
+  to { transform: translate(18px, -16px) scale(1.1); }
+}
+
+@keyframes logoEntrance {
+  from { opacity: 0; transform: scale(0.75) translateY(16px); }
+  to { opacity: 1; transform: scale(1) translateY(0); }
+}
+
+@keyframes logoFloat {
+  0%, 100% { transform: translateY(0); }
+  50% { transform: translateY(-6px); }
+}
+
+@keyframes ringPulse {
+  0% { transform: scale(0.92); opacity: 0.75; }
+  100% { transform: scale(1.24); opacity: 0; }
+}
+
+@keyframes orbitSpin {
+  to { transform: rotate(360deg); }
+}
+
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(14px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes loaderFill {
+  from { transform: scaleX(0); }
+  to { transform: scaleX(1); }
+}
+
+@keyframes ctaPulse {
+  0%, 100% { box-shadow: 0 8px 24px rgba(251, 127, 27, 0.35); }
+  50% { box-shadow: 0 10px 32px rgba(251, 127, 27, 0.6); }
+}

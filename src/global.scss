@@ -1,5 +1,7 @@
 @use "theme/portfolio";
 @use "theme/marketplace";
+@use "theme/estudiante";
+@use "theme/cliente";
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
@@ -47,5 +49,12 @@ ion-content {
 
 // Respeta la barra de estado del celular (notch, isla dinámica) en TODAS las páginas
 ion-header ion-toolbar:first-of-type {
-  padding-top: env(safe-area-inset-top, 0);
+  padding-top: var(--tb-safe-top, 0px);
+}
+
+// Paginas sin ion-header: dejan espacio arriba para la barra de estado (no se ve encimado)
+ion-content.estudiante-page,
+ion-content.portfolio-page,
+ion-content.tb-safe-top {
+  --padding-top: calc(var(--tb-safe-top, 0px) + 8px);
 }

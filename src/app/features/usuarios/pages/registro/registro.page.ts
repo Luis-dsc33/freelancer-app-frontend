@@ -14,6 +14,8 @@ import {
   checkmarkCircle,
   alertCircleOutline,
   closeOutline,
+  eyeOutline,
+  eyeOffOutline,
 } from 'ionicons/icons';
 
 addIcons({
@@ -25,6 +27,8 @@ addIcons({
   'checkmark-circle': checkmarkCircle,
   'alert-circle-outline': alertCircleOutline,
   'close-outline': closeOutline,
+  'eye-outline': eyeOutline,
+  'eye-off-outline': eyeOffOutline,
 });
 
 function passwordsCoincidenValidator(control: AbstractControl): ValidationErrors | null {

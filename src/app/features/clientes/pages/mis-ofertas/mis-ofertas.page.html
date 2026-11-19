@@ -1,0 +1,133 @@
+<app-cliente-layout titulo="Mis ofertas" subtitulo="Administra tus proyectos y revisa quién se ha postulado.">
+  <a acciones class="cliente-button cliente-button--primary" routerLink="/cliente/publicar-oferta">
+    <ion-icon name="briefcase-outline" aria-hidden="true" />
+    Publicar oferta
+  </a>
+
+  @if (vm.error()) {
+    <div class="cliente-alert" role="alert">
+      <ion-icon name="alert-circle-outline" aria-hidden="true" />
+      <span>{{ vm.error() }}</span>
+    </div>
+  }
+  @if (vm.mensaje()) { <p class="cliente-notice" role="status">{{ vm.mensaje() }}</p> }
+
+  @if (vm.cargando()) {
+    <div class="cliente-loading"><ion-spinner name="crescent" /><span>Cargando tus ofertas…</span></div>
+  } @else if (vm.error() && vm.ofertas().length === 0) {
+    <div class="cliente-empty">
+      <ion-icon name="alert-circle-outline" aria-hidden="true" />
+      <h2>No pudimos cargar tus ofertas</h2>
+      <p>Revisa tu conexión y vuelve a intentarlo.</p>
+      <button class="cliente-button" type="button" (click)="vm.cargar()">
+        <ion-icon name="refresh-outline" /> Reintentar
+      </button>
+    </div>
+  } @else if (vm.ofertas().length === 0) {
+    <div class="cliente-empty">
+      <ion-icon name="briefcase-outline" aria-hidden="true" />
+      <h2>Aún no has publicado ofertas</h2>
+      <p>Publica tu primer proyecto para recibir postulaciones de estudiantes.</p>
+      <a class="cliente-button cliente-button--primary" routerLink="/cliente/publicar-oferta">Crear mi primera oferta</a>
+    </div>
+  } @else {
+    <section class="cliente-list" aria-label="Ofertas publicadas">
+      @for (oferta of vm.ofertas(); track oferta.id) {
+        <article class="cliente-card">
+          <div class="cliente-card__top">
+            <h2>{{ oferta.titulo }}</h2>
+            <span class="cliente-status" [class.cliente-status--neutral]="!vm.esEditable(oferta)">
+              {{ oferta.estado }}
+            </span>
+          </div>
+          <p>{{ oferta.descripcion }}</p>
+          <div class="cliente-meta">
+            <span>{{ oferta.disciplina }}</span>
+            <span>{{ oferta.presupuesto | currency: 'MXN':'symbol-narrow':'1.0-2' }}</span>
+            <span>Entrega: {{ oferta.fechaLimite | date: 'mediumDate' }}</span>
+          </div>
+
+          @if (vm.edicionId() === oferta.id) {
+            <form class="cliente-card cliente-edit-form" [formGroup]="vm.form" (ngSubmit)="vm.guardarEdicion()">
+              <div class="cliente-form">
+                <div class="cliente-field cliente-field--wide">
+                  <label [for]="'titulo-' + oferta.id">Título</label>
+                  <input [id]="'titulo-' + oferta.id" formControlName="titulo" [attr.aria-invalid]="vm.form.controls.titulo.touched && vm.form.controls.titulo.invalid">
+                  @if (vm.form.controls.titulo.touched && vm.form.controls.titulo.invalid) { <span class="cliente-field-error">Escribe un título.</span> }
+                </div>
+                <div class="cliente-field cliente-field--wide">
+                  <label [for]="'descripcion-' + oferta.id">Descripción</label>
+                  <textarea [id]="'descripcion-' + oferta.id" rows="4" formControlName="descripcion" [attr.aria-invalid]="vm.form.controls.descripcion.touched && vm.form.controls.descripcion.invalid"></textarea>
+                  @if (vm.form.controls.descripcion.touched && vm.form.controls.descripcion.invalid) { <span class="cliente-field-error">Escribe una descripción.</span> }
+                </div>
+                <div class="cliente-field">
+                  <label [for]="'disciplina-' + oferta.id">Disciplina</label>
+                  <input [id]="'disciplina-' + oferta.id" formControlName="disciplina" [attr.aria-invalid]="vm.form.controls.disciplina.touched && vm.form.controls.disciplina.invalid">
+                  @if (vm.form.controls.disciplina.touched && vm.form.controls.disciplina.invalid) { <span class="cliente-field-error">Indica la disciplina.</span> }
+                </div>
+                <div class="cliente-field">
+                  <label [for]="'presupuesto-' + oferta.id">Presupuesto (MXN)</label>
+                  <input [id]="'presupuesto-' + oferta.id" type="number" min="0.01" step="0.01" formControlName="presupuesto" [attr.aria-invalid]="vm.form.controls.presupuesto.touched && vm.form.controls.presupuesto.invalid">
+                  @if (vm.form.controls.presupuesto.touched && vm.form.controls.presupuesto.invalid) { <span class="cliente-field-error">El presupuesto debe ser mayor que cero.</span> }
+                </div>
+                <div class="cliente-field">
+                  <label [for]="'fecha-' + oferta.id">Fecha de entrega</label>
+                  <input [id]="'fecha-' + oferta.id" type="date" formControlName="fechaLimite" [attr.aria-invalid]="vm.form.controls.fechaLimite.touched && vm.form.controls.fechaLimite.invalid">
+                  @if (vm.form.controls.fechaLimite.touched && vm.form.controls.fechaLimite.invalid) { <span class="cliente-field-error">Selecciona una fecha.</span> }
+                </div>
+                <div class="cliente-form-actions">
+                  <button class="cliente-button" type="button" (click)="vm.cancelarEdicion()">Cancelar</button>
+                  <button class="cliente-button cliente-button--primary" type="submit" [disabled]="vm.guardando()">
+                    @if (vm.guardando()) { <ion-spinner name="crescent" /> }
+                    Guardar cambios
+                  </button>
+                </div>
+              </div>
+            </form>
+          } @else {
+            <div class="cliente-card__actions">
+              <a class="cliente-button" [routerLink]="['/cliente/ofertas', oferta.id, 'postulaciones']">
+                <ion-icon name="document-text-outline" aria-hidden="true" /> Ver postulaciones
+              </a>
+              @if (vm.esEditable(oferta)) {
+                @if (vm.esBorrador(oferta)) {
+                  <button class="cliente-button cliente-button--primary" type="button" (click)="vm.publicarBorrador(oferta.id)" [disabled]="vm.guardando()">
+                    <ion-icon name="checkmark-outline" aria-hidden="true" /> Publicar
+                  </button>
+                }
+                <button class="cliente-button" type="button" (click)="vm.editar(oferta)">
+                  <ion-icon name="create-outline" aria-hidden="true" /> Editar
+                </button>
+                <button class="cliente-button cliente-button--danger" type="button" (click)="vm.pedirConfirmacion(oferta.id, 'cerrar')">
+                  <ion-icon name="close-outline" aria-hidden="true" /> Cerrar oferta
+                </button>
+              } @else {
+                <button class="cliente-button cliente-button--danger" type="button" (click)="vm.pedirConfirmacion(oferta.id, 'eliminar')">
+                  <ion-icon name="trash-outline" aria-hidden="true" /> Eliminar oferta
+                </button>
+              }
+            </div>
+          }
+
+          @if (vm.confirmacion()?.id === oferta.id) {
+            <div class="cliente-confirm" role="group" aria-label="Confirmar acción">
+              <p>
+                @if (vm.confirmacion()?.accion === 'cerrar') {
+                  Al cerrar la oferta dejará de recibir postulaciones. ¿Deseas continuar?
+                } @else {
+                  Esta acción eliminará la oferta cerrada de forma permanente. ¿Deseas continuar?
+                }
+              </p>
+              <div>
+                <button class="cliente-button" type="button" (click)="vm.cancelarConfirmacion()">Volver</button>
+                <button class="cliente-button cliente-button--danger" type="button" (click)="vm.confirmarAccion()" [disabled]="vm.guardando()">
+                  Confirmar
+                </button>
+              </div>
+            </div>
+          }
+        </article>
+      }
+    </section>
+  }
+</app-cliente-layout>

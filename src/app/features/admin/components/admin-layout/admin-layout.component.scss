@@ -67,19 +67,56 @@ ion-content { --background: #f6f6f4; flex: 1; }
 .encabezado__sub { margin: 4px 0 0; color: #52514e; font-size: 0.85rem; }
 .encabezado__acciones { display: flex; align-items: center; gap: var(--tb-space-1); flex-wrap: wrap; }
 
-// ── Responsivo ──
+// ── Responsivo: barra inferior solo con iconos (estilo Instagram / Facebook) ──
 @media (max-width: 900px) {
-  .admin { grid-template-columns: minmax(0, 1fr); grid-template-rows: auto 1fr; }
+  .admin { grid-template-columns: minmax(0, 1fr); }
   .admin__nav {
-    position: static;
-    height: auto;
+    position: fixed;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    top: auto;
+    z-index: 1000;
+    height: calc(56px + var(--tb-safe-bottom, 0px));
     flex-direction: row;
     align-items: center;
-    overflow-x: auto;
-    padding: var(--tb-space-1) var(--tb-space-2);
-    nav { flex-direction: row; }
+    gap: 0;
+    padding: 0 8px var(--tb-safe-bottom, 0px);
+    background: rgba(20, 24, 28, 0.97);
+    border-top: 1px solid rgba(255, 255, 255, 0.08);
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+    nav { flex-direction: row; justify-content: space-around; gap: 0; }
   }
-  .admin__marca { padding: 0 var(--tb-space-1); white-space: nowrap; }
-  .nav__item { white-space: nowrap; }
-  .admin__main { padding: var(--tb-space-2); }
+  .admin__marca, .nav__label { display: none; }
+  .nav__item {
+    position: relative;
+    flex: 1;
+    justify-content: center;
+    height: 56px;
+    padding: 0;
+    border-radius: 0;
+    color: #8a8a8a;
+    -webkit-tap-highlight-color: transparent;
+    ion-icon { font-size: 1.65rem; }
+    &:hover { background: transparent; color: #fff; }
+    &:active { transform: scale(0.9); }
+  }
+  .nav__salir { flex: 0 0 56px; }
+  .nav__item--activo, .nav__item--activo:hover {
+    background: transparent;
+    color: var(--tb-naranja);
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 28%;
+      right: 28%;
+      height: 3px;
+      border-radius: 0 0 3px 3px;
+      background: var(--tb-naranja);
+    }
+  }
+  // Espacio para que la barra fija no tape el final del contenido
+  .admin__main { padding: var(--tb-space-2) var(--tb-space-2) calc(72px + var(--tb-safe-bottom, 0px)); }
 }

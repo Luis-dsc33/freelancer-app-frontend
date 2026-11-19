@@ -1,16 +1,28 @@
-<ion-content>
+<ion-content class="tb-safe-top">
   <div class="admin">
     <aside class="admin__nav">
       <div class="admin__marca">CodeBridge <span>Admin</span></div>
       <nav>
         @for (item of menu; track item.ruta) {
-          <a class="nav__item" [routerLink]="item.ruta" routerLinkActive="nav__item--activo">
-            <ion-icon [name]="item.icono"></ion-icon>{{ item.etiqueta }}
+          <a
+            class="nav__item"
+            [routerLink]="item.ruta"
+            routerLinkActive="nav__item--activo"
+            [attr.aria-label]="item.etiqueta"
+            [attr.title]="item.etiqueta"
+          >
+            <ion-icon [name]="item.icono"></ion-icon><span class="nav__label">{{ item.etiqueta }}</span>
           </a>
         }
       </nav>
-      <a class="nav__item nav__salir" routerLink="/auth/login" (click)="cerrarSesion()">
-        <ion-icon name="log-out-outline"></ion-icon>Cerrar sesión
+      <a
+        class="nav__item nav__salir"
+        routerLink="/auth/login"
+        (click)="cerrarSesion()"
+        aria-label="Cerrar sesión"
+        title="Cerrar sesión"
+      >
+        <ion-icon name="log-out-outline"></ion-icon><span class="nav__label">Cerrar sesión</span>
       </a>
     </aside>
 

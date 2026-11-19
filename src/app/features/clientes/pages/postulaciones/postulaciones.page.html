@@ -1,0 +1,96 @@
+<app-cliente-layout titulo="Postulaciones" subtitulo="Conoce a las personas interesadas en colaborar en tu proyecto.">
+  <a acciones class="cliente-button" routerLink="/cliente/ofertas">Volver a mis ofertas</a>
+
+  @if (vm.error()) {
+    <div class="cliente-alert" role="alert">
+      <ion-icon name="alert-circle-outline" aria-hidden="true" />
+      <span>{{ vm.error() }}</span>
+    </div>
+  }
+  @if (vm.mensaje()) {
+    <p class="cliente-notice" role="status">{{ vm.mensaje() }}</p>
+    @if (vm.contratoCreado()) {
+      <button class="cliente-button cliente-button--primary" type="button" (click)="vm.irAContratos()">Ir a contratos</button>
+    }
+  }
+
+  @if (vm.cargando()) {
+    <div class="cliente-loading"><ion-spinner name="crescent" /><span>Cargando postulaciones…</span></div>
+  } @else if (vm.error() && vm.postulaciones().length === 0) {
+    <div class="cliente-empty">
+      <ion-icon name="alert-circle-outline" aria-hidden="true" />
+      <h2>No pudimos cargar las postulaciones</h2>
+      <p>Vuelve a intentarlo en unos momentos.</p>
+      <button class="cliente-button" type="button" (click)="vm.cargar(ofertaId)">
+        <ion-icon name="refresh-outline" /> Reintentar
+      </button>
+    </div>
+  } @else if (vm.postulaciones().length === 0) {
+    <div class="cliente-empty">
+      <ion-icon name="document-text-outline" aria-hidden="true" />
+      <h2>Aún no hay postulaciones</h2>
+      <p>Cuando alguien se postule a esta oferta, podrás revisar su perfil aquí.</p>
+    </div>
+  } @else {
+    <section class="cliente-list" aria-label="Personas postuladas">
+      @for (postulacion of vm.postulaciones(); track postulacion.id) {
+        <article class="cliente-card">
+          <div class="cliente-card__top">
+            <div>
+              <p class="eyebrow">POSTULACIÓN</p>
+              <h2>{{ postulacion.nombreEstudiante || 'Estudiante' }}</h2>
+            </div>
+            <span class="cliente-status"
+              [class.cliente-status--success]="vm.estaAceptada(postulacion)"
+              [class.cliente-status--danger]="postulacion.estado.toLowerCase() === 'rechazada' || postulacion.estado.toLowerCase() === 'rechazado'">
+              {{ postulacion.estado }}
+            </span>
+          </div>
+          @if (postulacion.carrera) { <p>{{ postulacion.carrera }}</p> }
+          @if (postulacion.mensaje) { <p class="application-message">“{{ postulacion.mensaje }}”</p> }
+          <div class="cliente-meta">
+            <span>Referencia: {{ postulacion.estudianteId }}</span>
+            @if (postulacion.fechaPostulacion) { <span>Recibida: {{ postulacion.fechaPostulacion | date: 'mediumDate' }}</span> }
+          </div>
+
+          @if (vm.estaPendiente(postulacion)) {
+            <div class="cliente-card__actions">
+              <button class="cliente-button cliente-button--primary" type="button"
+                (click)="vm.pedirResolucion(postulacion, 'aceptar')" [disabled]="vm.accionId() !== ''">
+                <ion-icon name="thumbs-up-outline" aria-hidden="true" /> Aceptar postulación
+              </button>
+              <button class="cliente-button cliente-button--danger" type="button"
+                (click)="vm.pedirResolucion(postulacion, 'rechazar')" [disabled]="vm.accionId() !== ''">
+                <ion-icon name="thumbs-down-outline" aria-hidden="true" /> Rechazar
+              </button>
+            </div>
+          } @else if (vm.estaAceptada(postulacion)) {
+            <button class="cliente-button cliente-button--primary" type="button"
+              (click)="vm.crearContrato(postulacion)" [disabled]="vm.accionId() === postulacion.id">
+              @if (vm.accionId() === postulacion.id) { <ion-spinner name="crescent" /> }
+              @else { <ion-icon name="document-text-outline" aria-hidden="true" /> }
+              Crear contrato
+            </button>
+          }
+
+          @if (vm.confirmacion()?.postulacion?.id === postulacion.id) {
+            <div class="cliente-confirm" role="group" aria-label="Confirmar decisión">
+              <p>
+                @if (vm.confirmacion()?.decision === 'aceptar') {
+                  Al aceptar, esta oferta ya no podrá aceptar otra postulación. ¿Deseas continuar?
+                } @else {
+                  ¿Confirmas que quieres rechazar esta postulación? Esta decisión no se puede deshacer.
+                }
+              </p>
+              <div>
+                <button class="cliente-button" type="button" (click)="vm.cancelarResolucion()">Volver</button>
+                <button class="cliente-button cliente-button--primary" type="button"
+                  (click)="vm.confirmarResolucion(ofertaId)" [disabled]="vm.accionId() !== ''">Confirmar</button>
+              </div>
+            </div>
+          }
+        </article>
+      }
+    </section>
+  }
+</app-cliente-layout>

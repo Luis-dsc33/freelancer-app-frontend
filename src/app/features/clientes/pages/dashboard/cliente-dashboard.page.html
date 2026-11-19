@@ -1,0 +1,80 @@
+<app-cliente-layout titulo="Panel" subtitulo="Administra tus oportunidades y conecta con talento.">
+  <section class="welcome-card">
+    <div class="welcome-copy">
+      <p class="welcome-eyebrow">TU ESPACIO DE TRABAJO</p>
+      <h2>Hola, {{ nombreCliente }}.</h2>
+      <p>Cuéntanos qué necesitas y encuentra estudiantes con talento para llevar tu proyecto adelante.</p>
+    </div>
+    <a class="primary-action" routerLink="/cliente/publicar-oferta">
+      <ion-icon name="megaphone-outline" aria-hidden="true" />
+      Publicar oferta
+      <ion-icon class="action-arrow" name="arrow-forward-outline" aria-hidden="true" />
+    </a>
+    <span class="welcome-decoration" aria-hidden="true"></span>
+  </section>
+
+  <section class="section-heading">
+    <div>
+      <p class="welcome-eyebrow">RESUMEN</p>
+      <h2>Tu actividad</h2>
+    </div>
+  </section>
+
+  <section class="activity-grid" aria-label="Actividad de Cliente">
+    <article class="activity-card">
+      <span class="activity-icon"><ion-icon name="briefcase-outline" aria-hidden="true" /></span>
+      <span class="activity-status">RESUMEN</span>
+      <h3>Ofertas abiertas</h3>
+      @if (vm.cargandoOfertas()) {
+        <ion-spinner name="crescent" />
+      } @else if (vm.errorOfertas()) {
+        <p class="card-error">{{ vm.errorOfertas() }}</p>
+        <button type="button" class="card-link card-link--button" (click)="vm.cargar()">Reintentar</button>
+      } @else {
+        <p class="activity-count">{{ vm.ofertasAbiertas() }}</p>
+        <p>Proyectos que siguen recibiendo postulaciones.</p>
+        <a routerLink="/cliente/ofertas" class="card-link">
+          Administrar ofertas <ion-icon name="arrow-forward-outline" aria-hidden="true" />
+        </a>
+      }
+    </article>
+
+    <article class="activity-card">
+      <span class="activity-icon"><ion-icon name="document-text-outline" aria-hidden="true" /></span>
+      <span class="activity-status">RESUMEN</span>
+      <h3>Contratos activos</h3>
+      @if (vm.cargandoContratos()) {
+        <ion-spinner name="crescent" />
+      } @else if (vm.errorContratos()) {
+        <p class="card-error">{{ vm.errorContratos() }}</p>
+        <button type="button" class="card-link card-link--button" (click)="vm.cargar()">Reintentar</button>
+      } @else {
+        <p class="activity-count">{{ vm.contratosActivos() }}</p>
+        <p>Da seguimiento al trabajo que ya está en marcha.</p>
+        <a routerLink="/cliente/contratos" class="card-link">
+          Ver contratos <ion-icon name="arrow-forward-outline" aria-hidden="true" />
+        </a>
+      }
+    </article>
+
+    <article class="activity-card activity-card--available">
+      <span class="activity-icon"><ion-icon name="megaphone-outline" aria-hidden="true" /></span>
+      <span class="activity-status">EMPIEZA AQUÍ</span>
+      <h3>Publica una oferta</h3>
+      <p>Describe tu proyecto, define el presupuesto y la fecha esperada de entrega.</p>
+      <a routerLink="/cliente/publicar-oferta" class="card-link">
+        Crear oferta <ion-icon name="arrow-forward-outline" aria-hidden="true" />
+      </a>
+    </article>
+
+    <article class="activity-card">
+      <span class="activity-icon"><ion-icon name="people-outline" aria-hidden="true" /></span>
+      <span class="activity-status">TU CUENTA</span>
+      <h3>Perfil de empresa</h3>
+      <p>Completa la información que verán las personas que colaboren contigo.</p>
+      <a routerLink="/cliente/perfil" class="card-link">
+        Editar perfil <ion-icon name="arrow-forward-outline" aria-hidden="true" />
+      </a>
+    </article>
+  </section>
+</app-cliente-layout>

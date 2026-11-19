@@ -1,0 +1,57 @@
+<ion-content class="splash-content" [fullscreen]="true">
+  <div class="splash-bg" aria-hidden="true">
+    <span class="glow-orb orb-1"></span>
+    <span class="glow-orb orb-2"></span>
+  </div>
+
+  <main class="splash-shell">
+    <section class="splash-hero">
+      <div class="logo-stage">
+        <span class="pulse-ring" aria-hidden="true"></span>
+        <span class="orbit-ring" aria-hidden="true"></span>
+        <div class="logo-card">
+          <img
+            src="assets/icon/logo-codebridge.png"
+            alt="Logo TalentBridge"
+            class="logo-img"
+          />
+        </div>
+      </div>
+
+      <span class="brand-pill">
+        <ion-icon name="sparkles-outline" aria-hidden="true"></ion-icon>
+        TALENTBRIDGE
+      </span>
+
+      <h1 class="splash-title">
+        Impulsa tu talento <span>universitario</span>
+      </h1>
+
+      <p class="splash-subtitle">
+        Conecta con proyectos reales, construye tu portafolio y genera experiencia profesional.
+      </p>
+
+      <div class="feature-pills">
+        <span class="pill">
+          <ion-icon name="rocket-outline" aria-hidden="true"></ion-icon>
+          Proyectos reales
+        </span>
+        <span class="pill">
+          <ion-icon name="shield-checkmark-outline" aria-hidden="true"></ion-icon>
+          Pagos seguros
+        </span>
+      </div>
+    </section>
+
+    <footer class="splash-cta">
+      <div class="intro-loader" aria-hidden="true">
+        <span class="intro-loader-bar"></span>
+      </div>
+
+      <button type="button" class="btn-comencemos" (click)="comenzar()">
+        <span>Comencemos</span>
+        <ion-icon name="arrow-forward-outline" aria-hidden="true"></ion-icon>
+      </button>
+    </footer>
+  </main>
+</ion-content>

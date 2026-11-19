@@ -1,12 +1,6 @@
-<ion-content class="marketplace-page">
+<ion-content class="marketplace-page estudiante-page">
   <main class="marketplace-shell">
-    <header class="marketplace-header">
-      <div class="brand"><span class="brand-mark">TB</span> TalentBridge</div>
-      <nav class="header-links">
-        <a routerLink="/portafolio" class="text-link">Mi portafolio</a>
-        <a routerLink="/auth/login" class="text-link">Cambiar cuenta</a>
-      </nav>
-    </header>
+    <app-estudiante-nav />
 
     <div class="title-row">
       <span class="section-icon"><ion-icon name="storefront-outline" aria-hidden="true" /></span>
@@ -15,7 +9,115 @@
         <h1>Marketplace</h1>
       </div>
     </div>
-    <p class="intro">Explora proyectos publicados por clientes y encuentra el siguiente reto para tu talento.</p>
+    <p class="intro">
+      Explora proyectos publicados por clientes, filtra según tus intereses y revisa tu compatibilidad de habilidades antes de postularte.
+    </p>
+
+    <section class="tb-card search-panel">
+      <form class="search-row" (submit)="vm.aplicarFiltros(); $event.preventDefault()">
+        <div class="search-input-wrap">
+          <ion-icon name="search-outline" aria-hidden="true" />
+          <input
+            type="search"
+            class="dark-input search-field"
+            placeholder="Buscar por título o descripción…"
+            [value]="vm.busqueda()"
+            (input)="vm.busqueda.set($any($event.target).value)"
+          />
+        </div>
+        <button type="button" class="secondary" (click)="filtrosVisibles.set(!filtrosVisibles())">
+          <ion-icon name="funnel-outline" aria-hidden="true" />
+          Filtros
+        </button>
+        <button type="submit" class="primary search-submit">Buscar</button>
+      </form>
+
+      @if (filtrosVisibles()) {
+        <div class="filters-grid">
+          <div>
+            <label class="field-label" for="filtro-modalidad">Modalidad</label>
+            <select
+              id="filtro-modalidad"
+              class="dark-select"
+              [value]="vm.modalidad()"
+              (change)="vm.modalidad.set($any($event.target).value)"
+            >
+              <option value="">Todas</option>
+              <option value="Remoto">Remoto</option>
+              <option value="Presencial">Presencial</option>
+              <option value="Hibrido">Híbrido</option>
+            </select>
+          </div>
+
+          <div>
+            <label class="field-label" for="filtro-disciplina">Disciplina</label>
+            <input
+              id="filtro-disciplina"
+              type="text"
+              class="dark-input"
+              placeholder="Ej. Desarrollo Web"
+              [value]="vm.disciplina()"
+              (input)="vm.disciplina.set($any($event.target).value)"
+            />
+          </div>
+
+          <div>
+            <label class="field-label" for="filtro-habilidad">Habilidad</label>
+            <input
+              id="filtro-habilidad"
+              type="text"
+              class="dark-input"
+              placeholder="Ej. Angular, C#"
+              [value]="vm.habilidadFiltro()"
+              (input)="vm.habilidadFiltro.set($any($event.target).value)"
+            />
+          </div>
+
+          <div class="budget-pair">
+            <div>
+              <label class="field-label" for="filtro-min">Presupuesto mín.</label>
+              <input
+                id="filtro-min"
+                type="number"
+                min="0"
+                class="dark-input"
+                placeholder="0"
+                [value]="vm.presupuestoMin() ?? ''"
+                (input)="actualizarNumero('min', $any($event.target).value)"
+              />
+            </div>
+            <div>
+              <label class="field-label" for="filtro-max">Presupuesto máx.</label>
+              <input
+                id="filtro-max"
+                type="number"
+                min="0"
+                class="dark-input"
+                placeholder="50000"
+                [value]="vm.presupuestoMax() ?? ''"
+                (input)="actualizarNumero('max', $any($event.target).value)"
+              />
+            </div>
+          </div>
+
+          <label class="urgent-check">
+            <input
+              type="checkbox"
+              [checked]="vm.soloUrgentes()"
+              (change)="vm.soloUrgentes.set($any($event.target).checked)"
+            />
+            <span>Mostrar solo proyectos urgentes</span>
+          </label>
+
+          <div class="filter-actions">
+            @if (vm.hayFiltrosActivos()) {
+              <button type="button" class="secondary" (click)="vm.limpiarFiltros()">Limpiar filtros</button>
+            }
+            <button type="button" class="primary" (click)="vm.aplicarFiltros()">Aplicar filtros</button>
+          </div>
+        </div>
+      }
+    </section>
 
     @if (vm.error()) {
       <div class="notice error" role="alert">
@@ -43,29 +145,63 @@
       @if (vm.total() === 0) {
         <section class="empty">
           <span class="empty-icon"><ion-icon name="briefcase-outline" aria-hidden="true" /></span>
-          <h2>Aún no hay proyectos publicados</h2>
-          <p>Cuando un cliente publique una oportunidad, aparecerá aquí para que puedas postularte.</p>
+          <h2>No encontramos proyectos con esos criterios</h2>
+          <p>Cuando un cliente publique una oportunidad compatible o ajustes los filtros, aparecerá aquí.</p>
+          @if (vm.hayFiltrosActivos()) {
+            <button type="button" class="secondary" (click)="vm.limpiarFiltros()">Ver todas las oportunidades</button>
+          }
         </section>
       } @else {
         <div class="opportunity-list">
           @for (oportunidad of vm.oportunidades(); track oportunidad.id) {
             <article class="opportunity-card">
               <div class="card-heading">
-                <h3>{{ oportunidad.titulo }}</h3>
-                @if (oportunidad.esUrgente) {
-                  <span class="badge urgent">
-                    <ion-icon name="flash-outline" aria-hidden="true" />
-                    Urgente
-                  </span>
-                }
+                <h3>
+                  <a [routerLink]="['/marketplace', oportunidad.id]" class="title-link">
+                    {{ oportunidad.titulo }}
+                  </a>
+                </h3>
+                <div class="badges-group">
+                  @if (oportunidad.matching.tieneDatosMatching) {
+                    <span class="badge match">
+                      <ion-icon name="sparkles-outline" aria-hidden="true" />
+                      {{ oportunidad.matching.porcentajeTotal }}% match
+                    </span>
+                  }
+                  @if (oportunidad.esUrgente) {
+                    <span class="badge urgent">
+                      <ion-icon name="flash-outline" aria-hidden="true" />
+                      Urgente
+                    </span>
+                  }
+                </div>
               </div>
+
+              @if (oportunidad.disciplina || oportunidad.modalidad || oportunidad.ubicacion) {
+                <div class="extra-chips">
+                  @if (oportunidad.disciplina) {
+                    <span class="chip-info">{{ oportunidad.disciplina }}</span>
+                  }
+                  @if (oportunidad.modalidad) {
+                    <span class="chip-info">{{ oportunidad.modalidad }}</span>
+                  }
+                  @if (oportunidad.ubicacion) {
+                    <span class="chip-info">
+                      <ion-icon name="location-outline" aria-hidden="true" />
+                      {{ oportunidad.ubicacion }}
+                    </span>
+                  }
+                </div>
+              }
 
               <p class="description">{{ oportunidad.descripcion }}</p>
 
               @if (oportunidad.habilidadesRequeridas.length > 0) {
                 <ul class="skills" aria-label="Habilidades requeridas">
                   @for (habilidad of oportunidad.habilidadesRequeridas; track habilidad) {
-                    <li>{{ habilidad }}</li>
+                    <li [class.skill-matched]="oportunidad.matching.skillsCoincidentes.includes(habilidad)">
+                      {{ habilidad }}
+                    </li>
                   }
                 </ul>
               }
@@ -75,20 +211,36 @@
                   <ion-icon name="people-outline" aria-hidden="true" />
                   {{ oportunidad.nombreCliente }}
                 </span>
-                <span>{{ oportunidad.creadoEn | date: 'dd MMM yyyy' }}</span>
+                <span>
+                  <ion-icon name="calendar-outline" aria-hidden="true" />
+                  {{ (oportunidad.fechaLimite || oportunidad.creadoEn) | date: 'dd MMM yyyy' }}
+                </span>
               </div>
 
               <div class="payout">
                 <div>
                   <p class="label">Presupuesto</p>
-                  <p class="value">{{ oportunidad.presupuesto | currency: 'MXN':'symbol-narrow':'1.0-0' }}</p>
+                  @if (oportunidad.presupuestoMinimo && oportunidad.presupuestoMaximo) {
+                    <p class="value">
+                      {{ oportunidad.presupuestoMinimo | currency: 'MXN':'symbol-narrow':'1.0-0' }} –
+                      {{ oportunidad.presupuestoMaximo | currency: 'MXN':'symbol-narrow':'1.0-0' }}
+                    </p>
+                  } @else {
+                    <p class="value">{{ oportunidad.presupuesto | currency: 'MXN':'symbol-narrow':'1.0-0' }}</p>
+                  }
                 </div>
                 @if (oportunidad.pagoEstimadoEstudiante !== null) {
                   <div>
-                    <p class="label">Pago estimado</p>
+                    <p class="label">Pago neto estimado</p>
                     <p class="value accent">{{ oportunidad.pagoEstimadoEstudiante | currency: 'MXN':'symbol-narrow':'1.0-0' }}</p>
                   </div>
                 }
+              </div>
+
+              <div class="card-cta">
+                <a [routerLink]="['/marketplace', oportunidad.id]" class="secondary detail-btn">
+                  {{ oportunidad.yaPostulado ? 'Postulado · Ver detalle' : 'Ver detalle y postularme' }}
+                </a>
               </div>
             </article>
           }
@@ -99,7 +251,7 @@
         @if (vm.urgentes() > 0) {
           Hay {{ vm.urgentes() }} {{ vm.urgentes() === 1 ? 'proyecto urgente' : 'proyectos urgentes' }} con recargo.
         } @else {
-          Completa tu portafolio para destacar frente a los clientes.
+          Completa tus habilidades del catálogo y portafolio para mejorar tu compatibilidad.
         }
       </p>
     }

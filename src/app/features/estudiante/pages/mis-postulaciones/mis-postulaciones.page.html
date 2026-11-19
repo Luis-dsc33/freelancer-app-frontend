@@ -1,0 +1,165 @@
+<ion-content class="estudiante-page">
+  <main class="estudiante-shell">
+    <app-estudiante-nav />
+
+    <div class="title-row">
+      <span class="section-icon"><ion-icon name="paper-plane-outline" aria-hidden="true" /></span>
+      <div>
+        <p class="eyebrow">SEGUIMIENTO DE OPORTUNIDADES</p>
+        <h1>Mis postulaciones</h1>
+      </div>
+    </div>
+    <p class="intro">
+      Consulta el estado de las ofertas a las que te has postulado, inicia conversación con el cliente o retira postulaciones pendientes.
+    </p>
+
+    @if (vm.mensajeExito()) {
+      <div class="notice success" role="status">
+        <ion-icon name="checkmark-circle-outline" aria-hidden="true" />
+        <span>{{ vm.mensajeExito() }}</span>
+      </div>
+    }
+
+    @if (vm.error()) {
+      <div class="notice error" role="alert">
+        <ion-icon name="alert-circle-outline" aria-hidden="true" />
+        <span>{{ vm.error() }}</span>
+      </div>
+      <button type="button" class="secondary" (click)="vm.cargar()" [disabled]="vm.cargando()">
+        <ion-icon name="refresh-outline" aria-hidden="true" />
+        Reintentar
+      </button>
+    } @else if (vm.cargando()) {
+      <div class="empty" role="status">
+        <ion-spinner name="crescent" />
+        <p>Cargando tus postulaciones…</p>
+      </div>
+    } @else {
+      <div class="filter-pills" role="tablist" aria-label="Filtrar postulaciones por estado">
+        @for (filtro of filtros; track filtro) {
+          <button
+            type="button"
+            class="filter-pill"
+            [class.active]="vm.filtroEstado() === filtro"
+            (click)="vm.seleccionarFiltro(filtro)"
+          >
+            {{ filtro }}
+          </button>
+        }
+      </div>
+
+      @if (vm.postulacionesFiltradas().length === 0) {
+        <section class="empty">
+          <span class="empty-icon"><ion-icon name="paper-plane-outline" aria-hidden="true" /></span>
+          <h2>No hay postulaciones para mostrar</h2>
+          <p>Explora las oportunidades abiertas en el marketplace y envía tu primera propuesta.</p>
+          <a routerLink="/marketplace" class="primary">Ir al marketplace</a>
+        </section>
+      } @else {
+        <div class="cards-stack">
+          @for (item of vm.postulacionesFiltradas(); track item.id) {
+            <article class="tb-card">
+              <div class="card-top">
+                <div>
+                  <h3>{{ item.tituloProyecto || 'Oportunidad #' + item.proyectoId.slice(0, 8) }}</h3>
+                  <p class="meta-line">
+                    @if (item.nombreCliente) {
+                      <span>{{ item.nombreCliente }} · </span>
+                    }
+                    <span>Enviada el {{ item.creadaEn | date: 'dd MMM yyyy' }}</span>
+                  </p>
+                </div>
+                <span class="badge" [class]="claseEstado(item.estado)">{{ item.estado }}</span>
+              </div>
+
+              <p class="proposal-text">{{ item.mensaje }}</p>
+
+              @if (item.presupuestoProyecto !== null && item.presupuestoProyecto !== undefined) {
+                <p class="budget-line">
+                  Presupuesto de referencia:
+                  <strong>{{ item.presupuestoProyecto | currency: 'MXN':'symbol-narrow':'1.0-0' }}</strong>
+                </p>
+              }
+
+              <div class="card-actions">
+                <a [routerLink]="['/marketplace', item.proyectoId]" class="secondary">
+                  <ion-icon name="eye-outline" aria-hidden="true" />
+                  Ver oferta
+                </a>
+
+                @if (item.estado === 'Pendiente' || item.estado === 'Aceptada') {
+                  <a
+                    routerLink="/estudiante/chat"
+                    [queryParams]="{ proyectoId: item.proyectoId, postulacionId: item.id }"
+                    class="secondary"
+                  >
+                    <ion-icon name="chatbubble-ellipses-outline" aria-hidden="true" />
+                    Ir al chat
+                  </a>
+                }
+
+                @if (item.estado === 'Aceptada') {
+                  <a routerLink="/estudiante/contratos" class="primary">
+                    <ion-icon name="document-text-outline" aria-hidden="true" />
+                    Ver contrato
+                  </a>
+                }
+
+                @if (item.estado === 'Pendiente') {
+                  <button
+                    type="button"
+                    class="danger-outline"
+                    [disabled]="vm.procesandoId() === item.id"
+                    (click)="vm.solicitarRetiro(item)"
+                  >
+                    <ion-icon name="trash-outline" aria-hidden="true" />
+                    Retirar
+                  </button>
+                }
+              </div>
+            </article>
+          }
+        </div>
+      }
+    }
+  </main>
+</ion-content>
+
+<ion-modal
+  [isOpen]="vm.postulacionARetirar() !== null"
+  [canDismiss]="cerrarModal"
+  (didDismiss)="vm.cancelarRetiro()"
+  class="tb-dark-modal"
+>
+  <ng-template>
+    <section class="confirm-dialog">
+      <h2>¿Retirar postulación?</h2>
+      <p>
+        Se retirará tu postulación a
+        <strong>{{ vm.postulacionARetirar()?.tituloProyecto || 'esta oportunidad' }}</strong>.
+        Podrás confirmar si ya no deseas participar.
+      </p>
+      <div class="confirm-actions">
+        <button
+          type="button"
+          class="danger-outline"
+          [disabled]="vm.procesandoId() !== null"
+          (click)="vm.confirmarRetiro()"
+        >
+          @if (vm.procesandoId()) {
+            <ion-spinner name="crescent" />
+          }
+          <span>{{ vm.procesandoId() ? 'Retirando…' : 'Confirmar retiro' }}</span>
+        </button>
+        <button
+          type="button"
+          class="secondary"
+          [disabled]="vm.procesandoId() !== null"
+          (click)="vm.cancelarRetiro()"
+        >
+          Cancelar
+        </button>
+      </div>
+    </section>
+  </ng-template>
+</ion-modal>

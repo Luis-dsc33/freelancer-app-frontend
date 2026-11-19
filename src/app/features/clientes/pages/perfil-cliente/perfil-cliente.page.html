@@ -1,0 +1,64 @@
+<app-cliente-layout titulo="Perfil de empresa" subtitulo="Comparte los datos de tu organización y cómo pueden contactarte.">
+  @if (vm.error()) {
+    <div class="cliente-alert" role="alert">
+      <ion-icon name="alert-circle-outline" aria-hidden="true" />
+      <span>{{ vm.error() }}</span>
+    </div>
+  }
+  @if (vm.guardado()) {
+    <p class="cliente-notice" role="status">
+      <ion-icon name="checkmark-circle-outline" aria-hidden="true" /> Tu perfil se guardó correctamente.
+    </p>
+  }
+
+  @if (vm.cargando()) {
+    <div class="cliente-loading"><ion-spinner name="crescent" /><span>Cargando perfil…</span></div>
+  } @else {
+    <section class="cliente-card profile-card">
+      <div class="profile-heading">
+        <span class="profile-icon"><ion-icon name="person-circle-outline" aria-hidden="true" /></span>
+        <div>
+          <h2>{{ vm.perfilExiste() ? 'Actualiza tu información' : 'Completa tu perfil' }}</h2>
+          <p>El backend guarda estos datos en tu perfil de Cliente. No se requiere subir un logotipo.</p>
+        </div>
+      </div>
+
+      <form class="cliente-form" [formGroup]="vm.form" (ngSubmit)="vm.guardar()" novalidate>
+        <div class="cliente-field cliente-field--wide">
+          <label for="nombreEmpresa">Nombre de empresa u organización</label>
+          <input id="nombreEmpresa" formControlName="nombreEmpresa" autocomplete="organization"
+            placeholder="Ej. CodeBridge Studio"
+            [attr.aria-invalid]="vm.form.controls.nombreEmpresa.touched && vm.form.controls.nombreEmpresa.invalid">
+          @if (vm.form.controls.nombreEmpresa.touched && vm.form.controls.nombreEmpresa.invalid) {
+            <span class="cliente-field-error">Escribe el nombre de tu empresa.</span>
+          }
+        </div>
+
+        <div class="cliente-field">
+          <label for="telefono">Teléfono</label>
+          <input id="telefono" type="tel" formControlName="telefono" autocomplete="tel" placeholder="442 000 0000">
+        </div>
+        <div class="cliente-field">
+          <label for="ubicacion">Ubicación</label>
+          <input id="ubicacion" formControlName="ubicacion" autocomplete="address-level2" placeholder="Ciudad, estado">
+        </div>
+        <div class="cliente-field cliente-field--wide">
+          <label for="descripcion">Acerca de tu organización</label>
+          <textarea id="descripcion" rows="4" formControlName="descripcion"
+            placeholder="Cuéntales a los estudiantes qué hace tu organización y qué tipo de proyectos desarrollas."></textarea>
+        </div>
+        <div class="cliente-field cliente-field--wide">
+          <label for="datosContacto">Datos de contacto</label>
+          <textarea id="datosContacto" rows="3" formControlName="datosContacto"
+            placeholder="Horario, medio de contacto preferido u otra información útil."></textarea>
+        </div>
+        <div class="cliente-form-actions">
+          <button class="cliente-button cliente-button--primary" type="submit" [disabled]="vm.guardando()">
+            @if (vm.guardando()) { <ion-spinner name="crescent" /> }
+            {{ vm.guardando() ? 'Guardando…' : (vm.perfilExiste() ? 'Guardar cambios' : 'Crear perfil') }}
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+</app-cliente-layout>

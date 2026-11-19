@@ -1,0 +1,116 @@
+.tb-est-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 20px;
+  padding-bottom: 14px;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.tb-est-brand {
+  display: inline-flex;
+  align-items: center;
+  gap: 9px;
+  color: #fff;
+  font-family: var(--tb-font-heading);
+  font-weight: 700;
+  font-size: 15px;
+  text-decoration: none;
+}
+
+.tb-est-mark {
+  display: grid;
+  place-items: center;
+  width: 30px;
+  height: 30px;
+  border-radius: 9px;
+  background: #fb7f1b;
+  color: #160900;
+  font-size: 12px;
+  font-weight: 800;
+}
+
+.tb-est-account {
+  display: inline-flex;
+  align-items: center;
+  gap: 12px;
+}
+
+.tb-est-user {
+  color: #888;
+  font-size: 12px;
+}
+
+.tb-est-logout {
+  display: grid;
+  place-items: center;
+  width: 36px;
+  height: 36px;
+  color: #aaa;
+  font-size: 20px;
+  text-decoration: none;
+  border: 1px solid #262626;
+  border-radius: 999px;
+
+  &:hover {
+    color: #fff;
+    border-color: #444;
+  }
+}
+
+// Barra de navegación inferior (solo iconos), estilo Instagram / Facebook
+.tb-est-nav {
+  position: fixed;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  z-index: 1000;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+  height: calc(56px + var(--tb-safe-bottom, 0px));
+  padding: 0 max(8px, env(safe-area-inset-left)) var(--tb-safe-bottom, 0px)
+    max(8px, env(safe-area-inset-right));
+  background: rgba(10, 10, 10, 0.96);
+  border-top: 1px solid #1f1f1f;
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+}
+
+.tb-est-link {
+  position: relative;
+  flex: 1;
+  display: grid;
+  place-items: center;
+  height: 56px;
+  max-width: 120px;
+  color: #8a8a8a;
+  font-size: 26px;
+  text-decoration: none;
+  -webkit-tap-highlight-color: transparent;
+  transition: color 0.15s ease, transform 0.15s ease;
+
+  &:hover {
+    color: #fff;
+  }
+
+  &:active {
+    transform: scale(0.9);
+  }
+
+  &.active {
+    color: #fb923c;
+
+    &::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 28%;
+      right: 28%;
+      height: 3px;
+      border-radius: 0 0 3px 3px;
+      background: #fb7f1b;
+    }
+  }
+}

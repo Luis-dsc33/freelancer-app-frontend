@@ -12,6 +12,10 @@ export class AuthService {
   private currentUserSubject = new BehaviorSubject<LoginResponse | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
 
+  get currentUser(): LoginResponse | null {
+    return this.currentUserSubject.value;
+  }
+
   constructor(private http: HttpClient) {}
 
   registrar(datos: RegistrarUsuarioRequest): Observable<{ id: string }> {

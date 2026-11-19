@@ -1,0 +1,37 @@
+.profile-card {
+  max-width: 820px;
+  margin: 0 auto;
+}
+
+.profile-heading {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  margin-bottom: 25px;
+
+  h2 {
+    margin: 0;
+    color: #f5f5f5;
+    font: 700 18px var(--tb-font-heading);
+  }
+
+  p {
+    margin: 6px 0 0;
+    color: #888;
+    font-size: 12px;
+    line-height: 1.6;
+  }
+}
+
+.profile-icon {
+  display: grid;
+  flex: 0 0 46px;
+  width: 46px;
+  height: 46px;
+  place-items: center;
+  border: 1px solid #4a2a12;
+  border-radius: 14px;
+  background: #2a1608;
+  color: #fb7f1b;
+  font-size: 23px;
+}

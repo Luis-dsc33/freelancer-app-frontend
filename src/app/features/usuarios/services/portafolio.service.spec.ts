@@ -8,7 +8,7 @@ import { TrabajoPortafolio } from '../models/trabajo-portafolio';
 describe('PortafolioService', () => {
   let service: PortafolioService;
   let http: HttpTestingController;
-  const base = `${environment.gatewayUrl}/api/usuarios/Portafolios`;
+  const base = `${environment.gatewayUrl}/api/Portafolios`;
   const trabajo: TrabajoPortafolio = { id: 'uno', titulo: 'Proyecto', descripcion: 'Descripción', enlace: null, creadoEn: '2026-09-30', actualizadoEn: null };
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [provideHttpClient(), provideHttpClientTesting()] });

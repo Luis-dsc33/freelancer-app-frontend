@@ -34,13 +34,13 @@ describe('TrabajoPortafolioPage', () => {
   it('recorta los textos, normaliza enlace y evita guardar dos veces', () => {
     page.form.setValue({ titulo: '  Proyecto  ', descripcion: '  Texto  ', enlace: '  ' });
     page.guardar(); page.guardar();
-    const req = http.expectOne(`${environment.gatewayUrl}/api/usuarios/Portafolios/trabajos`);
+    const req = http.expectOne(`${environment.gatewayUrl}/api/Portafolios/trabajos`);
     expect(req.request.body).toEqual({ titulo: 'Proyecto', descripcion: 'Texto', enlace: null });
     req.flush({ id: 'uno' }); expect(router.navigate).toHaveBeenCalledWith(['/portafolio']);
   });
   it('conserva el formulario si falla el guardado', () => {
     page.form.setValue({ titulo: 'Proyecto', descripcion: 'Texto', enlace: '' }); page.guardar();
-    http.expectOne(`${environment.gatewayUrl}/api/usuarios/Portafolios/trabajos`).flush({}, { status: 500, statusText: 'Error' });
+    http.expectOne(`${environment.gatewayUrl}/api/Portafolios/trabajos`).flush({}, { status: 500, statusText: 'Error' });
     expect(page.form.controls.titulo.value).toBe('Proyecto'); expect(page.portafolio.error()).toBeTruthy();
   });
 });

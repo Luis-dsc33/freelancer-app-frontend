@@ -1,5 +1,6 @@
 import { Routes } from '@angular/router';
 import { adminGuard } from './core/guards/admin-guard';
+import { clienteGuard } from './core/guards/cliente-guard';
 
 export const routes: Routes = [
   {
@@ -16,13 +17,18 @@ export const routes: Routes = [
     loadChildren: () => import('./features/usuarios/portafolio.routes').then(m => m.PORTAFOLIO_ROUTES)
   },
   {
+    path: 'marketplace',
+    loadChildren: () => import('./features/marketplace/marketplace.routes').then(m => m.MARKETPLACE_ROUTES)
+  },
+  {
+    path: 'cliente',
+    canActivate: [clienteGuard],
+    loadChildren: () => import('./features/clientes/clientes.routes').then(m => m.CLIENTES_ROUTES)
+  },
+  {
     path: 'admin',
     canActivate: [adminGuard],
     loadChildren: () => import('./features/admin/admin.routes').then(m => m.ADMIN_ROUTES)
-  },
-  {
-    path: 'marketplace',
-    loadChildren: () => import('./features/marketplace/marketplace.routes').then(m => m.MARKETPLACE_ROUTES)
   },
   {
     path: '**',

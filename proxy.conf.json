@@ -1,0 +1,19 @@
+{
+  "/api/usuarios": {
+    "target": "http://localhost:5210",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/usuarios": "/api"
+    }
+  },
+  "/api/marketplace": {
+    "target": "http://localhost:5004",
+    "secure": false,
+    "changeOrigin": true,
+    "pathRewrite": {
+      "^/api/marketplace/api": "/api",
+      "^/api/marketplace": "/api"
+    }
+  }
+}

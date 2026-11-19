@@ -8,8 +8,7 @@ import { MetricasPanel } from '../models/metricas';
 @Injectable({ providedIn: 'root' })
 export class MetricasService {
   private readonly http = inject(HttpClient);
-  // /api/admin = prefijo del Gateway ------- /Metricas = ruta real del Controller en Admin.Api
-  private readonly baseUrl = `${environment.gatewayUrl}/api/admin/Metricas`;
+  private readonly baseUrl = `${environment.gatewayUrl}/api/Metricas`;
 
   readonly metricas = signal<MetricasPanel | null>(null);
   readonly cargando = signal(false);

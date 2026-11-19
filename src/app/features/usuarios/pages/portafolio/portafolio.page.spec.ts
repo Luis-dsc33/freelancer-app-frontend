@@ -19,7 +19,7 @@ describe('PortafolioPage', () => {
   it('confirma una sola eliminación aunque se pulse dos veces', () => {
     page.seleccionado.set({ id: 'uno', titulo: 'Proyecto', descripcion: 'Texto', enlace: null, creadoEn: '', actualizadoEn: null });
     page.confirmarEliminar(); page.confirmarEliminar();
-    http.expectOne(`${environment.gatewayUrl}/api/usuarios/Portafolios/trabajos/uno`).flush(null, { status: 204, statusText: 'No Content' });
+    http.expectOne(`${environment.gatewayUrl}/api/Portafolios/trabajos/uno`).flush(null, { status: 204, statusText: 'No Content' });
     expect(page.seleccionado()).toBeNull();
   });
   it('no convierte URLs inseguras en enlaces clicables', () => {

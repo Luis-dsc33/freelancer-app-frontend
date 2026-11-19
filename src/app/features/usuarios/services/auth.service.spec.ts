@@ -28,7 +28,7 @@ describe('AuthService', () => {
 
     service.registrar(datos).subscribe();
 
-    const request = http.expectOne(`${environment.gatewayUrl}/api/usuarios/Auth/registro`);
+    const request = http.expectOne(`${environment.gatewayUrl}/api/Auth/registro`);
     expect(request.request.method).toBe('POST');
     expect(request.request.body).toEqual(datos);
     request.flush({ id: 'usuario-1' }, { status: 201, statusText: 'Created' });

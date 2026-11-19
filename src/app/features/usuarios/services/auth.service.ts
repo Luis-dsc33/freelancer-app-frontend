@@ -6,11 +6,14 @@ import { LoginRequest, LoginResponse, RegistrarUsuarioRequest } from '../models/
 
 @Injectable({ providedIn: 'root' })
 export class AuthService {
-  // /api/usuarios = prefijo del Gateway ------- /api/Auth = ruta real del Controller en .NET
   private baseUrl = `${environment.gatewayUrl}/api/usuarios/Auth`;
 
   private currentUserSubject = new BehaviorSubject<LoginResponse | null>(null);
   currentUser$ = this.currentUserSubject.asObservable();
+
+  get currentUser(): LoginResponse | null {
+    return this.currentUserSubject.value;
+  }
 
   constructor(private http: HttpClient) {}
 

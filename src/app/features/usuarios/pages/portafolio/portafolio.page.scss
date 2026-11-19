@@ -1,5 +1,6 @@
-.portfolio-header,.brand,.title-row,.list-heading,.card-heading,.card-actions { display: flex; align-items: center; }
+.portfolio-header,.brand,.title-row,.list-heading,.card-heading,.card-actions,.header-links { display: flex; align-items: center; }
 .portfolio-header { justify-content: space-between; margin-bottom: 40px; gap: 12px; }
+.header-links { justify-content: flex-end; gap: 14px; flex-wrap: wrap; }
 .brand { gap: 9px; font-weight: 700; font-size: 15px; }
 .brand-mark { display: grid; place-items: center; width: 30px; height: 30px; border-radius: 9px; background: #fb7f1b; color: #160900; font-size: 12px; }
 .title-row { gap: 14px; }

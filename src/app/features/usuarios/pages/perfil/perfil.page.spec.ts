@@ -11,7 +11,7 @@ describe('PerfilPage', () => {
   let page: PerfilPage;
   let http: HttpTestingController;
   let router: Router;
-  const perfilUrl = `${environment.gatewayUrl}/api/usuarios/Perfiles/mi-perfil`;
+  const perfilUrl = `${environment.gatewayUrl}/api/Perfiles/mi-perfil`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

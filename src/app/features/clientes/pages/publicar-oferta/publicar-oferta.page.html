@@ -1,0 +1,120 @@
+<app-cliente-layout titulo="Publicar oferta" subtitulo="Comparte los detalles de tu proyecto para encontrar talento.">
+  @if (vm.error()) {
+    <div class="form-alert" role="alert">
+      <ion-icon name="alert-circle-outline" aria-hidden="true" />
+      <span>{{ vm.error() }}</span>
+    </div>
+  }
+
+  @if (vm.ofertaPublicada(); as oferta) {
+    <section class="success-card" role="status">
+      <span class="success-icon"><ion-icon name="checkmark-circle-outline" aria-hidden="true" /></span>
+      <p class="eyebrow">PUBLICACIÓN CONFIRMADA</p>
+      <h2>Tu oferta fue publicada</h2>
+      <p class="success-intro">El servidor confirmó la creación de esta oferta.</p>
+
+      <dl class="offer-summary">
+        <div><dt>Título</dt><dd>{{ oferta.titulo }}</dd></div>
+        <div><dt>Disciplina</dt><dd>{{ oferta.disciplina }}</dd></div>
+        <div><dt>Presupuesto</dt><dd>{{ oferta.presupuesto | currency: 'MXN':'symbol-narrow':'1.2-2' }}</dd></div>
+        <div><dt>Fecha esperada de entrega</dt><dd>{{ oferta.fechaLimite | date: 'longDate' }}</dd></div>
+        <div><dt>Estado</dt><dd>{{ oferta.estado }}</dd></div>
+        <div><dt>Identificador</dt><dd>{{ oferta.id }}</dd></div>
+      </dl>
+
+      <div class="success-actions">
+        <a class="secondary-action" routerLink="/cliente">Volver al panel</a>
+        <button class="primary-action" type="button" (click)="vm.nuevaOferta()">Publicar otra oferta</button>
+      </div>
+    </section>
+  } @else {
+    <section class="form-card">
+      <div class="form-heading">
+        <span class="form-icon"><ion-icon name="megaphone-outline" aria-hidden="true" /></span>
+        <div>
+          <h2>Detalles de la oferta</h2>
+          <p>La fecha límite representa la fecha esperada de entrega.</p>
+        </div>
+      </div>
+
+      <form [formGroup]="vm.form" (ngSubmit)="vm.publicar()" novalidate>
+        <div class="form-grid">
+          <div class="field field--wide">
+            <label for="titulo">Título</label>
+            <input id="titulo" type="text" formControlName="titulo" autocomplete="off" placeholder="Ej. Desarrollo de una tienda en línea"
+              [attr.aria-invalid]="vm.form.controls.titulo.touched && vm.form.controls.titulo.invalid">
+            @if (vm.form.controls.titulo.touched && vm.form.controls.titulo.invalid) {
+              <span class="field-error">Escribe un título para la oferta.</span>
+            }
+            @for (mensaje of vm.erroresCampos().titulo ?? []; track mensaje) {
+              <span class="field-error">{{ mensaje }}</span>
+            }
+          </div>
+
+          <div class="field field--wide">
+            <label for="descripcion">Descripción</label>
+            <textarea id="descripcion" rows="5" formControlName="descripcion" placeholder="Describe el alcance y los objetivos de tu proyecto."
+              [attr.aria-invalid]="vm.form.controls.descripcion.touched && vm.form.controls.descripcion.invalid"></textarea>
+            @if (vm.form.controls.descripcion.touched && vm.form.controls.descripcion.invalid) {
+              <span class="field-error">Escribe una descripción para la oferta.</span>
+            }
+            @for (mensaje of vm.erroresCampos().descripcion ?? []; track mensaje) {
+              <span class="field-error">{{ mensaje }}</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="disciplina">Disciplina</label>
+            <input id="disciplina" type="text" formControlName="disciplina" autocomplete="off" placeholder="Ej. Desarrollo de software"
+              [attr.aria-invalid]="vm.form.controls.disciplina.touched && vm.form.controls.disciplina.invalid">
+            @if (vm.form.controls.disciplina.touched && vm.form.controls.disciplina.invalid) {
+              <span class="field-error">Indica la disciplina de la oferta.</span>
+            }
+            @for (mensaje of vm.erroresCampos().disciplina ?? []; track mensaje) {
+              <span class="field-error">{{ mensaje }}</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="presupuesto">Presupuesto (MXN)</label>
+            <div class="input-prefix">
+              <span>$</span>
+              <input id="presupuesto" type="number" formControlName="presupuesto" min="0.01" step="0.01" inputmode="decimal"
+                [attr.aria-invalid]="vm.form.controls.presupuesto.touched && vm.form.controls.presupuesto.invalid">
+            </div>
+            @if (vm.form.controls.presupuesto.touched && vm.form.controls.presupuesto.hasError('min')) {
+              <span class="field-error">El presupuesto debe ser de al menos $0.01.</span>
+            } @else if (vm.form.controls.presupuesto.touched && vm.form.controls.presupuesto.hasError('required')) {
+              <span class="field-error">Indica el presupuesto de la oferta.</span>
+            }
+            @for (mensaje of vm.erroresCampos().presupuesto ?? []; track mensaje) {
+              <span class="field-error">{{ mensaje }}</span>
+            }
+          </div>
+
+          <div class="field">
+            <label for="fechaLimite">Fecha esperada de entrega</label>
+            <input id="fechaLimite" type="date" formControlName="fechaLimite" [attr.min]="vm.fechaMinima"
+              [attr.aria-invalid]="vm.form.controls.fechaLimite.touched && vm.form.controls.fechaLimite.invalid">
+            @if (vm.form.controls.fechaLimite.touched && vm.form.controls.fechaLimite.hasError('required')) {
+              <span class="field-error">Selecciona una fecha de entrega.</span>
+            } @else if (vm.form.controls.fechaLimite.touched && vm.form.controls.fechaLimite.hasError('fechaPasada')) {
+              <span class="field-error">La fecha debe ser hoy o posterior.</span>
+            }
+            @for (mensaje of vm.erroresCampos().fechaLimite ?? []; track mensaje) {
+              <span class="field-error">{{ mensaje }}</span>
+            }
+          </div>
+        </div>
+
+        <div class="form-footer">
+          <p>Revisa los datos antes de publicar. La oferta se enviará al backend para su validación.</p>
+          <button class="primary-action" type="submit" [disabled]="vm.guardando()">
+            @if (vm.guardando()) { <ion-spinner name="crescent" /> }
+            {{ vm.guardando() ? 'Publicando…' : 'Publicar oferta' }}
+          </button>
+        </div>
+      </form>
+    </section>
+  }
+</app-cliente-layout>

@@ -7,7 +7,8 @@ import {Environment} from './environment.model';
 // NO COLOQUEN LA DE PRODUCCION SINO TODO EN LOCAL, SE PRUEBA EN PRODUCCION CUANDO ESTE EN LA RAMA DE QA 
 export const environment : Environment = {
   production: false,
-  gatewayUrl: 'http://localhost:9080'
+  //gatewayUrl: 'http://localhost:9080'
+  gatewayUrl: 'https://api.talentb.world'
 };
 /*
  * For easier debugging in development mode, you can import the following file

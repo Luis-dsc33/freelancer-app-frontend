@@ -7,13 +7,12 @@ import { IOportunidadProyectoRepository } from './oportunidad-proyecto.repositor
 
 /**
  * Adaptador HTTP hacia Marketplace.Api.
- * Gateway: /api/marketplace/ → marketplace-api:/
- * Controller esperado: api/Proyectos
+ * Controller route: /api/Proyectos
  */
 @Injectable()
 export class OportunidadProyectoHttpRepository implements IOportunidadProyectoRepository {
   private readonly http = inject(HttpClient);
-  private readonly baseUrl = `${environment.gatewayUrl}/api/marketplace/api/Proyectos`;
+  private readonly baseUrl = `${environment.gatewayUrl}/api/Proyectos`;
 
   listarOportunidades(): Observable<OportunidadProyecto[]> {
     return this.http.get<OportunidadProyecto[]>(this.baseUrl);

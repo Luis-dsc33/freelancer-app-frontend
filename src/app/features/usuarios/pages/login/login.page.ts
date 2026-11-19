@@ -88,6 +88,10 @@ export class LoginPage {
           // Mismo login para todos los roles; el admin solo cambia de destino
           this.enviando.set(false);
           void this.router.navigate(['/admin']);
+        } else if (respuesta.rol === 'Cliente') {
+          this.enviando.set(false);
+          if (destino) void this.router.navigateByUrl(destino);
+          else void this.router.navigate(['/cliente']);
         } else {
           this.enviando.set(false);
           if (destino) void this.router.navigateByUrl(destino);

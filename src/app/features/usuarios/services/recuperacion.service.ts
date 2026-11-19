@@ -7,8 +7,7 @@ import { ErrorRecuperacion, EstadoRecuperacion, RestablecerContrasenaRequest,
 
 @Injectable()
 export class RecuperacionService {
-  // El gateway reemplaza /api/usuarios/ por /api/ en Usuarios.Api.
-  private readonly baseUrl = `${environment.gatewayUrl}/api/usuarios/Auth`;
+  private readonly baseUrl = `${environment.gatewayUrl}/api/Auth`;
   readonly estado = signal<EstadoRecuperacion>('formulario');
   readonly enviando = signal(false);
   readonly error = signal('');

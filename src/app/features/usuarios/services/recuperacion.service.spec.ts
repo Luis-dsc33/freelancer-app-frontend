@@ -7,7 +7,7 @@ import { RecuperacionService } from './recuperacion.service';
 describe('RecuperacionService', () => {
   let service: RecuperacionService;
   let http: HttpTestingController;
-  const base = `${environment.gatewayUrl}/api/usuarios/Auth`;
+  const base = `${environment.gatewayUrl}/api/Auth`;
   beforeEach(() => {
     TestBed.configureTestingModule({ providers: [RecuperacionService, provideHttpClient(), provideHttpClientTesting()] });
     service = TestBed.inject(RecuperacionService);

@@ -18,7 +18,7 @@ function tokenConRol(rol: string, expiraEnSegundos = Math.floor(Date.now() / 100
 describe('marketplaceGuard', () => {
   let http: HttpTestingController;
   let router: Router;
-  const perfilUrl = `${environment.gatewayUrl}/api/usuarios/Perfiles/mi-perfil`;
+  const perfilUrl = `${environment.gatewayUrl}/api/Perfiles/mi-perfil`;
 
   beforeEach(() => {
     TestBed.configureTestingModule({

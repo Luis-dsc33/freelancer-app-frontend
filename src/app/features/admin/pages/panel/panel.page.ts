@@ -35,11 +35,6 @@ export class PanelPage {
     return fecha ? `Corte: ${formatDate(fecha, 'dd/MM/yyyy, HH:mm', 'en-US')}` : null;
   });
 
-  readonly casosAbiertos = computed(() => {
-    const c = this.m()?.casos;
-    return c ? c.recibidos + c.enRevision + c.pendientesInformacion : null;
-  });
-
   // Embudo: cada etapa incluye a las siguientes (una postulación aceptada también fue revisada)
   readonly embudo = computed<Etapa[]>(() => {
     const p = this.m()?.marketplace?.postulaciones;
@@ -52,19 +47,6 @@ export class PanelPage {
       { etiqueta: 'Aceptadas', total: p.aceptadas },
     ];
     return etapas.map(e => ({ ...e, porcentaje: recibidas ? Math.round((e.total / recibidas) * 100) : 0 }));
-  });
-
-  readonly casosPorEstado = computed(() => {
-    const c = this.m()?.casos;
-    if (!c) return [];
-    const estados = [
-      { etiqueta: 'Recibido', total: c.recibidos },
-      { etiqueta: 'En revisión', total: c.enRevision },
-      { etiqueta: 'Pendiente de información', total: c.pendientesInformacion },
-      { etiqueta: 'Cerrado', total: c.cerrados },
-    ];
-    const max = Math.max(1, ...estados.map(e => e.total));
-    return estados.map(e => ({ ...e, porcentaje: Math.round((e.total / max) * 100) }));
   });
 
   readonly graficaSemanal = computed<ChartConfiguration<'line'> | null>(() => {

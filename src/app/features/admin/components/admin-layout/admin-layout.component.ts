@@ -3,7 +3,7 @@ import { RouterLink, RouterLinkActive } from '@angular/router';
 import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
-  gridOutline, peopleOutline, shieldOutline, chatbubblesOutline, documentTextOutline, logOutOutline,
+  gridOutline, peopleOutline, shieldOutline, documentTextOutline, logOutOutline,
 } from 'ionicons/icons';
 import { AuthService } from '../../../usuarios/services/auth.service';
 
@@ -26,12 +26,11 @@ export class AdminLayoutComponent {
     { etiqueta: 'Panel', icono: 'grid-outline', ruta: '/admin/panel' },
     { etiqueta: 'Usuarios', icono: 'people-outline', ruta: '/admin/usuarios' },
     { etiqueta: 'Moderación', icono: 'shield-outline', ruta: '/admin/moderacion' },
-    { etiqueta: 'Disputas', icono: 'chatbubbles-outline', ruta: '/admin/disputas' },
     { etiqueta: 'Bitácora', icono: 'document-text-outline', ruta: '/admin/bitacora' },
   ];
 
   constructor() {
-    addIcons({ gridOutline, peopleOutline, shieldOutline, chatbubblesOutline, documentTextOutline, logOutOutline });
+    addIcons({ gridOutline, peopleOutline, shieldOutline, documentTextOutline, logOutOutline });
   }
 
   cerrarSesion(): void { this.auth.logout(); }

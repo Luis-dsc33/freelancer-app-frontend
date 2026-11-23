@@ -13,8 +13,10 @@
 
     <div class="tb-alert error tb-alert-in" *ngIf="tipoError() === 'suspendida'">
       <ion-icon name="ban-outline"></ion-icon>
+      <!-- ADMIN Marcos: se muestra el motivo de la suspensión que registró el Administrador -->
       <span>
-        <strong>Cuenta suspendida.</strong> Tu cuenta ha sido suspendida por el equipo de moderación.
+        <strong>Cuenta suspendida.</strong>
+        {{ motivoSuspension() ? 'Motivo: ' + motivoSuspension() : 'Contacta a un administrador.' }}
       </span>
     </div>
 

@@ -1,4 +1,5 @@
-.estudiante-page {
+.estudiante-page,
+.tb-dark-modal {
   --background: #000;
   --ion-background-color: #000;
   --ion-text-color: #fff;
@@ -364,6 +365,37 @@
     display: flex;
     flex-direction: column;
     gap: 10px;
+  }
+
+  .stars-row {
+    display: flex;
+    gap: 8px;
+    margin: 10px 0 6px;
+  }
+
+  .star-btn {
+    background: #101010;
+    border: 1px solid #2a2a2a;
+    border-radius: 10px;
+    width: 42px;
+    height: 42px;
+    display: grid;
+    place-items: center;
+    color: #666;
+    font-size: 20px;
+  }
+
+  .star-btn.selected {
+    color: #fbbf24;
+    border-color: #fbbf24;
+    background: #251d0d;
+  }
+
+  .char-counter {
+    text-align: right;
+    font-size: 11px;
+    color: #777;
+    margin: 4px 0 12px;
   }
 
   @media (min-width: 768px) {

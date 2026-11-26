@@ -30,11 +30,6 @@
             @else { <span class="kpi__nd">No disponible</span> }
           </article>
           <article class="kpi">
-            <span class="kpi__etiqueta">Casos abiertos</span>
-            @if (casosAbiertos() !== null) { <strong class="kpi__valor">{{ casosAbiertos() }}</strong> }
-            @else { <span class="kpi__nd">No disponible</span> }
-          </article>
-          <article class="kpi">
             <span class="kpi__etiqueta">Cuentas suspendidas</span>
             @if (datos.usuarios; as u) { <strong class="kpi__valor">{{ u.cuentasSuspendidas }}</strong> }
             @else { <span class="kpi__nd">No disponible</span> }
@@ -92,8 +87,8 @@
             } @else { <div class="vacio">Sin datos</div> }
           </article>
 
-          <!-- Distribución de estrellas -->
-          <article class="tarjeta">
+          <!-- Distribución de estrellas (ADMIN Marcos: ancho completo al quitar la tarjeta de disputas) -->
+          <article class="tarjeta tarjeta--ancha">
             <h2>Distribución de calificaciones</h2>
             <p class="tarjeta__sub">Calificaciones publicadas de 1 a 5 estrellas</p>
             @if (graficaEstrellas(); as cfg) {
@@ -101,28 +96,6 @@
             } @else if (!datos.resenas) {
               <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>No disponible</div>
             } @else { <div class="vacio">Sin datos</div> }
-          </article>
-
-          <!-- Casos por estado -->
-          <article class="tarjeta">
-            <h2>Disputas por estado</h2>
-            @if (datos.casos; as c) {
-              <p class="tarjeta__sub">
-                Tiempo promedio de cierre:
-                <strong>{{ c.diasPromedioCierre !== null ? (c.diasPromedioCierre | number: '1.1-1') + ' días' : 'Sin casos cerrados' }}</strong>
-              </p>
-              <ul class="barras">
-                @for (e of casosPorEstado(); track e.etiqueta) {
-                  <li>
-                    <div class="barras__fila"><span>{{ e.etiqueta }}</span><span>{{ e.total }}</span></div>
-                    <div class="barras__pista"><div class="barras__relleno barras__relleno--azul" [style.width.%]="e.porcentaje"></div></div>
-                  </li>
-                }
-              </ul>
-            } @else {
-              <p class="tarjeta__sub">Casos de conflicto (HU-23 / HU-24)</p>
-              <div class="vacio"><ion-icon name="cloud-offline-outline"></ion-icon>No disponible</div>
-            }
           </article>
         </section>
       } @else if (servicio.cargando()) {

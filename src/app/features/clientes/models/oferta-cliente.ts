@@ -49,13 +49,27 @@ export interface PostulacionCliente {
   fechaPostulacion?: string;
 }
 
+export interface CrearContratoRequest {
+  postulacionId: string;
+  importeAcordado: number;
+  /** Formato `YYYY-MM-DD` (`DateOnly` en Marketplace.Api). */
+  fechaInicio: string;
+  /** Formato `YYYY-MM-DD`, debe ser `>= fechaInicio`. */
+  fechaCompromiso: string;
+}
+
 export interface ContratoCliente {
   id: string;
   postulacionId: string;
   proyectoId: string;
   estudianteId: string;
+  importeAcordado?: number;
+  fechaInicio?: string;
+  fechaCompromiso?: string;
   estado: string;
   creadoEn?: string;
+  cerradoEn?: string | null;
+  tituloProyecto?: string;
 }
 
 export type CampoOfertaCliente = keyof PublicarOfertaRequest;

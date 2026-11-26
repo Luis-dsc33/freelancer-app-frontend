@@ -30,4 +30,19 @@ export interface EnviarMensajeRequest {
   contenido: string;
 }
 
+/** Evento `Conectado` (solo para el socket recién conectado). */
+export interface ChatConectadoDto {
+  usuarioId: string;
+  connectionId: string;
+  conectadoEn: string;
+}
+
+/** Evento `ParticipanteConectado` (a todos los miembros de la sala al ejecutar `JoinConversation`). */
+export interface ChatConexionDto {
+  usuarioId: string;
+  conversacionId: string;
+  connectionId: string;
+  conectadoEn: string;
+}
+
 export type EstadoTiempoRealChat = 'desconectado' | 'conectando' | 'conectado' | 'modo_http';

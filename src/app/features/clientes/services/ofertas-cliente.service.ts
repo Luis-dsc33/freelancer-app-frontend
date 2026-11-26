@@ -4,6 +4,7 @@ import { catchError, map, Observable, of, switchMap } from 'rxjs';
 import { environment } from '../../../../environments/environment';
 import {
   ContratoCliente,
+  CrearContratoRequest,
   OfertaCliente,
   PostulacionCliente,
   PublicarOfertaRequest,
@@ -95,6 +96,10 @@ export class OfertasClienteService {
     return this.http.delete<void>(`${this.baseUrl}/${encodeURIComponent(id)}`);
   }
 
+  obtenerOferta(id: string): Observable<OfertaCliente> {
+    return this.http.get<OfertaCliente>(`${this.baseUrl}/${encodeURIComponent(id)}`);
+  }
+
   listarPostulaciones(ofertaId: string): Observable<PostulacionCliente[]> {
     return this.http.get<PostulacionCliente[]>(
       `${environment.gatewayUrl}/api/marketplace/ofertas/${encodeURIComponent(ofertaId)}/postulaciones`,
@@ -115,8 +120,11 @@ export class OfertasClienteService {
     );
   }
 
-  crearContrato(postulacionId: string): Observable<unknown> {
-    return this.http.post(`${environment.gatewayUrl}/api/marketplace/contratos`, { postulacionId });
+  crearContrato(datos: CrearContratoRequest): Observable<ContratoCliente> {
+    return this.http.post<ContratoCliente>(
+      `${environment.gatewayUrl}/api/marketplace/contratos`,
+      datos,
+    );
   }
 
   listarMisContratos(): Observable<ContratoCliente[]> {

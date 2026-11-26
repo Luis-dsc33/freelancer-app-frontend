@@ -4,7 +4,13 @@ import { of, Subject } from 'rxjs';
 import { AbrirConversacionHandler } from '../commands/abrir-conversacion.handler';
 import { EnviarMensajeChatHandler } from '../commands/enviar-mensaje-chat.handler';
 import { CHAT_REALTIME_PORT, IChatRealtimePort } from '../data/chat-realtime.port';
-import { ConversacionChat, EstadoTiempoRealChat, MensajeChat } from '../models/chat';
+import {
+  ChatConectadoDto,
+  ChatConexionDto,
+  ConversacionChat,
+  EstadoTiempoRealChat,
+  MensajeChat,
+} from '../models/chat';
 import { ListarMensajesConversacionHandler } from '../queries/listar-mensajes-conversacion.handler';
 import { ListarMisConversacionesHandler } from '../queries/listar-mis-conversaciones.handler';
 import { ChatEstudianteViewModel } from './chat-estudiante.view-model';
@@ -21,9 +27,12 @@ describe('ChatEstudianteViewModel', () => {
 
   it('carga conversaciones, selecciona la primera, envía mensajes y escucha tiempo real', () => {
     const mensajes$ = new Subject<MensajeChat>();
+    const participante$ = new Subject<ChatConexionDto>();
     const realtime: IChatRealtimePort = {
       estadoConexion: signal<EstadoTiempoRealChat>('modo_http'),
       mensajesEntrantes$: mensajes$.asObservable(),
+      conectado$: new Subject<ChatConectadoDto>().asObservable(),
+      participanteConectado$: participante$.asObservable(),
       conectar: vi.fn().mockResolvedValue(undefined),
       unirseAConversacion: vi.fn().mockResolvedValue(undefined),
       salirDeConversacion: vi.fn().mockResolvedValue(undefined),
@@ -75,5 +84,25 @@ describe('ChatEstudianteViewModel', () => {
       enviadoEn: '2026-11-19T02:01:00Z',
     });
     expect(vm.mensajes()).toHaveLength(2);
+
+    // Deduplicación: el mismo mensaje por SignalR no se inserta dos veces.
+    mensajes$.next({
+      id: 'm-2',
+      conversacionId: 'conv-1',
+      remitenteId: 'cli-1',
+      contenido: 'Hola estudiante',
+      enviadoEn: '2026-11-19T02:01:00Z',
+    });
+    expect(vm.mensajes()).toHaveLength(2);
+
+    // Presencia: ParticipanteConectado de la contraparte en la conversación activa.
+    expect(vm.contraparteEnLinea()).toBe(false);
+    participante$.next({
+      usuarioId: 'cli-1',
+      conversacionId: 'conv-1',
+      connectionId: 'c-1',
+      conectadoEn: '2026-11-19T02:02:00Z',
+    });
+    expect(vm.contraparteEnLinea()).toBe(true);
   });
 });

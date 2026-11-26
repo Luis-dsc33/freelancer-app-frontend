@@ -44,14 +44,22 @@
             </span>
           </div>
           <div class="cliente-meta">
+            @if (contrato.importeAcordado) { <span>Importe acordado: ${{ contrato.importeAcordado }} MXN</span> }
+            @if (contrato.fechaInicio) { <span>Inicio: {{ contrato.fechaInicio }}</span> }
+            @if (contrato.fechaCompromiso) { <span>Compromiso: {{ contrato.fechaCompromiso }}</span> }
             <span>Oferta: {{ contrato.proyectoId }}</span>
             <span>Postulación: {{ contrato.postulacionId }}</span>
             <span>Estudiante: {{ contrato.estudianteId }}</span>
             @if (contrato.creadoEn) { <span>Creado: {{ contrato.creadoEn | date: 'mediumDate' }}</span> }
           </div>
 
-          @if (vm.esActivo(contrato)) {
-            <div class="cliente-card__actions">
+          <div class="cliente-card__actions">
+            <a class="cliente-button" routerLink="/cliente/chat"
+              [queryParams]="{ proyectoId: contrato.proyectoId, postulacionId: contrato.postulacionId, contratoId: contrato.id }">
+              <ion-icon name="chatbubble-ellipses-outline" aria-hidden="true" /> Chat con estudiante
+            </a>
+
+            @if (vm.esActivo(contrato)) {
               <button class="cliente-button cliente-button--primary" type="button"
                 (click)="vm.pedirConfirmacion(contrato, 'finalizar')" [disabled]="vm.accionId() !== ''">
                 <ion-icon name="checkmark-circle-outline" aria-hidden="true" /> Marcar como finalizado
@@ -60,10 +68,64 @@
                 (click)="vm.pedirConfirmacion(contrato, 'cancelar')" [disabled]="vm.accionId() !== ''">
                 <ion-icon name="stop-circle-outline" aria-hidden="true" /> Cancelar contrato
               </button>
-            </div>
+            }
+
+            @if (vm.esFinalizado(contrato)) {
+              @if (vm.estaCalificado(contrato.id)) {
+                <span class="rated-tag"><ion-icon name="star" aria-hidden="true" /> Ya calificado</span>
+              } @else {
+                <button class="cliente-button cliente-button--primary" type="button"
+                  (click)="abrirCalificacion(contrato)" [disabled]="vm.enviandoResena()">
+                  <ion-icon name="star-outline" aria-hidden="true" /> Calificar al estudiante
+                </button>
+              }
+            }
+          </div>
+
+          <app-reputacion-usuario [usuarioId]="contrato.estudianteId" etiqueta="Ver reputación del estudiante" />
+
+          @if (vm.contratoACalificar()?.id === contrato.id) {
+            <form class="rating-panel" aria-label="Calificar al estudiante"
+              (submit)="enviarCalificacion(); $event.preventDefault()">
+              <h3>Calificar al estudiante</h3>
+              <div class="stars-row" role="radiogroup" aria-label="Puntuación de 1 a 5 estrellas">
+                @for (valor of estrellas; track valor) {
+                  <button type="button" class="star-btn"
+                    [class.selected]="puntuacionSeleccionada() >= valor"
+                    [attr.aria-label]="valor + (valor === 1 ? ' estrella' : ' estrellas')"
+                    [attr.aria-checked]="puntuacionSeleccionada() === valor"
+                    role="radio"
+                    (click)="puntuacionSeleccionada.set(valor)">
+                    <ion-icon [name]="puntuacionSeleccionada() >= valor ? 'star' : 'star-outline'" aria-hidden="true" />
+                  </button>
+                }
+              </div>
+
+              <label [attr.for]="'comentario-' + contrato.id">Comentario *</label>
+              <textarea [id]="'comentario-' + contrato.id" maxlength="2000"
+                placeholder="¿Cómo fue la comunicación y la entrega del estudiante?"
+                [value]="comentarioResena()"
+                (input)="comentarioResena.set($any($event.target).value)"></textarea>
+              <p class="char-counter">{{ comentarioResena().length }}/2000</p>
+
+              @if (vm.errorResena()) {
+                <div class="cliente-alert" role="alert">
+                  <ion-icon name="alert-circle-outline" aria-hidden="true" />
+                  <span>{{ vm.errorResena() }}</span>
+                </div>
+              }
+
+              <div class="rating-actions">
+                <button class="cliente-button" type="button" (click)="vm.cerrarCalificacion()" [disabled]="vm.enviandoResena()">Cancelar</button>
+                <button class="cliente-button cliente-button--primary" type="submit" [disabled]="vm.enviandoResena()">
+                  @if (vm.enviandoResena()) { <ion-spinner name="crescent" /> }
+                  {{ vm.enviandoResena() ? 'Enviando reseña…' : 'Enviar calificación' }}
+                </button>
+              </div>
+            </form>
           }
 
-          @if (vm.confirmacion()?.contrato.id === contrato.id) {
+          @if (vm.confirmacion()?.contrato?.id === contrato.id) {
             <div class="cliente-confirm" role="group" aria-label="Confirmar cambio de estado">
               <p>
                 @if (vm.confirmacion()?.accion === 'finalizar') {

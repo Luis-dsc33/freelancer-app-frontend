@@ -6,19 +6,16 @@ export const ADMIN_ROUTES: Routes = [
     loadComponent: () => import('./pages/panel/panel.page').then(m => m.PanelPage)
   },
   {
-    path: 'usuarios', // HU-25 (cascarón)
+    path: 'usuarios', // HU-25
     loadComponent: () => import('./pages/usuarios/usuarios.page').then(m => m.UsuariosAdminPage)
   },
   {
-    path: 'moderacion', // HU-21 / HU-26 (cascarón)
+    path: 'moderacion', // HU-21 / HU-26
     loadComponent: () => import('./pages/moderacion/moderacion.page').then(m => m.ModeracionPage)
   },
+  // ADMIN Marcos: se quitó la sección de Disputas (HU-24) por decisión del equipo
   {
-    path: 'disputas', // HU-24 (cascarón)
-    loadComponent: () => import('./pages/disputas/disputas.page').then(m => m.DisputasPage)
-  },
-  {
-    path: 'bitacora', // HU-27 (cascarón)
+    path: 'bitacora', // HU-27
     loadComponent: () => import('./pages/bitacora/bitacora.page').then(m => m.BitacoraPage)
   },
   {

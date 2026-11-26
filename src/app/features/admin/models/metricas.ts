@@ -37,14 +37,6 @@ export interface EstadisticasResenas {
   distribucionEstrellas: Conteo[];
 }
 
-export interface EstadisticasCasos {
-  recibidos: number;
-  enRevision: number;
-  pendientesInformacion: number;
-  cerrados: number;
-  diasPromedioCierre: number | null;
-}
-
 // Una sección en null = su servicio no respondió (HU-28-02: "No disponible")
 export interface MetricasPanel {
   fechaCorte: string;
@@ -52,5 +44,5 @@ export interface MetricasPanel {
   usuarios: EstadisticasUsuarios | null;
   marketplace: EstadisticasMarketplace | null;
   resenas: EstadisticasResenas | null;
-  casos: EstadisticasCasos | null;
+  // ADMIN Marcos: se quitaron los casos de disputas (HU-24 fuera de alcance)
 }

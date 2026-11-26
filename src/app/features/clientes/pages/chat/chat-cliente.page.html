@@ -1,0 +1,103 @@
+<app-cliente-layout titulo="Chat" subtitulo="Conversa con los estudiantes de tus postulaciones y contratos.">
+  <span acciones class="cliente-status cliente-status--neutral">
+    <ion-icon name="radio-outline" aria-hidden="true" />
+    {{ etiquetaEstadoConexion(vm.estadoTiempoReal()) }}
+  </span>
+
+  @if (vm.error()) {
+    <div class="cliente-alert" role="alert">
+      <ion-icon name="alert-circle-outline" aria-hidden="true" />
+      <span>{{ vm.error() }}</span>
+    </div>
+  }
+
+  @if (vm.cargandoConversaciones()) {
+    <div class="cliente-loading"><ion-spinner name="crescent" /><span>Cargando conversaciones…</span></div>
+  } @else if (vm.conversaciones().length === 0) {
+    <div class="cliente-empty">
+      <ion-icon name="chatbubble-ellipses-outline" aria-hidden="true" />
+      <h2>Aún no tienes conversaciones</h2>
+      <p>Abre un chat desde una postulación o desde un contrato con un estudiante.</p>
+      <div class="empty-actions">
+        <a class="cliente-button" routerLink="/cliente/ofertas">Ver mis ofertas</a>
+        <a class="cliente-button cliente-button--primary" routerLink="/cliente/contratos">Ir a contratos</a>
+      </div>
+    </div>
+  } @else {
+    <div class="chat-layout">
+      <aside class="cliente-card conversations-pane" aria-label="Listado de conversaciones">
+        <div class="pane-head">
+          <h2>Conversaciones</h2>
+          <button type="button" class="icon-refresh" aria-label="Recargar conversaciones" (click)="vm.cargar()">
+            <ion-icon name="refresh-outline" aria-hidden="true" />
+          </button>
+        </div>
+
+        <ul class="conv-list">
+          @for (conv of vm.conversaciones(); track conv.id) {
+            <li>
+              <button type="button" class="conv-item"
+                [class.active]="vm.conversacionActiva()?.id === conv.id"
+                (click)="vm.seleccionarConversacion(conv)">
+                <strong>{{ conv.tituloProyecto || 'Proyecto #' + conv.proyectoId.slice(0, 8) }}</strong>
+                <span class="conv-peer">{{ conv.nombreContraparte || 'Estudiante' }}</span>
+                @if (conv.ultimoMensaje) {
+                  <span class="conv-preview">{{ conv.ultimoMensaje }}</span>
+                }
+              </button>
+            </li>
+          }
+        </ul>
+      </aside>
+
+      <section class="cliente-card thread-pane" aria-label="Mensajes de la conversación">
+        @if (vm.conversacionActiva(); as activa) {
+          <header class="thread-head">
+            <div>
+              <h3>{{ activa.tituloProyecto || 'Conversación de proyecto' }}</h3>
+              <p class="thread-sub">
+                {{ activa.nombreContraparte || 'Estudiante TalentBridge' }}
+                @if (vm.contraparteEnLinea()) {
+                  <span class="presence" title="La contraparte está en la conversación">● En línea</span>
+                }
+              </p>
+            </div>
+            <button type="button" class="cliente-button" [disabled]="vm.cargandoMensajes()"
+              (click)="vm.seleccionarConversacion(activa)">
+              <ion-icon name="refresh-outline" aria-hidden="true" /> Actualizar
+            </button>
+          </header>
+
+          <div class="messages-body">
+            @if (vm.cargandoMensajes()) {
+              <div class="cliente-loading"><ion-spinner name="crescent" /><span>Cargando mensajes…</span></div>
+            } @else if (vm.mensajes().length === 0) {
+              <p class="no-messages">Aún no hay mensajes. Envía el primero para iniciar la coordinación.</p>
+            } @else {
+              @for (msg of vm.mensajes(); track msg.id) {
+                <div class="msg-bubble" [class.mine]="vm.esMensajePropio(msg)">
+                  <p>{{ msg.contenido }}</p>
+                  <time>{{ msg.enviadoEn | date: 'dd MMM, HH:mm' }}</time>
+                </div>
+              }
+            }
+          </div>
+
+          <form class="composer" (submit)="vm.enviarMensaje(); $event.preventDefault()">
+            <input type="text" maxlength="2000" placeholder="Escribe un mensaje para el estudiante…"
+              [value]="vm.mensajeInput()"
+              (input)="vm.mensajeInput.set($any($event.target).value)" />
+            <button type="submit" class="cliente-button cliente-button--primary"
+              [disabled]="vm.enviando() || !vm.mensajeInput().trim()">
+              @if (vm.enviando()) { <ion-spinner name="crescent" /> }
+              @else { <ion-icon name="paper-plane-outline" aria-hidden="true" /> }
+              <span>Enviar</span>
+            </button>
+          </form>
+        } @else {
+          <p class="no-messages">Selecciona una conversación para leer y responder mensajes.</p>
+        }
+      </section>
+    </div>
+  }
+</app-cliente-layout>

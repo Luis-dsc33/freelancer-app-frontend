@@ -60,5 +60,17 @@
         </div>
       </form>
     </section>
+
+    @if (miUsuarioId) {
+      <section class="cliente-card profile-card reputation-card" aria-label="Mi reputación">
+        <div class="profile-heading">
+          <div>
+            <h2>Mi reputación</h2>
+            <p>Reseñas que los estudiantes han dejado sobre tu colaboración.</p>
+          </div>
+        </div>
+        <app-reputacion-usuario [usuarioId]="miUsuarioId" etiqueta="Ver mi reputación" [abierto]="true" />
+      </section>
+    }
   }
 </app-cliente-layout>

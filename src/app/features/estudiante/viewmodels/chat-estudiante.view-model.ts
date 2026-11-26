@@ -35,6 +35,8 @@ export class ChatEstudianteViewModel {
   readonly enviando = signal(false);
   readonly error = signal('');
   readonly estadoTiempoReal = this.realtime.estadoConexion;
+  /** `true` cuando la contraparte ejecutó `JoinConversation` en la conversación activa. */
+  readonly contraparteEnLinea = signal(false);
 
   readonly miUsuarioId = computed(() => leerSesionJwt()?.usuarioId ?? null);
 
@@ -46,10 +48,33 @@ export class ChatEstudianteViewModel {
         if (activa && msg.conversacionId === activa.id) {
           this.agregarMensajeSinDuplicado(msg);
         }
+        this.conversaciones.update(lista =>
+          lista.map(c =>
+            c.id === msg.conversacionId
+              ? { ...c, ultimoMensaje: msg.contenido, ultimaActividadEn: msg.enviadoEn }
+              : c,
+          ),
+        );
+      });
+
+    // Presencia: la contraparte entró a la sala de la conversación activa.
+    this.realtime.participanteConectado$
+      .pipe(takeUntilDestroyed(this.destroyRef))
+      .subscribe(evento => {
+        const activa = this.conversacionActiva();
+        if (
+          activa &&
+          evento.conversacionId === activa.id &&
+          evento.usuarioId !== this.miUsuarioId()
+        ) {
+          this.contraparteEnLinea.set(true);
+        }
       });
 
     this.destroyRef.onDestroy(() => {
-      void this.realtime.desconectar();
+      const activa = this.conversacionActiva();
+      const salir = activa ? this.realtime.salirDeConversacion(activa.id) : Promise.resolve();
+      void salir.finally(() => this.realtime.desconectar());
     });
   }
 
@@ -120,6 +145,9 @@ export class ChatEstudianteViewModel {
       void this.realtime.salirDeConversacion(anterior.id);
     }
 
+    if (!anterior || anterior.id !== conv.id) {
+      this.contraparteEnLinea.set(false);
+    }
     this.conversacionActiva.set(conv);
     void this.realtime.unirseAConversacion(conv.id);
 

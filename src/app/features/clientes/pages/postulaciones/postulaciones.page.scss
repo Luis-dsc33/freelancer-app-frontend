@@ -13,3 +13,38 @@
   background: #191613;
   color: #ddd !important;
 }
+
+.cliente-card__actions {
+  flex-wrap: wrap;
+  justify-content: flex-start;
+  margin-top: 12px;
+}
+
+.contract-form-panel {
+  display: grid;
+  gap: 14px;
+  margin-top: 16px;
+  padding: 16px;
+  border: 1px solid #4a2a12;
+  border-radius: 12px;
+  background: #20150e;
+
+  h3 {
+    margin: 0;
+    color: #f5f5f5;
+    font: 700 14px var(--tb-font-heading);
+  }
+}
+
+.contract-fields {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+  gap: 12px;
+}
+
+.contract-form-actions {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  gap: 8px;
+}

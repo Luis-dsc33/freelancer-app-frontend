@@ -1,34 +1,39 @@
 import { Injectable, signal } from '@angular/core';
 import { Observable, Subject } from 'rxjs';
-import { EstadoTiempoRealChat, MensajeChat } from '../models/chat';
+import {
+  ChatConectadoDto,
+  ChatConexionDto,
+  EstadoTiempoRealChat,
+  MensajeChat,
+} from '../models/chat';
 import { IChatRealtimePort } from './chat-realtime.port';
 
 /**
- * Adaptador desacoplado mientras se habilita el Hub SignalR en Chat.Api.
- * Cuando se instale `@microsoft/signalr`, basta sustituir este provider por `ChatSignalRAdapter`
- * implementando `IChatRealtimePort` contra `${gatewayUrl}/api/chat/hubs/chat`.
+ * Adaptador de respaldo sin tiempo real: la UI sigue funcionando únicamente con REST.
+ * El adaptador principal es `ChatSignalRAdapter`.
  */
 @Injectable()
 export class ChatRealtimeHttpPrepAdapter implements IChatRealtimePort {
   private readonly mensajesSubject = new Subject<MensajeChat>();
+  private readonly conectadoSubject = new Subject<ChatConectadoDto>();
+  private readonly participanteSubject = new Subject<ChatConexionDto>();
 
   readonly estadoConexion = signal<EstadoTiempoRealChat>('desconectado');
   readonly mensajesEntrantes$: Observable<MensajeChat> = this.mensajesSubject.asObservable();
+  readonly conectado$: Observable<ChatConectadoDto> = this.conectadoSubject.asObservable();
+  readonly participanteConectado$: Observable<ChatConexionDto> =
+    this.participanteSubject.asObservable();
 
   async conectar(token: string): Promise<void> {
-    if (!token) {
-      this.estadoConexion.set('desconectado');
-      return;
-    }
-    this.estadoConexion.set('modo_http');
+    this.estadoConexion.set(token ? 'modo_http' : 'desconectado');
   }
 
   async unirseAConversacion(_conversacionId: string): Promise<void> {
-    // El adaptador SignalR invocará `JoinConversation(conversacionId)` aquí.
+    // Sin Hub: no hay sala a la que unirse.
   }
 
   async salirDeConversacion(_conversacionId: string): Promise<void> {
-    // El adaptador SignalR invocará `LeaveConversation(conversacionId)` aquí.
+    // Sin Hub: no hay sala de la que salir.
   }
 
   async desconectar(): Promise<void> {

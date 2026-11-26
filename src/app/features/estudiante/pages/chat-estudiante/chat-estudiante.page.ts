@@ -14,7 +14,7 @@ import { EstudianteNavComponent } from '../../../../shared/components/estudiante
 import { AbrirConversacionHandler } from '../../commands/abrir-conversacion.handler';
 import { EnviarMensajeChatHandler } from '../../commands/enviar-mensaje-chat.handler';
 import { ChatHttpRepository } from '../../data/chat-http.repository';
-import { ChatRealtimeHttpPrepAdapter } from '../../data/chat-realtime-http-prep.adapter';
+import { ChatSignalRAdapter } from '../../data/chat-signalr.adapter';
 import { CHAT_REALTIME_PORT } from '../../data/chat-realtime.port';
 import { CHAT_REPOSITORY } from '../../data/chat.repository';
 import { EstadoTiempoRealChat } from '../../models/chat';
@@ -43,7 +43,7 @@ addIcons({
     AbrirConversacionHandler,
     EnviarMensajeChatHandler,
     { provide: CHAT_REPOSITORY, useClass: ChatHttpRepository },
-    { provide: CHAT_REALTIME_PORT, useClass: ChatRealtimeHttpPrepAdapter },
+    { provide: CHAT_REALTIME_PORT, useClass: ChatSignalRAdapter },
   ],
 })
 export class ChatEstudiantePage {
@@ -70,7 +70,7 @@ export class ChatEstudiantePage {
       case 'conectando':
         return 'Conectando…';
       case 'modo_http':
-        return 'Canal HTTP activo (listo para SignalR)';
+        return 'Solo mensajes por HTTP (sin tiempo real)';
       default:
         return 'Desconectado';
     }

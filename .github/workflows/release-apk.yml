@@ -1,0 +1,93 @@
+name: Build & Release Android APK
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  build-and-release-apk:
+    name: Compilar y publicar APK en GitHub Releases
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout del código
+        uses: actions/checkout@v4
+
+      - name: Configurar Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: 'npm'
+
+      - name: Configurar Java JDK 21 (requerido por Capacitor 8 / Android)
+        uses: actions/setup-java@v4
+        with:
+          distribution: 'temurin'
+          java-version: '21'
+          cache: 'gradle'
+
+      - name: Instalar dependencias de frontend
+        run: npm ci || npm install
+
+      - name: Compilar bundle productivo de Angular (www)
+        run: npm run build
+
+      - name: Generar o sincronizar proyecto Android con Capacitor
+        run: |
+          if [ ! -d "android" ]; then
+            npx cap add android
+          fi
+          npx cap sync android
+
+      - name: Habilitar firma instalable en el buildType release
+        run: |
+          if ! grep -q "signingConfig signingConfigs.debug" android/app/build.gradle; then
+            sed -i 's/minifyEnabled false/signingConfig signingConfigs.debug\n            minifyEnabled false/' android/app/build.gradle
+          fi
+
+      - name: Dar permisos de ejecución a Gradle Wrapper
+        run: chmod +x android/gradlew
+
+      - name: Compilar APKs (Release firmado y Debug)
+        working-directory: android
+        run: ./gradlew assembleRelease assembleDebug --no-daemon
+
+      - name: Preparar archivos APK para el Release
+        run: |
+          mkdir -p release-apks
+          VERSION="v1.0.${{ github.run_number }}"
+          REL_APK=$(find android/app/build/outputs/apk/release -name "*.apk" | head -n 1)
+          DBG_APK=$(find android/app/build/outputs/apk/debug -name "*.apk" | head -n 1)
+          if [ -n "$REL_APK" ]; then
+            cp "$REL_APK" "release-apks/TalentBridge-${VERSION}.apk"
+          fi
+          if [ -n "$DBG_APK" ]; then
+            cp "$DBG_APK" "release-apks/TalentBridge-${VERSION}-debug.apk"
+          fi
+          ls -lh release-apks/
+
+      - name: Subir APK como artefacto del workflow
+        uses: actions/upload-artifact@v4
+        with:
+          name: TalentBridge-APK-v1.0.${{ github.run_number }}
+          path: release-apks/*.apk
+
+      - name: Publicar APK en GitHub Releases
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: TalentBridge Android v1.0.${{ github.run_number }}
+          body: |
+            ### 📱 APK de TalentBridge compilado automáticamente desde `main`
+            - **Commit:** `${{ github.sha }}`
+            - **Versión:** `v1.0.${{ github.run_number }}`
+            - **Descarga directa:** Instala `TalentBridge-v1.0.${{ github.run_number }}.apk` en tu dispositivo Android.
+          generate_release_notes: true
+          files: release-apks/*.apk
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

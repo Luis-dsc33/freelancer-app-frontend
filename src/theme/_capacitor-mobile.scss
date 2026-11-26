@@ -1,0 +1,660 @@
+// ============================================================================
+// Tema Mobile Nativo (EXCLUSIVO cuando la app corre compilada en Capacitor)
+// Se activa únicamente cuando `Capacitor.isNativePlatform() === true`, lo que
+// añade `html.tb-capacitor` (además de `html.plt-capacitor` de Ionic).
+// Respeta estrictamente la paleta oscura + naranja de TalentBridge en TODAS
+// las pantallas y mantiene fija en pantalla la barra de navegación inferior.
+// ============================================================================
+
+@keyframes tb-cap-fade-in {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes tb-cap-card-in {
+  from {
+    opacity: 0;
+    transform: translateY(16px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes tb-cap-sheet-up {
+  from {
+    opacity: 0;
+    transform: translateY(24px);
+  }
+  to {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes tb-cap-msg-pop {
+  0% {
+    opacity: 0;
+    transform: translateY(8px) scale(0.96);
+  }
+  100% {
+    opacity: 1;
+    transform: none;
+  }
+}
+
+@keyframes tb-cap-nav-bounce {
+  0% {
+    transform: scale(0.86);
+  }
+  60% {
+    transform: scale(1.12) translateY(-2px);
+  }
+  100% {
+    transform: none;
+  }
+}
+
+@keyframes tb-cap-pulse-dot {
+  0%, 100% {
+    box-shadow: 0 0 0 0 rgba(74, 222, 128, 0.45);
+  }
+  50% {
+    box-shadow: 0 0 0 6px rgba(74, 222, 128, 0);
+  }
+}
+
+html.tb-capacitor,
+html.plt-capacitor {
+  // ── Paleta oficial TalentBridge unificada en toda la aplicación ──
+  --tb-naranja-oscuro: #C2650B;
+  --tb-naranja: #F9943B;
+  --tb-naranja-acento: #FB7F1B;
+  --tb-superficie: #141414;
+  --tb-primer-plano: #F5F5F5;
+  --tb-borde: #262626;
+  --tb-error: #EF4444;
+  --tb-exito: #22C55E;
+
+  --ion-color-primary: #FB7F1B;
+  --ion-color-primary-shade: #C2650B;
+  --ion-color-primary-tint: #F9943B;
+  --ion-background-color: #090909;
+  --ion-text-color: #F5F5F5;
+  --ion-toolbar-background: #090909;
+  --ion-toolbar-color: #F5F5F5;
+  --ion-item-background: #141414;
+  --ion-card-background: #141414;
+
+  color-scheme: dark;
+  -webkit-tap-highlight-color: transparent;
+  -webkit-touch-callout: none;
+  overscroll-behavior-y: none;
+
+  body {
+    background: #090909 !important;
+    color: #f5f5f5 !important;
+    overscroll-behavior-y: none;
+    user-select: none;
+  }
+
+  input,
+  textarea,
+  select,
+  .msg-bubble p,
+  .proposal-text,
+  .description,
+  .body-copy {
+    user-select: text;
+  }
+
+  // ── Fondo unificado negro cálido (#090909) con halo naranja TalentBridge ──
+  ion-content,
+  ion-content.estudiante-page,
+  ion-content.marketplace-page,
+  ion-content.portfolio-page,
+  ion-content.cliente-content {
+    --background:
+      radial-gradient(120% 42% at 50% -10%, rgba(251, 127, 27, 0.14), transparent 58%),
+      radial-gradient(85% 35% at 95% 12%, rgba(194, 101, 11, 0.08), transparent 52%),
+      #090909 !important;
+    --color: #f5f5f5 !important;
+    --padding-bottom: calc(96px + var(--tb-safe-bottom, 0px)) !important;
+    color: #f5f5f5 !important;
+  }
+
+  ion-header,
+  ion-toolbar {
+    --background: #090909 !important;
+    --color: #f5f5f5 !important;
+    --border-color: transparent !important;
+    background: #090909 !important;
+    color: #f5f5f5 !important;
+  }
+
+  ion-back-button {
+    --color: #fb7f1b !important;
+    color: #fb7f1b !important;
+  }
+
+  // IMPORTANTE: No aplicar `transform` a los shells contenedores (`.estudiante-shell`,
+  // `.cliente-shell`, `.cliente-main`, etc.) para que `position: fixed` en la barra
+  // inferior permanezca siempre anclada a la pantalla del teléfono y nunca baje con el scroll.
+  .estudiante-shell,
+  .marketplace-shell,
+  .portfolio-shell {
+    padding-left: 16px !important;
+    padding-right: 16px !important;
+    padding-bottom: calc(108px + var(--tb-safe-bottom, 0px)) !important;
+  }
+
+  .cliente-shell,
+  .admin {
+    grid-template-columns: minmax(0, 1fr) !important;
+    background: #090909 !important;
+    color: #f5f5f5 !important;
+  }
+
+  .cliente-main,
+  .admin__main {
+    padding: 20px 16px calc(108px + var(--tb-safe-bottom, 0px)) !important;
+  }
+
+  // ── Encabezados con animación limpia (solo opacidad/elementos hijos) ──
+  .title-row,
+  .page-header,
+  .encabezado,
+  .tb-est-header {
+    animation: tb-cap-fade-in 0.28s ease-out both;
+
+    h1 {
+      color: #f5f5f5 !important;
+      font-size: clamp(23px, 6vw, 28px) !important;
+      letter-spacing: -0.6px !important;
+    }
+  }
+
+  .page-subtitle,
+  .encabezado__sub,
+  .intro {
+    color: #999999 !important;
+  }
+
+  .section-icon,
+  .profile-icon,
+  .form-icon,
+  .activity-icon {
+    border-radius: 15px !important;
+    background: #2a1608 !important;
+    border: 1px solid #4a2a12 !important;
+    color: #fb7f1b !important;
+    box-shadow: 0 8px 20px -6px rgba(251, 127, 27, 0.3);
+  }
+
+  // ── Pantallas de Login y Registro alineadas 100% a la paleta oscura TalentBridge ──
+  .tb-auth-wrap {
+    background: transparent !important;
+    border: 0 !important;
+    box-shadow: none !important;
+    color: #f5f5f5 !important;
+    animation: tb-cap-card-in 0.34s cubic-bezier(0.22, 1, 0.36, 1) both;
+  }
+
+  .tb-heading-xl {
+    color: #f5f5f5 !important;
+  }
+
+  .tb-subtitle,
+  .tb-footer-link {
+    color: #999999 !important;
+
+    a {
+      color: #fb923c !important;
+    }
+  }
+
+  .tb-label {
+    color: #dddddd !important;
+  }
+
+  .tb-input-wrap {
+    background: #0e0e0e !important;
+    border: 1px solid #2b2b2b !important;
+    border-radius: 14px !important;
+
+    input {
+      color: #f5f5f5 !important;
+
+      &::placeholder {
+        color: #666666 !important;
+      }
+    }
+
+    ion-icon {
+      color: #888888 !important;
+    }
+
+    &:focus-within {
+      border-color: #fb7f1b !important;
+      box-shadow: 0 0 0 3px rgba(251, 127, 27, 0.14) !important;
+    }
+  }
+
+  .tb-rol-card {
+    background: #141414 !important;
+    border: 1px solid #262626 !important;
+    border-radius: 16px !important;
+    color: #f5f5f5 !important;
+
+    .tb-rol-desc {
+      color: #999999 !important;
+    }
+
+    &.selected {
+      background: #25160d !important;
+      border-color: #fb7f1b !important;
+      box-shadow: 0 0 0 1px #fb7f1b inset !important;
+
+      .tb-rol-desc {
+        color: #fb923c !important;
+      }
+    }
+  }
+
+  .tb-modal-content {
+    background: #141414 !important;
+    color: #f5f5f5 !important;
+
+    .tb-modal-title {
+      color: #f5f5f5 !important;
+    }
+
+    .tb-modal-text {
+      color: #999999 !important;
+    }
+  }
+
+  // ── Tarjetas con la paleta cálida (#141414 / #262626) y entrada en cascada ──
+  .tb-card,
+  .cliente-card,
+  .opportunity-card,
+  .work-card,
+  .activity-card,
+  .form-card,
+  .success-card,
+  .tarjeta {
+    border-radius: 20px !important;
+    border: 1px solid #262626 !important;
+    background: linear-gradient(165deg, #171513 0%, #131313 100%) !important;
+    color: #f5f5f5 !important;
+    box-shadow:
+      0 10px 26px -10px rgba(0, 0, 0, 0.7),
+      0 1px 0 0 rgba(251, 127, 27, 0.05) inset !important;
+    animation: tb-cap-card-in 0.38s cubic-bezier(0.22, 1, 0.36, 1) both;
+    transition:
+      transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1),
+      border-color 0.2s ease,
+      box-shadow 0.2s ease;
+
+    h2, h3 {
+      color: #f5f5f5 !important;
+    }
+  }
+
+  .welcome-card,
+  .activity-card--available {
+    border-color: #3b2517 !important;
+    background:
+      radial-gradient(ellipse at 85% 30%, rgba(251, 127, 27, 0.18), transparent 45%),
+      linear-gradient(135deg, #1a1410 0%, #121212 100%) !important;
+  }
+
+  // Cascada progresiva (stagger) en listas de tarjetas
+  .cards-stack > :nth-child(1),
+  .cliente-list > :nth-child(1),
+  .opportunity-list > :nth-child(1),
+  .work-list > :nth-child(1),
+  .activity-grid > :nth-child(1) { animation-delay: 15ms; }
+
+  .cards-stack > :nth-child(2),
+  .cliente-list > :nth-child(2),
+  .opportunity-list > :nth-child(2),
+  .work-list > :nth-child(2),
+  .activity-grid > :nth-child(2) { animation-delay: 55ms; }
+
+  .cards-stack > :nth-child(3),
+  .cliente-list > :nth-child(3),
+  .opportunity-list > :nth-child(3),
+  .work-list > :nth-child(3),
+  .activity-grid > :nth-child(3) { animation-delay: 95ms; }
+
+  .cards-stack > :nth-child(4),
+  .cliente-list > :nth-child(4),
+  .opportunity-list > :nth-child(4),
+  .work-list > :nth-child(4),
+  .activity-grid > :nth-child(4) { animation-delay: 135ms; }
+
+  .cards-stack > :nth-child(5),
+  .cliente-list > :nth-child(5),
+  .opportunity-list > :nth-child(5),
+  .work-list > :nth-child(5) { animation-delay: 175ms; }
+
+  // ── Inputs y formularios unificados en toda la app ──
+  .cliente-field input,
+  .cliente-field textarea,
+  .cliente-field select,
+  .field input,
+  .field textarea,
+  .field select,
+  .filtro input,
+  .filtro select,
+  .dark-input,
+  .dark-textarea,
+  .dark-select {
+    background: #0e0e0e !important;
+    border: 1px solid #2b2b2b !important;
+    border-radius: 13px !important;
+    color: #f5f5f5 !important;
+
+    &::placeholder {
+      color: #666666 !important;
+    }
+
+    &:focus {
+      border-color: #fb7f1b !important;
+      box-shadow: 0 0 0 3px rgba(251, 127, 27, 0.14) !important;
+    }
+  }
+
+  // ── Tablas y controles de Admin alineados a la paleta oscura TalentBridge ──
+  .tarjeta__sub,
+  .filtro,
+  .paginacion,
+  .tabla th,
+  .tabla .secundario {
+    color: #999999 !important;
+  }
+
+  .tabla th,
+  .tabla td,
+  .pestanas {
+    border-color: #262626 !important;
+  }
+
+  .tabla tbody tr:hover td,
+  tr.seleccionada td {
+    background: #1c1510 !important;
+  }
+
+  .pestana {
+    color: #999999 !important;
+
+    &--activa {
+      color: #fb923c !important;
+      border-bottom-color: #fb7f1b !important;
+    }
+  }
+
+  // ── Botones táctiles con la paleta naranja (#e95514 -> #fb7f1b) ──
+  button,
+  .primary,
+  .secondary,
+  .danger-outline,
+  .cliente-button,
+  .primary-action,
+  .secondary-action,
+  .tb-btn-primary,
+  .boton,
+  .rep-toggle,
+  .filter-pill,
+  .catalog-chip,
+  .skill-chip {
+    transition:
+      transform 0.16s cubic-bezier(0.34, 1.56, 0.64, 1),
+      box-shadow 0.2s ease,
+      background-color 0.2s ease,
+      border-color 0.2s ease !important;
+
+    &:active:not(:disabled) {
+      transform: scale(0.95) !important;
+    }
+  }
+
+  .primary,
+  .cliente-button--primary,
+  .primary-action,
+  .tb-btn-primary,
+  .boton--primario {
+    border-radius: 14px !important;
+    border-color: transparent !important;
+    background: linear-gradient(110deg, #e95514 0%, #fb7f1b 100%) !important;
+    color: #170900 !important;
+    box-shadow: 0 8px 20px -6px rgba(251, 127, 27, 0.5) !important;
+
+    &:disabled {
+      background: #262626 !important;
+      color: #777777 !important;
+      box-shadow: none !important;
+    }
+  }
+
+  .secondary,
+  .cliente-button:not(.cliente-button--primary):not(.cliente-button--danger),
+  .secondary-action,
+  .boton:not(.boton--primario):not(.boton--peligro) {
+    border-radius: 14px !important;
+    background: #181818 !important;
+    border: 1px solid #2b2b2b !important;
+    color: #dddddd !important;
+  }
+
+  .danger-outline,
+  .cliente-button--danger,
+  .boton--peligro {
+    border-radius: 14px !important;
+    background: #281414 !important;
+    border: 1px solid #5b2929 !important;
+    color: #fca5a5 !important;
+  }
+
+  // ── Cinta horizontal deslizable para filtros ──
+  .filter-pills {
+    flex-wrap: nowrap !important;
+    overflow-x: auto;
+    padding: 4px 2px 10px;
+    margin-bottom: 14px !important;
+    scrollbar-width: none;
+    -webkit-overflow-scrolling: touch;
+
+    &::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  .filter-pill {
+    flex: 0 0 auto;
+    padding: 9px 16px !important;
+    border-radius: 999px !important;
+    background: #141414 !important;
+    border: 1px solid #262626 !important;
+    color: #aaaaaa !important;
+
+    &.active {
+      background: #25160d !important;
+      border-color: #fb7f1b !important;
+      color: #fb923c !important;
+      box-shadow: 0 6px 16px -6px rgba(251, 127, 27, 0.45);
+    }
+  }
+
+  // ── Barra de navegación inferior SIEMPRE FIJA en pantalla (Estudiante, Cliente, Admin) ──
+  .tb-est-nav,
+  .cliente-nav,
+  .admin__nav {
+    position: fixed !important;
+    left: 12px !important;
+    right: 12px !important;
+    bottom: calc(10px + var(--tb-safe-bottom, 0px)) !important;
+    top: auto !important;
+    z-index: 9999 !important;
+    min-height: 0 !important;
+    height: 62px !important;
+    padding: 0 6px !important;
+    flex-direction: row !important;
+    align-items: center !important;
+    justify-content: space-around !important;
+    border-radius: 22px !important;
+    border: 1px solid #2e2016 !important;
+    background: rgba(16, 14, 12, 0.94) !important;
+    box-shadow:
+      0 16px 38px -4px rgba(0, 0, 0, 0.85),
+      0 1px 0 0 rgba(251, 127, 27, 0.14) inset !important;
+    backdrop-filter: blur(18px) saturate(160%) !important;
+    -webkit-backdrop-filter: blur(18px) saturate(160%) !important;
+  }
+
+  .cliente-brand,
+  .nav-label,
+  .nav-spacer,
+  .user-summary,
+  .nav-item__label,
+  .admin__marca,
+  .nav__label {
+    display: none !important;
+  }
+
+  .cliente-nav nav,
+  .admin__nav nav {
+    display: flex !important;
+    flex: 1 !important;
+    flex-direction: row !important;
+    justify-content: space-around !important;
+    align-items: center !important;
+    gap: 0 !important;
+  }
+
+  .tb-est-link,
+  .cliente-nav .nav-item,
+  .admin__nav .nav__item {
+    position: relative !important;
+    flex: 1 !important;
+    display: grid !important;
+    place-items: center !important;
+    height: 46px !important;
+    min-height: 46px !important;
+    max-width: 68px !important;
+    margin: 0 2px !important;
+    padding: 0 !important;
+    border-radius: 15px !important;
+    color: #8a8a8a !important;
+    background: transparent !important;
+    transition:
+      color 0.18s ease,
+      background-color 0.18s ease,
+      transform 0.18s cubic-bezier(0.34, 1.56, 0.64, 1) !important;
+
+    ion-icon {
+      font-size: 23px !important;
+      color: inherit !important;
+    }
+
+    &:active {
+      transform: scale(0.86) !important;
+    }
+
+    &.active,
+    &.nav-item--active,
+    &.nav__item--activo {
+      color: #fb923c !important;
+      background: #25160d !important;
+      animation: tb-cap-nav-bounce 0.3s cubic-bezier(0.34, 1.56, 0.64, 1);
+
+      ion-icon {
+        color: #fb923c !important;
+      }
+
+      &::after {
+        content: '' !important;
+        position: absolute !important;
+        top: auto !important;
+        bottom: 4px !important;
+        left: 35% !important;
+        right: 35% !important;
+        height: 3px !important;
+        border-radius: 999px !important;
+        background: #fb7f1b !important;
+        box-shadow: 0 0 8px rgba(251, 127, 27, 0.8);
+      }
+    }
+  }
+
+  .cliente-nav .logout,
+  .admin__nav .nav__salir {
+    flex: 0 0 46px !important;
+    width: 46px !important;
+  }
+
+  // ── Chat fluido con la paleta TalentBridge ──
+  .msg-bubble {
+    border-radius: 18px 18px 18px 6px !important;
+    background: #1b1b1b !important;
+    border: 1px solid #2a2a2a !important;
+    animation: tb-cap-msg-pop 0.22s cubic-bezier(0.22, 1, 0.36, 1) both;
+
+    &.mine {
+      border-radius: 18px 18px 6px 18px !important;
+      background: #25160d !important;
+      border-color: #fb7f1b !important;
+    }
+  }
+
+  .composer {
+    gap: 10px !important;
+
+    input {
+      border-radius: 999px !important;
+      padding-left: 16px !important;
+      padding-right: 16px !important;
+      background: #0e0e0e !important;
+      border: 1px solid #2b2b2b !important;
+    }
+
+    button {
+      border-radius: 999px !important;
+    }
+  }
+
+  // ── Paneles inline y modales ──
+  .rating-panel,
+  .contract-form-panel,
+  .cliente-confirm,
+  .confirm-dialog {
+    animation: tb-cap-sheet-up 0.26s cubic-bezier(0.22, 1, 0.36, 1) both;
+    border-radius: 20px !important;
+  }
+
+  ion-modal.tb-dark-modal,
+  ion-modal.delete-modal,
+  ion-modal.tb-modal-exito {
+    --width: 94%;
+    --max-width: 440px;
+    --border-radius: 22px;
+    --background: #141414;
+    --box-shadow: 0 24px 64px rgba(0, 0, 0, 0.82);
+  }
+
+  .presence {
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 2px 8px;
+    border-radius: 999px;
+    background: rgba(74, 222, 128, 0.12);
+    animation: tb-cap-pulse-dot 2s infinite;
+  }
+}

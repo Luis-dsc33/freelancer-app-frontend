@@ -5,6 +5,7 @@ import { IonIcon, IonSpinner } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   alertCircleOutline,
+  chatbubbleEllipsesOutline,
   checkmarkCircleOutline,
   documentTextOutline,
   refreshOutline,
@@ -12,10 +13,12 @@ import {
   thumbsUpOutline,
 } from 'ionicons/icons';
 import { ClienteLayoutComponent } from '../../components/cliente-layout/cliente-layout.component';
+import { ReputacionUsuarioComponent } from '../../../../shared/components/reputacion-usuario/reputacion-usuario.component';
 import { PostulacionesViewModel } from '../../viewmodels/postulaciones.view-model';
 
 addIcons({
   alertCircleOutline,
+  chatbubbleEllipsesOutline,
   checkmarkCircleOutline,
   documentTextOutline,
   refreshOutline,
@@ -26,7 +29,7 @@ addIcons({
 @Component({
   selector: 'app-postulaciones',
   standalone: true,
-  imports: [DatePipe, RouterLink, IonIcon, IonSpinner, ClienteLayoutComponent],
+  imports: [DatePipe, RouterLink, IonIcon, IonSpinner, ClienteLayoutComponent, ReputacionUsuarioComponent],
   templateUrl: './postulaciones.page.html',
   styleUrls: ['./postulaciones.page.scss'],
   providers: [PostulacionesViewModel],

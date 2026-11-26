@@ -80,7 +80,12 @@
             <header class="thread-head">
               <div>
                 <h3>{{ activa.tituloProyecto || 'Conversación de proyecto' }}</h3>
-                <p class="thread-sub">{{ activa.nombreContraparte || 'Cliente TalentBridge' }}</p>
+                <p class="thread-sub">
+                  {{ activa.nombreContraparte || 'Cliente TalentBridge' }}
+                  @if (vm.contraparteEnLinea()) {
+                    <span class="presence" title="La contraparte está en la conversación">● En línea</span>
+                  }
+                </p>
               </div>
               <button
                 type="button"

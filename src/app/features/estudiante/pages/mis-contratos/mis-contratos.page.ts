@@ -15,6 +15,7 @@ import {
   starOutline,
 } from 'ionicons/icons';
 import { EstudianteNavComponent } from '../../../../shared/components/estudiante-nav/estudiante-nav.component';
+import { ReputacionUsuarioComponent } from '../../../../shared/components/reputacion-usuario/reputacion-usuario.component';
 import { CalificarClienteHandler } from '../../commands/calificar-cliente.handler';
 import { CancelarContratoHandler } from '../../commands/cancelar-contrato.handler';
 import { FinalizarContratoHandler } from '../../commands/finalizar-contrato.handler';
@@ -54,6 +55,7 @@ addIcons({
     IonModal,
     IonSpinner,
     EstudianteNavComponent,
+    ReputacionUsuarioComponent,
   ],
   templateUrl: './mis-contratos.page.html',
   styleUrls: ['./mis-contratos.page.scss'],

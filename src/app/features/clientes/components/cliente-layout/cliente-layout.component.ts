@@ -4,6 +4,7 @@ import { IonContent, IonIcon } from '@ionic/angular';
 import { addIcons } from 'ionicons';
 import {
   addCircleOutline,
+  chatbubbleEllipsesOutline,
   documentTextOutline,
   gridOutline,
   logOutOutline,
@@ -12,7 +13,7 @@ import {
 } from 'ionicons/icons';
 import { AuthService } from '../../../usuarios/services/auth.service';
 
-addIcons({ addCircleOutline, documentTextOutline, gridOutline, logOutOutline, peopleOutline, personCircleOutline });
+addIcons({ addCircleOutline, chatbubbleEllipsesOutline, documentTextOutline, gridOutline, logOutOutline, peopleOutline, personCircleOutline });
 
 @Component({
   selector: 'app-cliente-layout',

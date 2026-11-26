@@ -23,6 +23,10 @@ export const CLIENTES_ROUTES: Routes = [
     loadComponent: () => import('./pages/contratos/contratos.page').then(m => m.ContratosPage),
   },
   {
+    path: 'chat',
+    loadComponent: () => import('./pages/chat/chat-cliente.page').then(m => m.ChatClientePage),
+  },
+  {
     path: 'perfil',
     loadComponent: () => import('./pages/perfil-cliente/perfil-cliente.page').then(m => m.PerfilClientePage),
   },

@@ -48,6 +48,8 @@
           </div>
           @if (postulacion.carrera) { <p>{{ postulacion.carrera }}</p> }
           @if (postulacion.mensaje) { <p class="application-message">“{{ postulacion.mensaje }}”</p> }
+          <app-reputacion-usuario [usuarioId]="postulacion.estudianteId" etiqueta="Ver reputación del estudiante" />
+
           <div class="cliente-meta">
             <span>Referencia: {{ postulacion.estudianteId }}</span>
             @if (postulacion.fechaPostulacion) { <span>Recibida: {{ postulacion.fechaPostulacion | date: 'mediumDate' }}</span> }
@@ -55,6 +57,10 @@
 
           @if (vm.estaPendiente(postulacion)) {
             <div class="cliente-card__actions">
+              <a class="cliente-button" routerLink="/cliente/chat"
+                [queryParams]="{ proyectoId: postulacion.proyectoId, postulacionId: postulacion.id }">
+                <ion-icon name="chatbubble-ellipses-outline" aria-hidden="true" /> Chat con estudiante
+              </a>
               <button class="cliente-button cliente-button--primary" type="button"
                 (click)="vm.pedirResolucion(postulacion, 'aceptar')" [disabled]="vm.accionId() !== ''">
                 <ion-icon name="thumbs-up-outline" aria-hidden="true" /> Aceptar postulación
@@ -65,12 +71,60 @@
               </button>
             </div>
           } @else if (vm.estaAceptada(postulacion)) {
-            <button class="cliente-button cliente-button--primary" type="button"
-              (click)="vm.crearContrato(postulacion)" [disabled]="vm.accionId() === postulacion.id">
-              @if (vm.accionId() === postulacion.id) { <ion-spinner name="crescent" /> }
-              @else { <ion-icon name="document-text-outline" aria-hidden="true" /> }
-              Crear contrato
-            </button>
+            <div class="cliente-card__actions">
+              <a class="cliente-button" routerLink="/cliente/chat"
+                [queryParams]="{ proyectoId: postulacion.proyectoId, postulacionId: postulacion.id }">
+                <ion-icon name="chatbubble-ellipses-outline" aria-hidden="true" /> Chat con estudiante
+              </a>
+              @if (vm.postulacionAContratar()?.id !== postulacion.id) {
+                <button class="cliente-button cliente-button--primary" type="button"
+                  (click)="vm.abrirFormularioContrato(postulacion)" [disabled]="vm.accionId() === postulacion.id">
+                  @if (vm.accionId() === postulacion.id) { <ion-spinner name="crescent" /> }
+                  @else { <ion-icon name="document-text-outline" aria-hidden="true" /> }
+                  Crear contrato
+                </button>
+              }
+            </div>
+
+            @if (vm.postulacionAContratar()?.id === postulacion.id) {
+              <form class="contract-form-panel" aria-label="Formalizar contrato"
+                (submit)="vm.crearContrato(postulacion); $event.preventDefault()">
+                <h3>Condiciones del contrato</h3>
+                <div class="contract-fields">
+                  <div class="cliente-field">
+                    <label [attr.for]="'importe-' + postulacion.id">Importe acordado (MXN) *</label>
+                    <input [id]="'importe-' + postulacion.id" type="number" min="1" step="0.01" required
+                      [value]="vm.importeAcordado()"
+                      (input)="vm.actualizarImporte($any($event.target).value)" />
+                  </div>
+                  <div class="cliente-field">
+                    <label [attr.for]="'inicio-' + postulacion.id">Fecha de inicio *</label>
+                    <input [id]="'inicio-' + postulacion.id" type="date" required
+                      [value]="vm.fechaInicio()"
+                      (input)="vm.fechaInicio.set($any($event.target).value)" />
+                  </div>
+                  <div class="cliente-field">
+                    <label [attr.for]="'compromiso-' + postulacion.id">Fecha de compromiso *</label>
+                    <input [id]="'compromiso-' + postulacion.id" type="date" required
+                      [min]="vm.fechaInicio()"
+                      [value]="vm.fechaCompromiso()"
+                      (input)="vm.fechaCompromiso.set($any($event.target).value)" />
+                  </div>
+                </div>
+                <div class="contract-form-actions">
+                  <button class="cliente-button" type="button" (click)="vm.cerrarFormularioContrato()"
+                    [disabled]="vm.accionId() === postulacion.id">
+                    Cancelar
+                  </button>
+                  <button class="cliente-button cliente-button--primary" type="submit"
+                    [disabled]="vm.accionId() === postulacion.id">
+                    @if (vm.accionId() === postulacion.id) { <ion-spinner name="crescent" /> }
+                    @else { <ion-icon name="document-text-outline" aria-hidden="true" /> }
+                    {{ vm.accionId() === postulacion.id ? 'Creando contrato…' : 'Confirmar y crear contrato' }}
+                  </button>
+                </div>
+              </form>
+            }
           }
 
           @if (vm.confirmacion()?.postulacion?.id === postulacion.id) {

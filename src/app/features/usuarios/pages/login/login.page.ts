@@ -35,6 +35,7 @@ export class LoginPage {
 
   enviando = signal(false);
   tipoError = signal<TipoErrorLogin>(null);
+  motivoSuspension = signal<string | null>(null); // ADMIN Marcos: motivo que registró el Administrador
   formShake = signal(false);
   mostrarPassword = signal(false);
 
@@ -103,6 +104,8 @@ export class LoginPage {
         // HU-02, Escenario 02-03: cuenta suspendida (backend responde 403)
         // HU-02, Escenario 02-02: credenciales incorrectas, mensaje genérico (no revela cuál campo)
         this.tipoError.set(err.status === 403 ? 'suspendida' : 'credenciales');
+        // ADMIN Marcos: el backend responde 403 con { error, motivo } cuando la cuenta está suspendida
+        this.motivoSuspension.set(err.status === 403 ? (err.error?.motivo ?? null) : null);
         this.dispararShake();
       },
     });
